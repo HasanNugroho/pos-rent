@@ -131,7 +131,73 @@ Modern, clean UI design untuk sistem Point of Sale rental dengan shadcn design p
 
 ---
 
-## 🏢 OUTLET/TENANT PAGES (Single Outlet Operations)
+## � PUBLIC PAGES (Customer-Facing / No Login Required)
+
+### PUB-1. **Katalog Produk** (`catalog.html`) ⭐ NEW
+**Landing page publik untuk customer lihat produk & cek ketersediaan**
+
+- **Hero Section** dengan gradient purple
+- **Sticky Navigation** dengan:
+  - Logo & branding
+  - Contact phone
+  - WhatsApp button
+- **Search & Filter**:
+  - Real-time search (nama/type/desc)
+  - Filter by category (Sport/Casual/Formal/Hiking)
+  - Sticky filter bar
+- **Product Grid** (4 kolom desktop):
+  - 12 produk sample dengan real images
+  - Product card dengan:
+    - Image berkualitas tinggi (280px)
+    - Category badge
+    - Stock warning badge (jika <= 3)
+    - Nama & type produk
+    - Description (2 lines)
+    - Available sizes (badge list)
+    - Price per hari (highlight)
+    - Stock count (color coded)
+    - "Cek Ketersediaan" button
+  - Hover effect: Lift & shadow
+- **Availability Modal**:
+  - Product info summary
+  - Date range picker (start/end)
+  - Size selector
+  - Quantity input
+  - Stock information
+  - WhatsApp contact button
+- **Footer** dengan:
+  - About & social media
+  - Contact info (address, phone, email)
+  - Operating hours
+- **WhatsApp Integration**:
+  - Pre-filled message dengan detail produk
+  - Direct inquiry link
+
+#### Features:
+✅ No login required
+✅ 12 produk dengan 4 kategori
+✅ Real-time search & filter
+✅ Responsive design (mobile-first)
+✅ WhatsApp quick inquiry
+✅ Stock availability check
+✅ Beautiful product cards with hover effects
+
+#### Data Sample (12 Products):
+```javascript
+- Nike Air Max 270 (Sport) - Rp 75K
+- Adidas Ultraboost (Sport) - Rp 85K
+- Converse Chuck Taylor (Casual) - Rp 45K
+- Vans Old Skool (Casual) - Rp 50K
+- Clarks Desert Boot (Formal) - Rp 65K
+- Oxford Leather Shoes (Formal) - Rp 70K
+- Salomon X Ultra 3 (Hiking) - Rp 90K
+- Merrell Moab 2 (Hiking) - Rp 80K
++ 4 more...
+```
+
+---
+
+## �🏢 OUTLET/TENANT PAGES (Single Outlet Operations)
 
 ### 1. **Login** (`login.html`)
 - Login form dengan demo accounts
