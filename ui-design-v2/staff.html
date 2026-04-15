@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Staff - POS Rental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50" x-data="staffApp()">    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-slate-200 z-50">
+        <div class="h-16 flex items-center px-6 border-b border-slate-200">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center">
+                    <i class="fas fa-store text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900">POS Rental</h1>
+                    <p class="text-xs text-slate-500">Sepatu Rental</p>
+                </div>
+            </div>
+        </div>
+        <nav class="p-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-chart-line w-5"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="bookings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-calendar-check w-5"></i>
+                <span class="font-medium">Booking</span>
+            </a>
+            <a href="products.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-box w-5"></i>
+                <span class="font-medium">Produk</span>
+            </a>
+            <a href="availability.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-calendar-alt w-5"></i>
+                <span class="font-medium">Ketersediaan</span>
+            </a>
+            <a href="customers.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-users w-5"></i>
+                <span class="font-medium">Customer</span>
+            </a>
+            <a href="maintenance.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-wrench w-5"></i>
+                <span class="font-medium">Maintenance</span>
+            </a>
+            <a href="staff.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-slate-900 text-white">
+                <i class="fas fa-user-tie w-5"></i>
+                <span class="font-medium">Staff</span>
+            </a>
+            <a href="reports.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-chart-bar w-5"></i>
+                <span class="font-medium">Laporan</span>
+            </a>
+            <div class="pt-4 mt-4 border-t border-slate-200">
+                <a href="settings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                    <i class="fas fa-cog w-5"></i>
+                    <span class="font-medium">Pengaturan</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-40">
+            <div class="h-full px-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Manajemen Staff</h2>
+                    <p class="text-sm text-slate-500">Kelola akun dan permission staff</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="p-6 space-y-6">
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Total Staff</p>
+                    <p class="text-3xl font-bold text-slate-900">8</p>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Active</p>
+                    <p class="text-3xl font-bold text-green-600">7</p>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Owner</p>
+                    <p class="text-3xl font-bold text-blue-600">1</p>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Kasir</p>
+                    <p class="text-3xl font-bold text-purple-600">5</p>
+                </div>
+            </div>
+
+            <!-- Filters & Actions -->
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                    <div class="flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-3">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" placeholder="Cari staff..." 
+                                   x-model="searchQuery"
+                                   class="w-full lg:w-64 pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        </div>
+                        <select x-model="filterRole" class="px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            <option value="">Semua Role</option>
+                            <option value="owner">Owner</option>
+                            <option value="manager">Manager</option>
+                            <option value="kasir">Kasir</option>
+                            <option value="inventory">Inventory Staff</option>
+                        </select>
+                        <select x-model="filterStatus" class="px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            <option value="">Semua Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <button @click="openAddStaffModal()" class="px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 shadow-sm">
+                        <i class="fas fa-plus mr-2"></i> Tambah Staff
+                    </button>
+                </div>
+            </div>
+
+            <!-- Staff List -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="staff in filteredStaff" :key="staff.id">
+                    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-lg transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <img :src="'https://ui-avatars.com/api/?name=' + staff.name + '&background=0F172A&color=fff'" 
+                                     class="w-12 h-12 rounded-full ring-2 ring-slate-200">
+                                <div>
+                                    <h3 class="font-semibold text-slate-900" x-text="staff.name"></h3>
+                                    <p class="text-sm text-slate-500" x-text="staff.email"></p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 text-xs font-medium rounded-full"
+                                  :class="staff.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-800'"
+                                  x-text="staff.status === 'active' ? 'Active' : 'Inactive'"></span>
+                        </div>
+
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center text-sm">
+                                <i class="fas fa-phone w-5 text-slate-400"></i>
+                                <span class="text-slate-600" x-text="staff.phone"></span>
+                            </div>
+                            <div class="flex items-center text-sm">
+                                <i class="fas fa-shield-alt w-5 text-slate-400"></i>
+                                <span class="px-2 py-0.5 rounded text-xs font-medium"
+                                      :class="{
+                                          'bg-blue-100 text-blue-800': staff.role === 'owner',
+                                          'bg-purple-100 text-purple-800': staff.role === 'manager',
+                                          'bg-green-100 text-green-800': staff.role === 'kasir',
+                                          'bg-yellow-100 text-yellow-800': staff.role === 'inventory'
+                                      }"
+                                      x-text="staff.role.charAt(0).toUpperCase() + staff.role.slice(1)"></span>
+                            </div>
+                            <div class="flex items-center text-sm">
+                                <i class="fas fa-calendar w-5 text-slate-400"></i>
+                                <span class="text-slate-600" x-text="'Bergabung ' + staff.joinedDate"></span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-4 border-t border-slate-200">
+                            <button @click="editStaff(staff)" class="px-3 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50">
+                                <i class="fas fa-edit mr-1"></i> Edit
+                            </button>
+                            <button @click="viewStaffDetail(staff)" class="px-3 py-2 bg-slate-900 text-white rounded-lg text-sm hover:bg-slate-800">
+                                <i class="fas fa-eye mr-1"></i> Detail
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Staff Modal -->
+    <div x-show="showStaffModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showStaffModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold text-slate-900" x-text="editingStaff ? 'Edit Staff' : 'Tambah Staff Baru'"></h3>
+                    <button @click="showStaffModal = false" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Nama Lengkap</label>
+                            <input type="text" x-model="formData.name" 
+                                   class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Email</label>
+                            <input type="email" x-model="formData.email"
+                                   class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">No. HP</label>
+                            <input type="tel" x-model="formData.phone"
+                                   class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Role</label>
+                            <select x-model="formData.role" 
+                                    class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                <option value="">Pilih role...</option>
+                                <option value="owner">Owner</option>
+                                <option value="manager">Manager</option>
+                                <option value="kasir">Kasir</option>
+                                <option value="inventory">Inventory Staff</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div x-show="!editingStaff" class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Password</label>
+                            <input type="password" x-model="formData.password"
+                                   class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Konfirmasi Password</label>
+                            <input type="password" x-model="formData.confirmPassword"
+                                   class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Permissions</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <template x-for="permission in availablePermissions" :key="permission.id">
+                                <label class="flex items-center space-x-2 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
+                                    <input type="checkbox" :value="permission.id" 
+                                           x-model="formData.permissions"
+                                           class="rounded border-slate-300 text-slate-900 focus:ring-slate-900">
+                                    <span class="text-sm text-slate-700" x-text="permission.label"></span>
+                                </label>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" x-model="formData.sendInvite" id="sendInvite"
+                               class="rounded border-slate-300 text-slate-900 focus:ring-slate-900">
+                        <label for="sendInvite" class="text-sm text-slate-700">Kirim email undangan ke staff</label>
+                    </div>
+                </div>
+
+                <div class="flex space-x-3 mt-6">
+                    <button @click="showStaffModal = false" 
+                            class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50 font-medium">
+                        Batal
+                    </button>
+                    <button @click="saveStaff()" 
+                            class="flex-1 px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 font-medium">
+                        <i class="fas fa-save mr-2"></i>
+                        <span x-text="editingStaff ? 'Update' : 'Simpan'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function staffApp() {
+            return {
+                searchQuery: '',
+                filterRole: '',
+                filterStatus: '',
+                showStaffModal: false,
+                editingStaff: null,
+                
+                staffList: [
+                    { id: 1, name: 'Pak Budi', email: 'budi@sepatu.com', phone: '08123456789', role: 'owner', status: 'active', joinedDate: 'Jan 2024' },
+                    { id: 2, name: 'Ani Wijaya', email: 'ani@sepatu.com', phone: '08234567890', role: 'manager', status: 'active', joinedDate: 'Jan 2024' },
+                    { id: 3, name: 'Rudi Kasir', email: 'rudi@sepatu.com', phone: '08345678901', role: 'kasir', status: 'active', joinedDate: 'Feb 2024' },
+                    { id: 4, name: 'Siti Kasir', email: 'siti@sepatu.com', phone: '08456789012', role: 'kasir', status: 'active', joinedDate: 'Feb 2024' },
+                    { id: 5, name: 'Dewi Inventory', email: 'dewi@sepatu.com', phone: '08567890123', role: 'inventory', status: 'active', joinedDate: 'Mar 2024' },
+                ],
+                
+                formData: {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    role: '',
+                    password: '',
+                    confirmPassword: '',
+                    permissions: [],
+                    sendInvite: true
+                },
+                
+                availablePermissions: [
+                    { id: 'booking:create', label: 'Buat Booking' },
+                    { id: 'booking:read', label: 'Lihat Booking' },
+                    { id: 'booking:update', label: 'Edit Booking' },
+                    { id: 'product:create', label: 'Tambah Produk' },
+                    { id: 'product:read', label: 'Lihat Produk' },
+                    { id: 'product:update', label: 'Edit Produk' },
+                    { id: 'customer:create', label: 'Tambah Customer' },
+                    { id: 'customer:read', label: 'Lihat Customer' },
+                    { id: 'payment:create', label: 'Terima Pembayaran' },
+                    { id: 'report:read', label: 'Lihat Laporan' }
+                ],
+                
+                get filteredStaff() {
+                    return this.staffList.filter(staff => {
+                        const matchSearch = !this.searchQuery || 
+                            staff.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                            staff.email.toLowerCase().includes(this.searchQuery.toLowerCase());
+                        const matchRole = !this.filterRole || staff.role === this.filterRole;
+                        const matchStatus = !this.filterStatus || staff.status === this.filterStatus;
+                        return matchSearch && matchRole && matchStatus;
+                    });
+                },
+                
+                openAddStaffModal() {
+                    this.editingStaff = null;
+                    this.formData = {
+                        name: '',
+                        email: '',
+                        phone: '',
+                        role: '',
+                        password: '',
+                        confirmPassword: '',
+                        permissions: [],
+                        sendInvite: true
+                    };
+                    this.showStaffModal = true;
+                },
+                
+                editStaff(staff) {
+                    this.editingStaff = staff;
+                    this.formData = {
+                        name: staff.name,
+                        email: staff.email,
+                        phone: staff.phone,
+                        role: staff.role,
+                        password: '',
+                        confirmPassword: '',
+                        permissions: ['booking:create', 'booking:read'],
+                        sendInvite: false
+                    };
+                    this.showStaffModal = true;
+                },
+                
+                saveStaff() {
+                    if (this.editingStaff) {
+                        alert('Staff berhasil diupdate!');
+                    } else {
+                        alert('Staff baru berhasil ditambahkan!\nEmail undangan telah dikirim.');
+                    }
+                    this.showStaffModal = false;
+                },
+                
+                viewStaffDetail(staff) {
+                    alert('Melihat detail staff:\n\nNama: ' + staff.name + '\nEmail: ' + staff.email + '\nRole: ' + staff.role);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

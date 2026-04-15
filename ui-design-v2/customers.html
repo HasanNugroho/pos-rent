@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer - POS Rental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50" x-data="customersApp()">
+    <!-- Sidebar (sama seperti pages lain) -->
+    <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-slate-200 z-50">
+        <div class="h-16 flex items-center px-6 border-b border-slate-200">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center">
+                    <i class="fas fa-store text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900">POS Rental</h1>
+                    <p class="text-xs text-slate-500">Sepatu Rental</p>
+                </div>
+            </div>
+        </div>
+        <nav class="p-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-chart-line w-5"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="bookings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-calendar-check w-5"></i>
+                <span class="font-medium">Booking</span>
+            </a>
+            <a href="products.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-box w-5"></i>
+                <span class="font-medium">Produk</span>
+            </a>
+            <a href="availability.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-calendar-alt w-5"></i>
+                <span class="font-medium">Ketersediaan</span>
+            </a>
+            <a href="customers.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-slate-900 text-white">
+                <i class="fas fa-users w-5"></i>
+                <span class="font-medium">Customer</span>
+            </a>
+            <a href="maintenance.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-wrench w-5"></i>
+                <span class="font-medium">Maintenance</span>
+            </a>
+            <a href="staff.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-user-tie w-5"></i>
+                <span class="font-medium">Staff</span>
+            </a>
+            <a href="reports.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-chart-bar w-5"></i>
+                <span class="font-medium">Laporan</span>
+            </a>
+            <div class="pt-4 mt-4 border-t border-slate-200">
+                <a href="settings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                    <i class="fas fa-cog w-5"></i>
+                    <span class="font-medium">Pengaturan</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-40">
+            <div class="h-full px-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Manajemen Customer</h2>
+                    <p class="text-sm text-slate-500">Database pelanggan rental</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="p-6 space-y-6">
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Total Customer</p>
+                    <p class="text-3xl font-bold text-slate-900">324</p>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Active Bulan Ini</p>
+                    <p class="text-3xl font-bold text-green-600">45</p>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Customer Baru</p>
+                    <p class="text-3xl font-bold text-blue-600">12</p>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Total Transaksi</p>
+                    <p class="text-3xl font-bold text-purple-600">1,245</p>
+                </div>
+            </div>
+
+            <!-- Filters & Actions -->
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                    <div class="flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-3">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" placeholder="Cari customer..." 
+                                   x-model="searchQuery"
+                                   class="w-full lg:w-64 pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        </div>
+                    </div>
+                    <button @click="openAddCustomerModal()" class="px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 shadow-sm">
+                        <i class="fas fa-plus mr-2"></i> Tambah Customer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Customers Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="customer in filteredCustomers" :key="customer.id">
+                    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-lg transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <img :src="'https://ui-avatars.com/api/?name=' + customer.name + '&background=random'" 
+                                     class="w-14 h-14 rounded-full ring-2 ring-slate-200">
+                                <div>
+                                    <h3 class="font-semibold text-slate-900" x-text="customer.name"></h3>
+                                    <p class="text-xs text-slate-500" x-text="customer.id"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center text-sm">
+                                <i class="fas fa-phone w-5 text-slate-400"></i>
+                                <span class="text-slate-600" x-text="customer.phone"></span>
+                            </div>
+                            <div class="flex items-center text-sm">
+                                <i class="fas fa-envelope w-5 text-slate-400"></i>
+                                <span class="text-slate-600 truncate" x-text="customer.email"></span>
+                            </div>
+                            <div class="flex items-center text-sm">
+                                <i class="fas fa-calendar w-5 text-slate-400"></i>
+                                <span class="text-slate-600" x-text="'Member sejak ' + customer.memberSince"></span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-4 pt-4 border-t border-slate-200">
+                            <div class="text-center">
+                                <p class="text-xs text-slate-500 mb-1">Total Booking</p>
+                                <p class="text-lg font-bold text-slate-900" x-text="customer.totalBookings"></p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs text-slate-500 mb-1">Total Spend</p>
+                                <p class="text-lg font-bold text-green-600" x-text="'Rp ' + (customer.totalSpend / 1000) + 'K'"></p>
+                            </div>
+                        </div>
+
+                        <div class="flex space-x-2">
+                            <button @click="viewCustomer(customer)" class="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50">
+                                <i class="fas fa-eye mr-1"></i> Detail
+                            </button>
+                            <button @click="window.open('https://wa.me/' + customer.phone.replace(/\D/g,''))" 
+                                    class="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
+                                <i class="fab fa-whatsapp mr-1"></i> Chat
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Customer Modal -->
+    <div x-show="showAddModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showAddModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold text-slate-900">Tambah Customer Baru</h3>
+                    <button @click="showAddModal = false" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Nama Lengkap</label>
+                        <input type="text" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">No. HP</label>
+                        <input type="tel" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Email</label>
+                        <input type="email" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Alamat</label>
+                        <textarea rows="2" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex space-x-3 mt-6">
+                    <button @click="showAddModal = false" class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50">Batal</button>
+                    <button @click="saveCustomer()" class="flex-1 px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                        <i class="fas fa-save mr-2"></i> Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Customer Modal -->
+    <div x-show="showViewModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showViewModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold text-slate-900">Detail Customer</h3>
+                    <button @click="showViewModal = false" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4" x-show="selectedCustomer">
+                    <div class="flex items-center space-x-4 p-4 bg-slate-50 rounded-lg">
+                        <img :src="'https://ui-avatars.com/api/?name=' + selectedCustomer?.name + '&background=random&size=128'" 
+                             class="w-20 h-20 rounded-full ring-4 ring-slate-200">
+                        <div>
+                            <h4 class="text-2xl font-bold text-slate-900" x-text="selectedCustomer?.name"></h4>
+                            <p class="text-slate-500" x-text="selectedCustomer?.id"></p>
+                            <p class="text-sm text-slate-600 mt-1" x-text="'Member sejak ' + selectedCustomer?.memberSince"></p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="p-4 border border-slate-200 rounded-lg text-center">
+                            <p class="text-sm text-slate-500 mb-1">Total Booking</p>
+                            <p class="text-2xl font-bold text-slate-900" x-text="selectedCustomer?.totalBookings"></p>
+                        </div>
+                        <div class="p-4 border border-slate-200 rounded-lg text-center">
+                            <p class="text-sm text-slate-500 mb-1">Total Spend</p>
+                            <p class="text-2xl font-bold text-green-600" x-text="'Rp ' + (selectedCustomer?.totalSpend / 1000000).toFixed(1) + 'M'"></p>
+                        </div>
+                        <div class="p-4 border border-slate-200 rounded-lg text-center">
+                            <p class="text-sm text-slate-500 mb-1">Avg Rating</p>
+                            <p class="text-2xl font-bold text-yellow-600">4.8 ⭐</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p class="text-sm font-medium text-blue-900 mb-2">Booking History (5 Terakhir)</p>
+                        <div class="space-y-2">
+                            <div class="text-sm text-blue-800">#BK-089 - 12 Apr 2024 - Rp 350.000</div>
+                            <div class="text-sm text-blue-800">#BK-067 - 28 Mar 2024 - Rp 280.000</div>
+                            <div class="text-sm text-blue-800">#BK-045 - 15 Mar 2024 - Rp 420.000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function customersApp() {
+            return {
+                searchQuery: '',
+                showAddModal: false,
+                showViewModal: false,
+                selectedCustomer: null,
+                
+                customers: [
+                    { id: 'CUST-001', name: 'Ahmad Rizki', phone: '08123456789', email: 'ahmad@email.com', memberSince: 'Jan 2024', totalBookings: 15, totalSpend: 4500000 },
+                    { id: 'CUST-002', name: 'Siti Nurhaliza', phone: '08234567890', email: 'siti@email.com', memberSince: 'Feb 2024', totalBookings: 8, totalSpend: 2100000 },
+                    { id: 'CUST-003', name: 'Budi Santoso', phone: '08345678901', email: 'budi@email.com', memberSince: 'Jan 2024', totalBookings: 12, totalSpend: 3200000 },
+                    { id: 'CUST-004', name: 'Dewi Lestari', phone: '08456789012', email: 'dewi@email.com', memberSince: 'Mar 2024', totalBookings: 5, totalSpend: 1200000 },
+                    { id: 'CUST-005', name: 'Eko Prasetyo', phone: '08567890123', email: 'eko@email.com', memberSince: 'Apr 2024', totalBookings: 3, totalSpend: 850000 },
+                ],
+                
+                get filteredCustomers() {
+                    return this.customers.filter(c => {
+                        const matchSearch = !this.searchQuery || 
+                            c.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                            c.phone.includes(this.searchQuery) ||
+                            c.id.toLowerCase().includes(this.searchQuery.toLowerCase());
+                        return matchSearch;
+                    });
+                },
+                
+                openAddCustomerModal() {
+                    this.showAddModal = true;
+                },
+                
+                viewCustomer(customer) {
+                    this.selectedCustomer = customer;
+                    this.showViewModal = true;
+                },
+                
+                saveCustomer() {
+                    alert('Customer baru berhasil ditambahkan!');
+                    this.showAddModal = false;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

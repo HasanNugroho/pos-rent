@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Baru - POS Rental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50" x-data="bookingApp()">
+    <!-- Sidebar (Same as dashboard) -->
+    <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-slate-200 z-50">
+        <div class="h-16 flex items-center px-6 border-b border-slate-200">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center">
+                    <i class="fas fa-store text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900">POS Rental</h1>
+                    <p class="text-xs text-slate-500">Sepatu Rental</p>
+                </div>
+            </div>
+        </div>
+        <nav class="p-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-chart-line w-5"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="bookings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-slate-900 text-white">
+                <i class="fas fa-calendar-check w-5"></i>
+                <span class="font-medium">Booking</span>
+            </a>
+            <a href="products.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-box w-5"></i>
+                <span class="font-medium">Produk</span>
+            </a>
+            <a href="availability.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-calendar-alt w-5"></i>
+                <span class="font-medium">Ketersediaan</span>
+            </a>
+            <a href="customers.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-users w-5"></i>
+                <span class="font-medium">Customer</span>
+            </a>
+            <a href="maintenance.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-wrench w-5"></i>
+                <span class="font-medium">Maintenance</span>
+            </a>
+            <a href="staff.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-user-tie w-5"></i>
+                <span class="font-medium">Staff</span>
+            </a>
+            <div class="pt-4 mt-4 border-t border-slate-200">
+                <a href="settings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                    <i class="fas fa-cog w-5"></i>
+                    <span class="font-medium">Pengaturan</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-40">
+            <div class="h-full px-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Booking Baru</h2>
+                    <p class="text-sm text-slate-500">Buat transaksi rental baru</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="p-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Form Section -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Step Indicator -->
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2" :class="step >= 1 ? 'text-slate-900' : 'text-slate-400'">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center" 
+                                         :class="step >= 1 ? 'bg-slate-900 text-white' : 'bg-slate-200'">1</div>
+                                    <span class="font-medium">Customer</span>
+                                </div>
+                                <div class="flex-1 h-0.5 mx-4" :class="step >= 2 ? 'bg-slate-900' : 'bg-slate-200'"></div>
+                                <div class="flex items-center space-x-2" :class="step >= 2 ? 'text-slate-900' : 'text-slate-400'">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                                         :class="step >= 2 ? 'bg-slate-900 text-white' : 'bg-slate-200'">2</div>
+                                    <span class="font-medium">Produk</span>
+                                </div>
+                                <div class="flex-1 h-0.5 mx-4" :class="step >= 3 ? 'bg-slate-900' : 'bg-slate-200'"></div>
+                                <div class="flex items-center space-x-2" :class="step >= 3 ? 'text-slate-900' : 'text-slate-400'">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                                         :class="step >= 3 ? 'bg-slate-900 text-white' : 'bg-slate-200'">3</div>
+                                    <span class="font-medium">Pembayaran</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 1: Customer Info -->
+                        <div x-show="step === 1" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                            <h3 class="text-lg font-semibold text-slate-900 mb-6">Informasi Customer</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Pilih Customer</label>
+                                    <div class="flex space-x-2">
+                                        <select x-model="selectedCustomer" class="flex-1 px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                            <option value="">Pilih customer...</option>
+                                            <option value="1">Ahmad Rizki - 08123456789</option>
+                                            <option value="2">Siti Nurhaliza - 08234567890</option>
+                                            <option value="3">Budi Santoso - 08345678901</option>
+                                        </select>
+                                        <button @click="showCustomerModal = true" class="px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">No. HP</label>
+                                        <input type="tel" value="08123456789" readonly 
+                                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-slate-50">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Email</label>
+                                        <input type="email" value="ahmad@email.com" readonly
+                                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-slate-50">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Product & Date -->
+                        <div x-show="step === 2" class="space-y-6">
+                            <!-- Date Selection -->
+                            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                                <h3 class="text-lg font-semibold text-slate-900 mb-6">Periode Sewa</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Tanggal Mulai</label>
+                                        <input type="date" x-model="startDate" 
+                                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Tanggal Selesai</label>
+                                        <input type="date" x-model="endDate"
+                                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                    </div>
+                                </div>
+                                <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                                    <p class="text-sm text-blue-900">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        Durasi: <span class="font-semibold" x-text="duration"></span> hari
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Product Selection -->
+                            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-lg font-semibold text-slate-900">Pilih Produk</h3>
+                                    <button @click="showProductModal = true" class="px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                                        <i class="fas fa-plus mr-2"></i> Tambah Produk
+                                    </button>
+                                </div>
+                                <div class="space-y-3">
+                                    <template x-for="(item, index) in selectedProducts" :key="index">
+                                        <div class="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="w-16 h-16 bg-slate-100 rounded-lg"></div>
+                                                <div>
+                                                    <h4 class="font-medium text-slate-900" x-text="item.name"></h4>
+                                                    <p class="text-sm text-slate-500" x-text="'SKU: ' + item.sku"></p>
+                                                    <p class="text-sm font-semibold text-slate-900" x-text="'Rp ' + item.price.toLocaleString('id-ID') + '/hari'"></p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-4">
+                                                <div class="flex items-center space-x-2">
+                                                    <button @click="item.qty > 1 ? item.qty-- : null" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg">-</button>
+                                                    <span class="w-12 text-center font-medium" x-text="item.qty"></span>
+                                                    <button @click="item.qty++" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg">+</button>
+                                                </div>
+                                                <button @click="selectedProducts.splice(index, 1)" class="text-red-600 hover:text-red-700">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Payment -->
+                        <div x-show="step === 3" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                            <h3 class="text-lg font-semibold text-slate-900 mb-6">Pembayaran</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Jenis Pembayaran</label>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <button @click="paymentType = 'dp'" 
+                                                :class="paymentType === 'dp' ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 border-2 border-slate-200'"
+                                                class="px-4 py-3 rounded-lg font-medium hover:border-slate-900 transition-colors">
+                                            <i class="fas fa-wallet mr-2"></i> DP Dulu
+                                        </button>
+                                        <button @click="paymentType = 'full'" 
+                                                :class="paymentType === 'full' ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 border-2 border-slate-200'"
+                                                class="px-4 py-3 rounded-lg font-medium hover:border-slate-900 transition-colors">
+                                            <i class="fas fa-money-bill-wave mr-2"></i> Lunas
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div x-show="paymentType === 'dp'">
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Jumlah DP</label>
+                                    <input type="number" x-model="dpAmount" placeholder="Masukkan jumlah DP"
+                                           class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                    <p class="text-xs text-slate-500 mt-2">Sisa pembayaran: Rp <span x-text="(calculateTotal() - dpAmount).toLocaleString('id-ID')"></span></p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Metode Pembayaran</label>
+                                    <select x-model="paymentMethod" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                        <option value="">Pilih metode...</option>
+                                        <option value="cash">Tunai</option>
+                                        <option value="transfer">Transfer Bank</option>
+                                        <option value="qris">QRIS</option>
+                                        <option value="ewallet">E-Wallet</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Catatan (Opsional)</label>
+                                    <textarea rows="3" x-model="notes" placeholder="Tambahkan catatan..."
+                                              class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="flex items-center justify-between">
+                            <button @click="step > 1 ? step-- : null" 
+                                    x-show="step > 1"
+                                    class="px-6 py-2.5 border-2 border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium">
+                                <i class="fas fa-arrow-left mr-2"></i> Kembali
+                            </button>
+                            <div class="flex-1"></div>
+                            <button @click="step < 3 ? step++ : confirmBooking()" 
+                                    class="px-6 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 font-medium">
+                                <span x-text="step < 3 ? 'Lanjut' : 'Konfirmasi Booking'"></span>
+                                <i class="fas fa-arrow-right ml-2" x-show="step < 3"></i>
+                                <i class="fas fa-check ml-2" x-show="step === 3"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Summary Sidebar -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm sticky top-24">
+                            <h3 class="text-lg font-semibold text-slate-900 mb-6">Ringkasan Booking</h3>
+                            
+                            <div class="space-y-3 mb-6">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Booking ID</span>
+                                    <span class="font-medium">#BK-003</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Customer</span>
+                                    <span class="font-medium">Ahmad Rizki</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Periode</span>
+                                    <span class="font-medium" x-text="startDate && endDate ? startDate + ' - ' + endDate : '-'"></span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Durasi</span>
+                                    <span class="font-medium" x-text="duration + ' hari'"></span>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-200 pt-4 mb-4">
+                                <p class="text-sm font-medium text-slate-700 mb-3">Item yang Disewa</p>
+                                <template x-for="item in selectedProducts" :key="item.sku">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-slate-600" x-text="item.name + ' (' + item.qty + 'x)'"></span>
+                                        <span x-text="'Rp ' + (item.price * item.qty * duration).toLocaleString('id-ID')"></span>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="border-t border-slate-200 pt-4 space-y-2 mb-4">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Subtotal</span>
+                                    <span class="font-medium" x-text="'Rp ' + calculateSubtotal().toLocaleString('id-ID')"></span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-600">Deposit</span>
+                                    <span class="font-medium">Rp 100.000</span>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-200 pt-4 mb-6">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-lg font-semibold text-slate-900">Total</span>
+                                    <span class="text-2xl font-bold text-slate-900" x-text="'Rp ' + calculateTotal().toLocaleString('id-ID')"></span>
+                                </div>
+                            </div>
+
+                            <div x-show="paymentType === 'dp' && dpAmount > 0" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                                <p class="text-sm font-medium text-yellow-900 mb-1">Pembayaran DP</p>
+                                <p class="text-lg font-bold text-yellow-900" x-text="'Rp ' + Number(dpAmount).toLocaleString('id-ID')"></p>
+                                <p class="text-xs text-yellow-700 mt-1">Sisa dibayar saat pengambilan</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Customer Modal -->
+    <div x-show="showCustomerModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showCustomerModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+                <h3 class="text-xl font-semibold text-slate-900 mb-6">Tambah Customer Baru</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Nama Lengkap</label>
+                        <input type="text" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">No. HP</label>
+                        <input type="tel" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Email</label>
+                        <input type="email" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                </div>
+                <div class="flex space-x-3 mt-6">
+                    <button @click="showCustomerModal = false" class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50">Batal</button>
+                    <button @click="showCustomerModal = false" class="flex-1 px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div x-show="showProductModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showProductModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl">
+                <h3 class="text-xl font-semibold text-slate-900 mb-6">Pilih Produk</h3>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div @click="addProduct({name: 'Nike Mercurial', sku: 'NK-001', price: 35000, qty: 1}); showProductModal = false" 
+                         class="p-4 border-2 border-slate-200 rounded-lg hover:border-slate-900 cursor-pointer transition-colors">
+                        <div class="w-full h-32 bg-slate-100 rounded-lg mb-3"></div>
+                        <h4 class="font-medium text-slate-900">Nike Mercurial</h4>
+                        <p class="text-sm text-slate-500">Size: 42</p>
+                        <p class="text-sm font-semibold text-slate-900 mt-2">Rp 35.000/hari</p>
+                    </div>
+                    <div @click="addProduct({name: 'Adidas Predator', sku: 'AD-001', price: 32000, qty: 1}); showProductModal = false"
+                         class="p-4 border-2 border-slate-200 rounded-lg hover:border-slate-900 cursor-pointer transition-colors">
+                        <div class="w-full h-32 bg-slate-100 rounded-lg mb-3"></div>
+                        <h4 class="font-medium text-slate-900">Adidas Predator</h4>
+                        <p class="text-sm text-slate-500">Size: 41</p>
+                        <p class="text-sm font-semibold text-slate-900 mt-2">Rp 32.000/hari</p>
+                    </div>
+                </div>
+                <button @click="showProductModal = false" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function bookingApp() {
+            return {
+                step: 1,
+                selectedCustomer: '',
+                startDate: '2024-04-15',
+                endDate: '2024-04-17',
+                selectedProducts: [],
+                paymentType: 'dp',
+                dpAmount: 200000,
+                paymentMethod: '',
+                notes: '',
+                showCustomerModal: false,
+                showProductModal: false,
+                
+                get duration() {
+                    if (!this.startDate || !this.endDate) return 0;
+                    const start = new Date(this.startDate);
+                    const end = new Date(this.endDate);
+                    return Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                },
+                
+                addProduct(product) {
+                    this.selectedProducts.push(product);
+                },
+                
+                calculateSubtotal() {
+                    return this.selectedProducts.reduce((total, item) => {
+                        return total + (item.price * item.qty * this.duration);
+                    }, 0);
+                },
+                
+                calculateTotal() {
+                    return this.calculateSubtotal() + 100000; // + deposit
+                },
+                
+                confirmBooking() {
+                    alert('Booking berhasil dibuat!\n\nBooking ID: #BK-003\nTotal: Rp ' + this.calculateTotal().toLocaleString('id-ID') + 
+                          (this.paymentType === 'dp' ? '\nDP Dibayar: Rp ' + this.dpAmount.toLocaleString('id-ID') : '\nStatus: Lunas'));
+                    window.location.href = 'bookings.html';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

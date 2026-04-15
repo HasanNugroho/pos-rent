@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance - POS Rental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50" x-data="maintenanceApp()">    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-slate-200 z-50">
+        <div class="h-16 flex items-center px-6 border-b border-slate-200">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center">
+                    <i class="fas fa-store text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900">POS Rental</h1>
+                    <p class="text-xs text-slate-500">Sepatu Rental</p>
+                </div>
+            </div>
+        </div>
+        <nav class="p-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-chart-line w-5"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="bookings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-calendar-check w-5"></i>
+                <span class="font-medium">Booking</span>
+            </a>
+            <a href="products.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-box w-5"></i>
+                <span class="font-medium">Produk</span>
+            </a>
+            <a href="availability.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-calendar-alt w-5"></i>
+                <span class="font-medium">Ketersediaan</span>
+            </a>
+            <a href="customers.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-users w-5"></i>
+                <span class="font-medium">Customer</span>
+            </a>
+            <a href="maintenance.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-slate-900 text-white">
+                <i class="fas fa-wrench w-5"></i>
+                <span class="font-medium">Maintenance</span>
+            </a>
+            <a href="staff.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-user-tie w-5"></i>
+                <span class="font-medium">Staff</span>
+            </a>
+            <a href="reports.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-chart-bar w-5"></i>
+                <span class="font-medium">Laporan</span>
+            </a>
+            <div class="pt-4 mt-4 border-t border-slate-200">
+                <a href="settings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                    <i class="fas fa-cog w-5"></i>
+                    <span class="font-medium">Pengaturan</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-40">
+            <div class="h-full px-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Manajemen Maintenance</h2>
+                    <p class="text-sm text-slate-500">Kelola perawatan & perbaikan produk</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="p-6 space-y-6">
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Total Maintenance</p>
+                    <p class="text-3xl font-bold text-slate-900">28</p>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">In Progress</p>
+                    <p class="text-3xl font-bold text-yellow-600">5</p>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Scheduled</p>
+                    <p class="text-3xl font-bold text-blue-600">8</p>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Completed</p>
+                    <p class="text-3xl font-bold text-green-600">15</p>
+                </div>
+            </div>
+
+            <!-- Filters & Actions -->
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                    <div class="flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-3">
+                        <select x-model="filterStatus" class="px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            <option value="">Semua Status</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                        <select x-model="filterType" class="px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            <option value="">Semua Jenis</option>
+                            <option value="cleaning">Cuci/Cleaning</option>
+                            <option value="repair">Perbaikan</option>
+                            <option value="inspection">Inspeksi</option>
+                        </select>
+                    </div>
+                    <button @click="openScheduleModal()" class="px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 shadow-sm">
+                        <i class="fas fa-plus mr-2"></i> Schedule Maintenance
+                    </button>
+                </div>
+            </div>
+
+            <!-- Maintenance List -->
+            <div class="space-y-4">
+                <template x-for="maintenance in filteredMaintenance" :key="maintenance.id">
+                    <div class="bg-white rounded-xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-lg transition-all"
+                         :class="{
+                             'border-yellow-300': maintenance.status === 'in_progress',
+                             'border-blue-300': maintenance.status === 'scheduled',
+                             'border-green-300': maintenance.status === 'completed'
+                         }">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <h3 class="text-lg font-bold text-slate-900" x-text="maintenance.id"></h3>
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                          :class="{
+                                              'bg-yellow-100 text-yellow-800': maintenance.status === 'in_progress',
+                                              'bg-blue-100 text-blue-800': maintenance.status === 'scheduled',
+                                              'bg-green-100 text-green-800': maintenance.status === 'completed'
+                                          }"
+                                          x-text="maintenance.status === 'in_progress' ? 'In Progress' : maintenance.status === 'scheduled' ? 'Scheduled' : 'Completed'"></span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700"
+                                          x-text="maintenance.type === 'cleaning' ? 'Cuci' : maintenance.type === 'repair' ? 'Perbaikan' : 'Inspeksi'"></span>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                                    <div>
+                                        <p class="text-xs text-slate-500 mb-1">Produk</p>
+                                        <p class="font-medium text-slate-900" x-text="maintenance.product"></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-slate-500 mb-1">Tanggal</p>
+                                        <p class="font-medium text-slate-900" x-text="maintenance.date"></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-slate-500 mb-1">Durasi</p>
+                                        <p class="font-medium text-slate-900" x-text="maintenance.duration"></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-slate-500 mb-1">Biaya</p>
+                                        <p class="font-medium text-green-600" x-text="'Rp ' + maintenance.cost.toLocaleString('id-ID')"></p>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4" x-show="maintenance.status === 'in_progress'">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <p class="text-sm font-medium text-slate-700">Progress</p>
+                                        <p class="text-sm font-bold text-yellow-600" x-text="maintenance.progress + '%'"></p>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2">
+                                        <div class="bg-yellow-600 h-2 rounded-full transition-all" 
+                                             :style="'width: ' + maintenance.progress + '%'"></div>
+                                    </div>
+                                </div>
+
+                                <p class="text-sm text-slate-600" x-text="maintenance.notes"></p>
+                            </div>
+
+                            <div class="ml-4 flex flex-col space-y-2">
+                                <button @click="viewDetail(maintenance)" class="px-4 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button x-show="maintenance.status === 'in_progress'" @click="updateProgress(maintenance)" 
+                                        class="px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm hover:bg-yellow-700">
+                                    <i class="fas fa-tasks"></i>
+                                </button>
+                                <button x-show="maintenance.status === 'in_progress'" @click="completeMaintenance(maintenance)"
+                                        class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </main>
+    </div>
+
+    <!-- Schedule Maintenance Modal -->
+    <div x-show="showScheduleModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showScheduleModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold text-slate-900">Schedule Maintenance</h3>
+                    <button @click="showScheduleModal = false" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Produk</label>
+                        <select class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            <option>Nike Mercurial - Size 42</option>
+                            <option>Adidas Predator - Size 41</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Jenis Maintenance</label>
+                        <select class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            <option value="cleaning">Cuci/Cleaning</option>
+                            <option value="repair">Perbaikan</option>
+                            <option value="inspection">Inspeksi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Tanggal</label>
+                        <input type="date" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Estimasi Biaya</label>
+                        <input type="number" placeholder="Rp" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Catatan</label>
+                        <textarea rows="3" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex space-x-3 mt-6">
+                    <button @click="showScheduleModal = false" class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50">Batal</button>
+                    <button @click="scheduleMaintenance()" class="flex-1 px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                        <i class="fas fa-calendar-plus mr-2"></i> Schedule
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function maintenanceApp() {
+            return {
+                filterStatus: '',
+                filterType: '',
+                showScheduleModal: false,
+                
+                maintenances: [
+                    { id: 'MAINT-001', product: 'Nike Mercurial Size 42', type: 'cleaning', status: 'scheduled', date: '20 Apr 2024', duration: '1 hari', cost: 50000, progress: 0, notes: 'Cuci dan perawatan rutin sepatu futsal' },
+                    { id: 'MAINT-002', product: 'Adidas Predator Size 41', type: 'repair', status: 'in_progress', date: '15 Apr 2024', duration: '2 hari', cost: 150000, progress: 60, notes: 'Perbaikan sol yang terkelupas' },
+                    { id: 'MAINT-003', product: 'Specs Accelerator Size 43', type: 'cleaning', status: 'completed', date: '10 Apr 2024', duration: '1 hari', cost: 45000, progress: 100, notes: 'Deep cleaning setelah pemakaian intensif' },
+                    { id: 'MAINT-004', product: 'Nike Jordan Size 44', type: 'inspection', status: 'in_progress', date: '16 Apr 2024', duration: '0.5 hari', cost: 0, progress: 80, notes: 'Inspeksi kondisi sebelum disewa' },
+                    { id: 'MAINT-005', product: 'Puma Future Size 42', type: 'repair', status: 'scheduled', date: '22 Apr 2024', duration: '3 hari', cost: 200000, progress: 0, notes: 'Penggantian tali dan perbaikan jahitan' },
+                ],
+                
+                get filteredMaintenance() {
+                    return this.maintenances.filter(m => {
+                        const matchStatus = !this.filterStatus || m.status === this.filterStatus;
+                        const matchType = !this.filterType || m.type === this.filterType;
+                        return matchStatus && matchType;
+                    });
+                },
+                
+                openScheduleModal() {
+                    this.showScheduleModal = true;
+                },
+                
+                scheduleMaintenance() {
+                    alert('Maintenance berhasil dijadwalkan!');
+                    this.showScheduleModal = false;
+                },
+                
+                updateProgress(maintenance) {
+                    const newProgress = prompt('Update progress (0-100):', maintenance.progress);
+                    if (newProgress !== null && newProgress >= 0 && newProgress <= 100) {
+                        maintenance.progress = parseInt(newProgress);
+                    }
+                },
+                
+                completeMaintenance(maintenance) {
+                    if (confirm('Tandai maintenance sebagai selesai?')) {
+                        maintenance.status = 'completed';
+                        maintenance.progress = 100;
+                        alert('Maintenance ditandai sebagai selesai!');
+                    }
+                },
+                
+                viewDetail(maintenance) {
+                    alert('Detail Maintenance:\n\n' + 
+                          'ID: ' + maintenance.id + '\n' +
+                          'Produk: ' + maintenance.product + '\n' +
+                          'Status: ' + maintenance.status);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

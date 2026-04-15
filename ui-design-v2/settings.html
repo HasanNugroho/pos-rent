@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan - POS Rental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50" x-data="settingsApp()">    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-slate-200 z-50">
+        <div class="h-16 flex items-center px-6 border-b border-slate-200">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center">
+                    <i class="fas fa-store text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900">POS Rental</h1>
+                    <p class="text-xs text-slate-500">Sepatu Rental</p>
+                </div>
+            </div>
+        </div>
+        <nav class="p-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-chart-line w-5"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="bookings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-calendar-check w-5"></i>
+                <span class="font-medium">Booking</span>
+            </a>
+            <a href="products.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-box w-5"></i>
+                <span class="font-medium">Produk</span>
+            </a>
+            <a href="availability.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-calendar-alt w-5"></i>
+                <span class="font-medium">Ketersediaan</span>
+            </a>
+            <a href="customers.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-users w-5"></i>
+                <span class="font-medium">Customer</span>
+            </a>
+            <a href="maintenance.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-wrench w-5"></i>
+                <span class="font-medium">Maintenance</span>
+            </a>
+            <a href="staff.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-user-tie w-5"></i>
+                <span class="font-medium">Staff</span>
+            </a>
+            <a href="reports.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-chart-bar w-5"></i>
+                <span class="font-medium">Laporan</span>
+            </a>
+            <div class="pt-4 mt-4 border-t border-slate-200">
+                <a href="settings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-slate-900 text-white">
+                    <i class="fas fa-cog w-5"></i>
+                    <span class="font-medium">Pengaturan</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-40">
+            <div class="h-full px-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Pengaturan</h2>
+                    <p class="text-sm text-slate-500">Kelola profil & konfigurasi sistem</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="p-6">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <!-- Tabs -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
+                    <div class="border-b border-slate-200">
+                        <div class="flex space-x-1 p-2">
+                            <button @click="activeTab = 'profile'" 
+                                    :class="activeTab === 'profile' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50'"
+                                    class="px-4 py-2 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-user mr-2"></i> Profil
+                            </button>
+                            <button @click="activeTab = 'business'" 
+                                    :class="activeTab === 'business' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50'"
+                                    class="px-4 py-2 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-building mr-2"></i> Bisnis
+                            </button>
+                            <button @click="activeTab = 'payment'" 
+                                    :class="activeTab === 'payment' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50'"
+                                    class="px-4 py-2 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-credit-card mr-2"></i> Pembayaran
+                            </button>
+                            <button @click="activeTab = 'notifications'" 
+                                    :class="activeTab === 'notifications' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50'"
+                                    class="px-4 py-2 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-bell mr-2"></i> Notifikasi
+                            </button>
+                            <button @click="activeTab = 'outlet'" 
+                                    :class="activeTab === 'outlet' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50'"
+                                    class="px-4 py-2 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-store mr-2"></i> Outlet
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Profile Tab -->
+                    <div x-show="activeTab === 'profile'" class="p-6 space-y-6">
+                        <div class="flex items-center space-x-6 mb-6">
+                            <img src="https://ui-avatars.com/api/?name=Pak+Budi&background=0F172A&color=fff&size=128" 
+                                 class="w-24 h-24 rounded-full ring-4 ring-slate-200">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900">Pak Budi</h3>
+                                <p class="text-slate-500">Owner</p>
+                                <button class="mt-2 px-4 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50">
+                                    Ganti Foto
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Nama Lengkap</label>
+                                <input type="text" value="Pak Budi" 
+                                       class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Email</label>
+                                <input type="email" value="budi@sepatu-rental.com"
+                                       class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">No. HP</label>
+                                <input type="tel" value="08123456789"
+                                       class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Role</label>
+                                <input type="text" value="Owner" disabled
+                                       class="w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-500">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-200">
+                            <button class="px-6 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                                <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Business Tab -->
+                    <div x-show="activeTab === 'business'" class="p-6 space-y-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Nama Bisnis</label>
+                                <input type="text" value="Sepatu Rental Premium"
+                                       class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Alamat</label>
+                                <textarea rows="3"
+                                          class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">Jl. Sudirman No. 123, Jakarta Selatan</textarea>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">No. Telepon</label>
+                                    <input type="tel" value="021-7654321"
+                                           class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Email Bisnis</label>
+                                    <input type="email" value="info@sepatu-rental.com"
+                                           class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-200">
+                            <button class="px-6 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                                <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Payment Tab -->
+                    <div x-show="activeTab === 'payment'" class="p-6 space-y-6">
+                        <div class="space-y-4">
+                            <h3 class="font-semibold text-slate-900 mb-4">Metode Pembayaran Aktif</h3>
+                            
+                            <label class="flex items-center space-x-3 p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-900">
+                                <input type="checkbox" checked class="w-5 h-5 rounded border-slate-300 text-slate-900">
+                                <div class="flex-1">
+                                    <p class="font-medium text-slate-900">Tunai</p>
+                                    <p class="text-sm text-slate-500">Terima pembayaran cash</p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center space-x-3 p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-900">
+                                <input type="checkbox" checked class="w-5 h-5 rounded border-slate-300 text-slate-900">
+                                <div class="flex-1">
+                                    <p class="font-medium text-slate-900">Transfer Bank</p>
+                                    <p class="text-sm text-slate-500">BCA - 123456789 (Pak Budi)</p>
+                                </div>
+                                <button class="text-sm text-blue-600 hover:text-blue-700">Edit</button>
+                            </label>
+
+                            <label class="flex items-center space-x-3 p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-900">
+                                <input type="checkbox" checked class="w-5 h-5 rounded border-slate-300 text-slate-900">
+                                <div class="flex-1">
+                                    <p class="font-medium text-slate-900">QRIS</p>
+                                    <p class="text-sm text-slate-500">Scan QR untuk bayar</p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center space-x-3 p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-slate-900">
+                                <input type="checkbox" class="w-5 h-5 rounded border-slate-300 text-slate-900">
+                                <div class="flex-1">
+                                    <p class="font-medium text-slate-900">E-Wallet</p>
+                                    <p class="text-sm text-slate-500">GoPay, OVO, Dana, dll</p>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-200">
+                            <button class="px-6 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                                <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Tab -->
+                    <div x-show="activeTab === 'notifications'" class="p-6 space-y-6">
+                        <div class="space-y-4">
+                            <h3 class="font-semibold text-slate-900 mb-4">Pengaturan Notifikasi</h3>
+                            
+                            <div class="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-slate-900">Booking Baru</p>
+                                    <p class="text-sm text-slate-500">Notifikasi saat ada booking baru</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-900"></div>
+                                </label>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-slate-900">Pembayaran</p>
+                                    <p class="text-sm text-slate-500">Notifikasi pembayaran masuk</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-900"></div>
+                                </label>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-slate-900">Reminder Return</p>
+                                    <p class="text-sm text-slate-500">H-1 sebelum customer return</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-900"></div>
+                                </label>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-slate-900">Overdue</p>
+                                    <p class="text-sm text-slate-500">Notifikasi customer terlambat</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-900"></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-200">
+                            <button class="px-6 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                                <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Outlet Configuration Tab -->
+                    <div x-show="activeTab === 'outlet'" class="p-6 space-y-6">
+                        <!-- Categories Management -->
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="font-semibold text-slate-900">Kategori Produk</h3>
+                                    <p class="text-sm text-slate-500">Kelola kategori untuk mengorganisir produk</p>
+                                </div>
+                                <button @click="showAddCategoryModal = true" class="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 text-sm">
+                                    <i class="fas fa-plus mr-2"></i> Tambah Kategori
+                                </button>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <template x-for="category in categories" :key="category.id">
+                                    <div class="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:border-slate-900 transition-colors">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+                                                 :style="'background-color: ' + category.color + '20; color: ' + category.color">
+                                                <i :class="category.icon"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-slate-900" x-text="category.name"></p>
+                                                <p class="text-sm text-slate-500" x-text="category.count + ' produk'"></p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <button @click="editCategory(category)" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button @click="deleteCategory(category)" class="p-2 text-red-600 hover:bg-red-50 rounded-lg">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Custom Fields -->
+                        <div class="pt-6 border-t border-slate-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="font-semibold text-slate-900">Custom Fields Produk</h3>
+                                    <p class="text-sm text-slate-500">Field tambahan untuk detail produk</p>
+                                </div>
+                                <button @click="showAddFieldModal = true" class="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 text-sm">
+                                    <i class="fas fa-plus mr-2"></i> Tambah Field
+                                </button>
+                            </div>
+
+                            <div class="space-y-2">
+                                <template x-for="field in customFields" :key="field.id">
+                                    <div class="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3">
+                                                <p class="font-medium text-slate-900" x-text="field.label"></p>
+                                                <span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded" x-text="field.type"></span>
+                                                <span x-show="field.required" class="px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded">Required</span>
+                                            </div>
+                                            <p class="text-sm text-slate-500 mt-1" x-text="field.description"></p>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input type="checkbox" :checked="field.active" class="sr-only peer">
+                                                <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-slate-900"></div>
+                                            </label>
+                                            <button @click="editField(field)" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button @click="deleteField(field)" class="p-2 text-red-600 hover:bg-red-50 rounded-lg">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Tax & Fees -->
+                        <div class="pt-6 border-t border-slate-200">
+                            <h3 class="font-semibold text-slate-900 mb-4">Pajak & Biaya Tambahan</h3>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">PPN (%)</label>
+                                        <input type="number" value="11" step="0.1"
+                                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Service Charge (%)</label>
+                                        <input type="number" value="5" step="0.1"
+                                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-slate-900">
+                                        <span class="text-sm text-slate-700">Tampilkan breakdown pajak di invoice</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Rules -->
+                        <div class="pt-6 border-t border-slate-200">
+                            <h3 class="font-semibold text-slate-900 mb-4">Aturan Booking</h3>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Min. Durasi Sewa (hari)</label>
+                                        <input type="number" value="1" min="1"
+                                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Max. Durasi Sewa (hari)</label>
+                                        <input type="number" value="30"
+                                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Min. DP (%)</label>
+                                        <input type="number" value="30" min="0" max="100"
+                                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Denda Keterlambatan (Rp/hari)</label>
+                                        <input type="number" value="50000"
+                                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-slate-900">
+                                        <span class="text-sm text-slate-700">Auto-reminder H-1 sebelum return</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Operating Hours -->
+                        <div class="pt-6 border-t border-slate-200">
+                            <h3 class="font-semibold text-slate-900 mb-4">Jam Operasional</h3>
+                            <div class="space-y-3">
+                                <template x-for="day in operatingHours" :key="day.name">
+                                    <div class="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
+                                        <div class="flex items-center space-x-3">
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input type="checkbox" :checked="day.open" class="sr-only peer">
+                                                <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-slate-900"></div>
+                                            </label>
+                                            <span class="font-medium text-slate-900 w-24" x-text="day.name"></span>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <input type="time" :value="day.open_time" :disabled="!day.open"
+                                                   class="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 disabled:bg-slate-50 disabled:text-slate-400">
+                                            <span class="text-slate-500">-</span>
+                                            <input type="time" :value="day.close_time" :disabled="!day.open"
+                                                   class="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 disabled:bg-slate-50 disabled:text-slate-400">
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-200">
+                            <button class="px-6 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                                <i class="fas fa-save mr-2"></i> Simpan Semua Perubahan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="bg-white rounded-xl border-2 border-red-200 p-6">
+                    <h3 class="text-lg font-bold text-red-900 mb-4">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        Danger Zone
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-slate-900">Hapus Akun</p>
+                                <p class="text-sm text-slate-500">Permanen, tidak dapat dibatalkan</p>
+                            </div>
+                            <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                                Hapus Akun
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div x-show="showAddCategoryModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showAddCategoryModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold text-slate-900">Tambah Kategori</h3>
+                    <button @click="showAddCategoryModal = false" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Nama Kategori</label>
+                        <input type="text" placeholder="Contoh: Sepatu Futsal"
+                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Icon (Font Awesome)</label>
+                        <input type="text" placeholder="fas fa-futbol"
+                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Warna</label>
+                        <input type="color" value="#6366f1"
+                               class="w-full h-12 px-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                </div>
+
+                <div class="flex space-x-3 mt-6">
+                    <button @click="showAddCategoryModal = false" class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50">Batal</button>
+                    <button @click="saveCategory()" class="flex-1 px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                        <i class="fas fa-save mr-2"></i> Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Custom Field Modal -->
+    <div x-show="showAddFieldModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showAddFieldModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold text-slate-900">Tambah Custom Field</h3>
+                    <button @click="showAddFieldModal = false" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Label Field</label>
+                        <input type="text" placeholder="Contoh: Ukuran"
+                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Tipe Field</label>
+                        <select class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            <option value="text">Text</option>
+                            <option value="number">Number</option>
+                            <option value="select">Dropdown</option>
+                            <option value="textarea">Text Area</option>
+                            <option value="date">Date</option>
+                            <option value="checkbox">Checkbox</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Deskripsi (opsional)</label>
+                        <textarea rows="2" placeholder="Informasi tentang field ini..."
+                                  class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"></textarea>
+                    </div>
+                    <div>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-slate-900">
+                            <span class="text-sm text-slate-700">Field wajib diisi</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex space-x-3 mt-6">
+                    <button @click="showAddFieldModal = false" class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50">Batal</button>
+                    <button @click="saveField()" class="flex-1 px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                        <i class="fas fa-save mr-2"></i> Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function settingsApp() {
+            return {
+                activeTab: 'profile',
+                showAddCategoryModal: false,
+                showAddFieldModal: false,
+                
+                categories: [
+                    { id: 1, name: 'Sepatu Futsal', icon: 'fas fa-futbol', color: '#6366f1', count: 42 },
+                    { id: 2, name: 'Sepatu Basket', icon: 'fas fa-basketball-ball', color: '#f97316', count: 28 },
+                    { id: 3, name: 'Sepatu Running', icon: 'fas fa-running', color: '#22c55e', count: 35 },
+                    { id: 4, name: 'Sepatu Hiking', icon: 'fas fa-hiking', color: '#a855f7', count: 15 },
+                ],
+                
+                customFields: [
+                    { id: 1, label: 'Ukuran', type: 'number', description: 'Ukuran sepatu (EU)', required: true, active: true },
+                    { id: 2, label: 'Warna', type: 'select', description: 'Pilihan warna produk', required: false, active: true },
+                    { id: 3, label: 'Brand', type: 'text', description: 'Merek sepatu', required: true, active: true },
+                    { id: 4, label: 'Tahun Produksi', type: 'number', description: 'Tahun pembuatan', required: false, active: false },
+                ],
+                
+                operatingHours: [
+                    { name: 'Senin', open: true, open_time: '09:00', close_time: '21:00' },
+                    { name: 'Selasa', open: true, open_time: '09:00', close_time: '21:00' },
+                    { name: 'Rabu', open: true, open_time: '09:00', close_time: '21:00' },
+                    { name: 'Kamis', open: true, open_time: '09:00', close_time: '21:00' },
+                    { name: 'Jumat', open: true, open_time: '09:00', close_time: '22:00' },
+                    { name: 'Sabtu', open: true, open_time: '08:00', close_time: '23:00' },
+                    { name: 'Minggu', open: true, open_time: '08:00', close_time: '23:00' },
+                ],
+                
+                editCategory(category) {
+                    alert('Edit kategori: ' + category.name);
+                    this.showAddCategoryModal = true;
+                },
+                
+                deleteCategory(category) {
+                    if (confirm('Hapus kategori ' + category.name + '?\n\n' + category.count + ' produk akan menjadi tanpa kategori.')) {
+                        alert('Kategori berhasil dihapus!');
+                    }
+                },
+                
+                saveCategory() {
+                    alert('Kategori berhasil ditambahkan!');
+                    this.showAddCategoryModal = false;
+                },
+                
+                editField(field) {
+                    alert('Edit field: ' + field.label);
+                    this.showAddFieldModal = true;
+                },
+                
+                deleteField(field) {
+                    if (confirm('Hapus custom field "' + field.label + '"?')) {
+                        alert('Custom field berhasil dihapus!');
+                    }
+                },
+                
+                saveField() {
+                    alert('Custom field berhasil ditambahkan!');
+                    this.showAddFieldModal = false;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

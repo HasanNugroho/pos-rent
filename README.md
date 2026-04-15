@@ -28,6 +28,39 @@ Dokumentasi lengkap produk ada di file-file berikut:
    - Dependencies
    - Architecture diagram
 
+5. **[USER_STORIES.md](./USER_STORIES.md)** - User stories & use cases
+   - User personas
+   - Detailed user stories
+   - Acceptance criteria
+   - Edge cases
+
+6. **[PERMISSIONS_LIST.md](./PERMISSIONS_LIST.md)** - Permissions & role mapping
+   - All permissions list
+   - Default role permissions
+   - Permission matrix
+   - Custom role examples
+
+7. **[DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)** - Development guide
+   - Setup environment
+   - Project structure
+   - Testing & deployment
+
+8. **[ui-design/](./ui-design/)** - UI/UX Design mockups (HTML)
+   - Complete HTML pages dengan dummy data
+   - Login, Dashboard, Products, Bookings, Customers, Maintenance
+   - Responsive design dengan TailwindCSS
+   - [View Demo](./ui-design/index.html)
+
+9. **[ui-design-v2/](./ui-design-v2/)** - UI/UX Design V2 (RECOMMENDED) ⭐
+   - **Shadcn-style design** - Modern, clean, professional
+   - **SEMUA FITUR BERFUNGSI** - Buttons, modals, forms
+   - **DP & Pelunasan System** - Bayar DP dulu, pelunasan saat ambil
+   - **Calendar Availability** - Kalender ketersediaan per produk
+   - **Staff Management** - CRUD staff dengan permissions
+   - **3-Step Booking Flow** - Customer → Produk → Pembayaran
+   - Full Alpine.js interactivity
+   - [View Demo](./ui-design-v2/index.html)
+
 ---
 
 ## ✨ Key Features

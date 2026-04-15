@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscriptions - Super Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50" x-data="adminSubscriptionsApp()">
+    <!-- Sidebar Superadmin -->
+    <aside class="fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-purple-900 to-indigo-900 border-r border-purple-800 z-50">
+        <div class="h-16 flex items-center px-6 border-b border-purple-800">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-yellow-400 flex items-center justify-center">
+                    <i class="fas fa-crown text-purple-900"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-white">Super Admin</h1>
+                    <p class="text-xs text-purple-200">POS Rental System</p>
+                </div>
+            </div>
+        </div>
+        <nav class="p-4 space-y-1">
+            <a href="admin-dashboard.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10">
+                <i class="fas fa-chart-pie w-5"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="admin-outlets.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10">
+                <i class="fas fa-store-alt w-5"></i>
+                <span class="font-medium">Outlets</span>
+            </a>
+            <a href="admin-users.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10">
+                <i class="fas fa-users-cog w-5"></i>
+                <span class="font-medium">Users</span>
+            </a>
+            <a href="admin-subscriptions.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-white bg-opacity-20 text-white">
+                <i class="fas fa-credit-card w-5"></i>
+                <span class="font-medium">Subscriptions</span>
+            </a>
+            <a href="admin-reports.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10">
+                <i class="fas fa-file-invoice w-5"></i>
+                <span class="font-medium">Reports</span>
+            </a>
+            <div class="pt-4 mt-4 border-t border-purple-800">
+                <a href="admin-settings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10">
+                    <i class="fas fa-cog w-5"></i>
+                    <span class="font-medium">Settings</span>
+                </a>
+                <a href="login.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span class="font-medium">Logout</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-40">
+            <div class="h-full px-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Subscription Management</h2>
+                    <p class="text-sm text-slate-500">Billing & subscription tracking</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="p-6 space-y-6">
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 shadow-lg text-white">
+                    <p class="text-sm font-medium opacity-90 mb-2">Active</p>
+                    <p class="text-3xl font-bold mb-1">98</p>
+                    <p class="text-xs opacity-75">Rp 18.2M MRR</p>
+                </div>
+                <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-6 shadow-lg text-white">
+                    <p class="text-sm font-medium opacity-90 mb-2">Trial</p>
+                    <p class="text-3xl font-bold mb-1">15</p>
+                    <p class="text-xs opacity-75">14 days left avg</p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 shadow-lg text-white">
+                    <p class="text-sm font-medium opacity-90 mb-2">Expiring Soon</p>
+                    <p class="text-3xl font-bold mb-1">8</p>
+                    <p class="text-xs opacity-75">Next 7 days</p>
+                </div>
+                <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-6 shadow-lg text-white">
+                    <p class="text-sm font-medium opacity-90 mb-2">Expired</p>
+                    <p class="text-3xl font-bold mb-1">6</p>
+                    <p class="text-xs opacity-75">Need follow up</p>
+                </div>
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 shadow-lg text-white">
+                    <p class="text-sm font-medium opacity-90 mb-2">Total MRR</p>
+                    <p class="text-3xl font-bold mb-1">Rp 18.2M</p>
+                    <p class="text-xs opacity-75">+12% vs last month</p>
+                </div>
+            </div>
+
+            <!-- Plans Overview -->
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <h3 class="text-lg font-semibold text-slate-900 mb-6">Subscription Plans</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- Trial Plan -->
+                    <div class="border-2 border-slate-200 rounded-xl p-6 hover:border-yellow-400 transition-all">
+                        <div class="mb-4">
+                            <h4 class="text-lg font-bold text-slate-900">Trial</h4>
+                            <p class="text-3xl font-bold text-yellow-600 mt-2">Free</p>
+                            <p class="text-sm text-slate-500">14 hari</p>
+                        </div>
+                        <div class="text-center py-4 bg-yellow-50 rounded-lg">
+                            <p class="text-2xl font-bold text-yellow-900">15</p>
+                            <p class="text-xs text-yellow-700">outlets</p>
+                        </div>
+                    </div>
+
+                    <!-- Basic Plan -->
+                    <div class="border-2 border-blue-200 rounded-xl p-6 hover:border-blue-400 transition-all">
+                        <div class="mb-4">
+                            <h4 class="text-lg font-bold text-slate-900">Basic</h4>
+                            <p class="text-3xl font-bold text-blue-600 mt-2">Rp 99K</p>
+                            <p class="text-sm text-slate-500">per bulan</p>
+                        </div>
+                        <div class="text-center py-4 bg-blue-50 rounded-lg">
+                            <p class="text-2xl font-bold text-blue-900">42</p>
+                            <p class="text-xs text-blue-700">outlets</p>
+                        </div>
+                    </div>
+
+                    <!-- Pro Plan -->
+                    <div class="border-2 border-purple-200 rounded-xl p-6 hover:border-purple-400 transition-all bg-gradient-to-br from-purple-50 to-indigo-50">
+                        <div class="mb-4">
+                            <h4 class="text-lg font-bold text-slate-900 flex items-center">
+                                Pro
+                                <span class="ml-2 px-2 py-0.5 bg-purple-600 text-white text-xs rounded-full">Popular</span>
+                            </h4>
+                            <p class="text-3xl font-bold text-purple-600 mt-2">Rp 199K</p>
+                            <p class="text-sm text-slate-500">per bulan</p>
+                        </div>
+                        <div class="text-center py-4 bg-purple-100 rounded-lg">
+                            <p class="text-2xl font-bold text-purple-900">48</p>
+                            <p class="text-xs text-purple-700">outlets</p>
+                        </div>
+                    </div>
+
+                    <!-- Enterprise Plan -->
+                    <div class="border-2 border-slate-300 rounded-xl p-6 hover:border-slate-600 transition-all">
+                        <div class="mb-4">
+                            <h4 class="text-lg font-bold text-slate-900">Enterprise</h4>
+                            <p class="text-3xl font-bold text-slate-900 mt-2">Rp 499K</p>
+                            <p class="text-sm text-slate-500">per bulan</p>
+                        </div>
+                        <div class="text-center py-4 bg-slate-100 rounded-lg">
+                            <p class="text-2xl font-bold text-slate-900">8</p>
+                            <p class="text-xs text-slate-700">outlets</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                    <div class="flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-3">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" placeholder="Cari outlet..." 
+                                   x-model="searchQuery"
+                                   class="w-full lg:w-64 pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                        </div>
+                        <select x-model="filterPlan" class="px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                            <option value="">Semua Plan</option>
+                            <option value="trial">Trial</option>
+                            <option value="basic">Basic</option>
+                            <option value="pro">Pro</option>
+                            <option value="enterprise">Enterprise</option>
+                        </select>
+                        <select x-model="filterStatus" class="px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                            <option value="">Semua Status</option>
+                            <option value="active">Active</option>
+                            <option value="expiring">Expiring Soon</option>
+                            <option value="expired">Expired</option>
+                        </select>
+                    </div>
+                    <button class="px-4 py-2.5 border-2 border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50">
+                        <i class="fas fa-download mr-2"></i> Export Billing
+                    </button>
+                </div>
+            </div>
+
+            <!-- Subscriptions Table -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50 border-b border-slate-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Outlet</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Plan</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Price</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Next Billing</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <template x-for="sub in filteredSubscriptions" :key="sub.id">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <p class="font-medium text-slate-900" x-text="sub.outlet"></p>
+                                            <p class="text-sm text-slate-500" x-text="sub.outletId"></p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                              :class="{
+                                                  'bg-yellow-100 text-yellow-800': sub.plan === 'trial',
+                                                  'bg-blue-100 text-blue-800': sub.plan === 'basic',
+                                                  'bg-purple-100 text-purple-800': sub.plan === 'pro',
+                                                  'bg-slate-100 text-slate-800': sub.plan === 'enterprise'
+                                              }"
+                                              x-text="sub.plan.toUpperCase()"></span>
+                                    </td>
+                                    <td class="px-6 py-4 font-semibold text-slate-900" x-text="sub.price"></td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                              :class="{
+                                                  'bg-green-100 text-green-800': sub.status === 'active',
+                                                  'bg-yellow-100 text-yellow-800': sub.status === 'expiring',
+                                                  'bg-red-100 text-red-800': sub.status === 'expired'
+                                              }"
+                                              x-text="sub.status === 'active' ? 'Active' : sub.status === 'expiring' ? 'Expiring' : 'Expired'"></span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm" x-text="sub.nextBilling"></td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex space-x-2">
+                                            <button @click="viewInvoice(sub)" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="View Invoice">
+                                                <i class="fas fa-file-invoice"></i>
+                                            </button>
+                                            <button @click="upgradePlan(sub)" class="p-2 text-green-600 hover:bg-green-50 rounded-lg" title="Upgrade">
+                                                <i class="fas fa-arrow-up"></i>
+                                            </button>
+                                            <button @click="cancelSubscription(sub)" class="p-2 text-red-600 hover:bg-red-50 rounded-lg" title="Cancel">
+                                                <i class="fas fa-times-circle"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function adminSubscriptionsApp() {
+            return {
+                searchQuery: '',
+                filterPlan: '',
+                filterStatus: '',
+                
+                subscriptions: [
+                    { id: 1, outlet: 'Sepatu Premium Jakarta', outletId: 'OUT-001', plan: 'pro', price: 'Rp 199K', status: 'active', nextBilling: '15 May 2024' },
+                    { id: 2, outlet: 'Sport Rental Bandung', outletId: 'OUT-002', plan: 'pro', price: 'Rp 199K', status: 'active', nextBilling: '20 May 2024' },
+                    { id: 3, outlet: 'Quick Shoes Surabaya', outletId: 'OUT-003', plan: 'trial', price: 'Free', status: 'active', nextBilling: '18 Apr 2024' },
+                    { id: 4, outlet: 'Rental Express Jogja', outletId: 'OUT-004', plan: 'basic', price: 'Rp 99K', status: 'expiring', nextBilling: '16 Apr 2024' },
+                    { id: 5, outlet: 'Fast Rent Semarang', outletId: 'OUT-005', plan: 'trial', price: 'Free', status: 'active', nextBilling: '22 Apr 2024' },
+                    { id: 6, outlet: 'Pro Rental Bali', outletId: 'OUT-006', plan: 'enterprise', price: 'Rp 499K', status: 'expired', nextBilling: '10 Apr 2024' },
+                ],
+                
+                get filteredSubscriptions() {
+                    return this.subscriptions.filter(s => {
+                        const matchSearch = !this.searchQuery || 
+                            s.outlet.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                            s.outletId.toLowerCase().includes(this.searchQuery.toLowerCase());
+                        const matchPlan = !this.filterPlan || s.plan === this.filterPlan;
+                        const matchStatus = !this.filterStatus || s.status === this.filterStatus;
+                        return matchSearch && matchPlan && matchStatus;
+                    });
+                },
+                
+                viewInvoice(sub) {
+                    alert('View Invoice:\n\n' + sub.outlet + '\nPlan: ' + sub.plan.toUpperCase() + '\nAmount: ' + sub.price);
+                },
+                
+                upgradePlan(sub) {
+                    alert('Upgrade plan untuk: ' + sub.outlet + '\n\nPilih plan baru (Basic/Pro/Enterprise)');
+                },
+                
+                cancelSubscription(sub) {
+                    if (confirm('Cancel subscription untuk ' + sub.outlet + '?\n\nOutlet akan kehilangan akses setelah billing period berakhir.')) {
+                        alert('Subscription dibatalkan! Email konfirmasi akan dikirim.');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

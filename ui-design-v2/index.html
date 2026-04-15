@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Rental - UI Design V2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-24 h-24 bg-slate-900 rounded-3xl mb-6 shadow-xl">
+                <i class="fas fa-store text-white text-4xl"></i>
+            </div>
+            <h1 class="text-5xl font-bold text-slate-900 mb-3">POS Rental</h1>
+            <p class="text-xl text-slate-600 mb-2">Complete UI/UX Design V2</p>
+            <p class="text-sm text-slate-500">Shadcn-Style • Full Functional • DP System • Modals</p>
+        </div>
+
+        <!-- Features Badge -->
+        <div class="max-w-4xl mx-auto mb-12">
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-lg">
+                <h2 class="text-lg font-bold text-slate-900 mb-4">✨ Fitur Utama</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="text-center p-3 bg-green-50 rounded-lg">
+                        <i class="fas fa-check-circle text-green-600 text-2xl mb-2"></i>
+                        <p class="text-xs font-medium text-green-900">Shadcn Style</p>
+                    </div>
+                    <div class="text-center p-3 bg-blue-50 rounded-lg">
+                        <i class="fas fa-wallet text-blue-600 text-2xl mb-2"></i>
+                        <p class="text-xs font-medium text-blue-900">DP & Pelunasan</p>
+                    </div>
+                    <div class="text-center p-3 bg-purple-50 rounded-lg">
+                        <i class="fas fa-calendar-alt text-purple-600 text-2xl mb-2"></i>
+                        <p class="text-xs font-medium text-purple-900">Calendar Availability</p>
+                    </div>
+                    <div class="text-center p-3 bg-yellow-50 rounded-lg">
+                        <i class="fas fa-user-tie text-yellow-600 text-2xl mb-2"></i>
+                        <p class="text-xs font-medium text-yellow-900">Staff Management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Super Admin Section -->
+        <div class="max-w-6xl mx-auto mb-12">
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-8 text-white mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-yellow-400 rounded-xl">
+                        <i class="fas fa-crown text-purple-900 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold">🔐 Super Admin Panel</h2>
+                        <p class="text-purple-100">Multi-tenant system management</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a href="admin-dashboard.html" class="group bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border-2 border-purple-200 p-6 shadow-sm hover:shadow-xl hover:border-purple-600 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-purple-600 rounded-xl">
+                            <i class="fas fa-chart-pie text-white text-2xl"></i>
+                        </div>
+                        <i class="fas fa-arrow-right text-purple-400 group-hover:text-purple-900 transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-purple-900 mb-2">Admin Dashboard</h3>
+                    <p class="text-sm text-purple-700">System monitoring & analytics</p>
+                </a>
+
+                <a href="admin-outlets.html" class="group bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border-2 border-purple-200 p-6 shadow-sm hover:shadow-xl hover:border-purple-600 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-indigo-600 rounded-xl">
+                            <i class="fas fa-store-alt text-white text-2xl"></i>
+                        </div>
+                        <i class="fas fa-arrow-right text-purple-400 group-hover:text-purple-900 transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-purple-900 mb-2">Manage Outlets</h3>
+                    <p class="text-sm text-purple-700">CRUD outlets/tenants</p>
+                </a>
+
+                <a href="admin-users.html" class="group bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border-2 border-purple-200 p-6 shadow-sm hover:shadow-xl hover:border-purple-600 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-blue-600 rounded-xl">
+                            <i class="fas fa-users-cog text-white text-2xl"></i>
+                        </div>
+                        <i class="fas fa-arrow-right text-purple-400 group-hover:text-purple-900 transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-purple-900 mb-2">Manage Users</h3>
+                    <p class="text-sm text-purple-700">All users across outlets</p>
+                </a>
+
+                <a href="admin-subscriptions.html" class="group bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border-2 border-purple-200 p-6 shadow-sm hover:shadow-xl hover:border-purple-600 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-green-600 rounded-xl">
+                            <i class="fas fa-credit-card text-white text-2xl"></i>
+                        </div>
+                        <i class="fas fa-arrow-right text-purple-400 group-hover:text-purple-900 transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-purple-900 mb-2">Subscriptions</h3>
+                    <p class="text-sm text-purple-700">Billing & plan management</p>
+                </a>
+
+                <a href="admin-reports.html" class="group bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border-2 border-purple-200 p-6 shadow-sm hover:shadow-xl hover:border-purple-600 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-red-600 rounded-xl">
+                            <i class="fas fa-file-invoice text-white text-2xl"></i>
+                        </div>
+                        <i class="fas fa-arrow-right text-purple-400 group-hover:text-purple-900 transition-colors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-purple-900 mb-2">System Reports</h3>
+                    <p class="text-sm text-purple-700">Analytics & insights</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="border-t-2 border-slate-200"></div>
+            <h2 class="text-center -mt-4 mx-auto w-fit px-4 bg-slate-50 text-lg font-semibold text-slate-600">Outlet/Tenant Pages</h2>
+        </div>
+
+        <!-- Navigation Grid -->
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <!-- Auth -->
+            <a href="login.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-slate-100 rounded-xl group-hover:bg-slate-900 transition-colors">
+                        <i class="fas fa-lock text-slate-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Login</h3>
+                <p class="text-sm text-slate-600">Halaman login dengan demo accounts</p>
+            </a>
+
+            <!-- Dashboard -->
+            <a href="dashboard.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-green-100 rounded-xl group-hover:bg-green-600 transition-colors">
+                        <i class="fas fa-chart-line text-green-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Dashboard</h3>
+                <p class="text-sm text-slate-600">Metrics, charts, quick actions</p>
+            </a>
+
+            <!-- Products -->
+            <a href="products.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-purple-100 rounded-xl group-hover:bg-purple-600 transition-colors">
+                        <i class="fas fa-box text-purple-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Produk</h3>
+                <p class="text-sm text-slate-600">Katalog produk dengan modals</p>
+            </a>
+
+            <!-- Availability Calendar -->
+            <a href="availability.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-blue-100 rounded-xl group-hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-calendar-alt text-blue-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Ketersediaan</h3>
+                <p class="text-sm text-slate-600">Kalender availability per produk</p>
+            </a>
+
+            <!-- Bookings -->
+            <a href="bookings.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-yellow-100 rounded-xl group-hover:bg-yellow-600 transition-colors">
+                        <i class="fas fa-calendar-check text-yellow-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Booking</h3>
+                <p class="text-sm text-slate-600">List booking dengan DP system</p>
+            </a>
+
+            <!-- Booking Create -->
+            <a href="booking-create.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-indigo-100 rounded-xl group-hover:bg-indigo-600 transition-colors">
+                        <i class="fas fa-plus-circle text-indigo-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Booking Baru</h3>
+                <p class="text-sm text-slate-600">3-step form: Customer, Produk, Pembayaran</p>
+            </a>
+
+            <!-- Staff Management -->
+            <a href="staff.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-pink-100 rounded-xl group-hover:bg-pink-600 transition-colors">
+                        <i class="fas fa-user-tie text-pink-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Staff</h3>
+                <p class="text-sm text-slate-600">Kelola staff & permissions</p>
+            </a>
+
+            <!-- Register -->
+            <a href="register.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-green-100 rounded-xl group-hover:bg-green-600 transition-colors">
+                        <i class="fas fa-user-plus text-green-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Register</h3>
+                <p class="text-sm text-slate-600">Form registrasi tenant baru</p>
+            </a>
+
+            <!-- Customers -->
+            <a href="customers.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-teal-100 rounded-xl group-hover:bg-teal-600 transition-colors">
+                        <i class="fas fa-users text-teal-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Customers</h3>
+                <p class="text-sm text-slate-600">Database customer & statistik</p>
+            </a>
+
+            <!-- Maintenance -->
+            <a href="maintenance.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-orange-100 rounded-xl group-hover:bg-orange-600 transition-colors">
+                        <i class="fas fa-wrench text-orange-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Maintenance</h3>
+                <p class="text-sm text-slate-600">Jadwal & tracking perawatan</p>
+            </a>
+
+            <!-- Reports -->
+            <a href="reports.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-red-100 rounded-xl group-hover:bg-red-600 transition-colors">
+                        <i class="fas fa-chart-bar text-red-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Laporan</h3>
+                <p class="text-sm text-slate-600">Laporan lengkap per bulan/tahun</p>
+            </a>
+
+            <!-- Settings -->
+            <a href="settings.html" class="group bg-white rounded-2xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-xl hover:border-slate-900 transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-gray-100 rounded-xl group-hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-cog text-gray-600 group-hover:text-white text-2xl transition-colors"></i>
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Pengaturan</h3>
+                <p class="text-sm text-slate-600">Profil, bisnis, pembayaran, notifikasi</p>
+            </a>
+        </div>
+
+        <!-- Technical Details -->
+        <div class="max-w-4xl mx-auto bg-white rounded-2xl border border-slate-200 p-8 shadow-lg">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">🚀 Technical Stack</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <h3 class="font-semibold text-slate-900 mb-3">Frontend</h3>
+                    <ul class="space-y-2 text-sm text-slate-600">
+                        <li><i class="fas fa-check text-green-600 mr-2"></i> TailwindCSS 3.0 (CDN)</li>
+                        <li><i class="fas fa-check text-green-600 mr-2"></i> Alpine.js 3.x</li>
+                        <li><i class="fas fa-check text-green-600 mr-2"></i> Font Awesome 6.4</li>
+                        <li><i class="fas fa-check text-green-600 mr-2"></i> Chart.js</li>
+                        <li><i class="fas fa-check text-green-600 mr-2"></i> Inter Font</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-slate-900 mb-3">Features</h3>
+                    <ul class="space-y-2 text-sm text-slate-600">
+                        <li><i class="fas fa-check text-green-600 mr-2"></i> Shadcn-inspired design</li>
+                        <li><i class="fas fa-check text-green-600 mr-2"></i> Fully functional modals</li>
+                        <li><i class="fas fa-check text-green-600 mr-2"></i> DP & Pelunasan system</li>
+                        <li><i class="fas fa-check text-green-600 mr-2"></i> Interactive calendar</li>
+                        <li><i class="fas fa-check text-green-600 mr-2"></i> Staff management</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 rounded-xl p-6">
+                <h3 class="font-semibold text-slate-900 mb-3">✨ Yang Sudah Berfungsi</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check-circle text-green-600 mt-0.5"></i>
+                        <span class="text-slate-700">Semua tombol membuka page/modal</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check-circle text-green-600 mt-0.5"></i>
+                        <span class="text-slate-700">Form add/edit berfungsi</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check-circle text-green-600 mt-0.5"></i>
+                        <span class="text-slate-700">Filter & search aktif</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check-circle text-green-600 mt-0.5"></i>
+                        <span class="text-slate-700">Booking flow 3-step</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check-circle text-green-600 mt-0.5"></i>
+                        <span class="text-slate-700">DP & pelunasan saat ambil</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check-circle text-green-600 mt-0.5"></i>
+                        <span class="text-slate-700">Calendar ketersediaan</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check-circle text-green-600 mt-0.5"></i>
+                        <span class="text-slate-700">Staff CRUD dengan permissions</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check-circle text-green-600 mt-0.5"></i>
+                        <span class="text-slate-700">Responsive design</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 text-slate-600">
+            <p class="text-sm">&copy; 2026 POS Rental UI Design V2</p>
+            <p class="text-xs mt-2">Built with TailwindCSS, Alpine.js, Chart.js & Font Awesome</p>
+        </div>
+    </div>
+</body>
+</html>

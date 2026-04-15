@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ketersediaan Produk - POS Rental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50" x-data="availabilityApp()">    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-slate-200 z-50">
+        <div class="h-16 flex items-center px-6 border-b border-slate-200">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center">
+                    <i class="fas fa-store text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900">POS Rental</h1>
+                    <p class="text-xs text-slate-500">Sepatu Rental</p>
+                </div>
+            </div>
+        </div>
+        <nav class="p-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-chart-line w-5"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="bookings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-calendar-check w-5"></i>
+                <span class="font-medium">Booking</span>
+            </a>
+            <a href="products.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-box w-5"></i>
+                <span class="font-medium">Produk</span>
+            </a>
+            <a href="availability.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-slate-900 text-white">
+                <i class="fas fa-calendar-alt w-5"></i>
+                <span class="font-medium">Ketersediaan</span>
+            </a>
+            <a href="customers.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-users w-5"></i>
+                <span class="font-medium">Customer</span>
+            </a>
+            <a href="maintenance.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-wrench w-5"></i>
+                <span class="font-medium">Maintenance</span>
+            </a>
+            <a href="staff.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-user-tie w-5"></i>
+                <span class="font-medium">Staff</span>
+            </a>
+            <a href="reports.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i class="fas fa-chart-bar w-5"></i>
+                <span class="font-medium">Laporan</span>
+            </a>
+            <div class="pt-4 mt-4 border-t border-slate-200">
+                <a href="settings.html" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100">
+                    <i class="fas fa-cog w-5"></i>
+                    <span class="font-medium">Pengaturan</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-40">
+            <div class="h-full px-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Kalender Ketersediaan</h2>
+                    <p class="text-sm text-slate-500">Lihat ketersediaan produk per tanggal</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="p-6 space-y-6">
+            <!-- Filters -->
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                    <div class="flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-3">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" placeholder="Cari produk..." 
+                                   x-model="searchQuery"
+                                   class="w-full lg:w-64 pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        </div>
+                        <select x-model="selectedCategory" class="px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            <option value="">Semua Kategori</option>
+                            <option value="futsal">Sepatu Futsal</option>
+                            <option value="basket">Sepatu Basket</option>
+                            <option value="running">Sepatu Running</option>
+                        </select>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button @click="currentMonth--; loadCalendar()" class="px-4 py-2.5 border border-slate-200 rounded-lg hover:bg-slate-50">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="px-6 py-2.5 border border-slate-200 rounded-lg bg-slate-50">
+                            <span class="font-semibold text-slate-900" x-text="monthNames[currentMonth] + ' 2024'"></span>
+                        </div>
+                        <button @click="currentMonth++; loadCalendar()" class="px-4 py-2.5 border border-slate-200 rounded-lg hover:bg-slate-50">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <div class="flex flex-wrap items-center gap-6">
+                    <span class="text-sm font-bold text-slate-900">Keterangan Warna:</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-green-100 border-2 border-green-400 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-check text-green-800 text-xs"></i>
+                        </div>
+                        <span class="text-sm font-medium text-slate-700">Tersedia Banyak</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-orange-100 border-2 border-orange-400 rounded-lg flex items-center justify-center">
+                            <span class="text-orange-800 text-xs font-bold">!</span>
+                        </div>
+                        <span class="text-sm font-medium text-slate-700">Stock Terbatas</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-red-200 border-2 border-red-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-ban text-red-900 text-xs"></i>
+                        </div>
+                        <span class="text-sm font-medium text-slate-700">Habis / Dibooking</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-yellow-200 border-2 border-yellow-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-wrench text-yellow-900 text-xs"></i>
+                        </div>
+                        <span class="text-sm font-medium text-slate-700">Maintenance</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <!-- Products List -->
+                <template x-for="(product, index) in filteredProducts" :key="product.id">
+                    <div class="border-b border-slate-200 last:border-b-0">
+                        <div class="p-4 bg-slate-50 flex items-center justify-between cursor-pointer hover:bg-slate-100" 
+                             @click="product.expanded = !product.expanded">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-slate-200 rounded-lg"></div>
+                                <div>
+                                    <h3 class="font-semibold text-slate-900" x-text="product.name"></h3>
+                                    <p class="text-sm text-slate-500">
+                                        Stock: <span class="font-medium" x-text="product.stock"></span> unit • 
+                                        SKU: <span x-text="product.sku"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-sm text-slate-500">
+                                    <span class="font-medium" x-text="product.available"></span> tersedia
+                                </span>
+                                <i class="fas fa-chevron-down transition-transform" 
+                                   :class="product.expanded ? 'rotate-180' : ''"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Calendar for this product -->
+                        <div x-show="product.expanded" x-collapse class="p-6">
+                            <div class="max-w-2xl mx-auto">
+                                <!-- Day headers -->
+                                <div class="grid grid-cols-7 gap-1.5 mb-2">
+                                    <template x-for="day in ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']">
+                                        <div class="text-center text-xs font-semibold text-slate-600 py-1" x-text="day"></div>
+                                    </template>
+                                </div>
+                                
+                                <!-- Calendar days -->
+                                <div class="grid grid-cols-7 gap-1.5">
+                                <template x-for="day in calendarDays" :key="day.date">
+                                    <div @click="openDayDetail(product, day)" 
+                                         class="aspect-square border-2 rounded-lg p-2 cursor-pointer transition-all hover:shadow-lg hover:scale-105"
+                                         :class="{
+                                             'border-green-400 bg-green-100': day.available >= product.stock * 0.7 && day.currentMonth && !day.maintenance,
+                                             'border-yellow-500 bg-yellow-200': day.maintenance && day.currentMonth,
+                                             'border-red-500 bg-red-200': day.available === 0 && !day.maintenance && day.currentMonth,
+                                             'border-orange-400 bg-orange-100': day.available > 0 && day.available < product.stock * 0.7 && !day.maintenance && day.currentMonth,
+                                             'border-slate-200 bg-slate-50 opacity-40': !day.currentMonth
+                                         }">
+                                        <div class="text-xs font-bold" 
+                                             :class="{
+                                                 'text-green-900': day.available >= product.stock * 0.7 && day.currentMonth && !day.maintenance,
+                                                 'text-yellow-900': day.maintenance && day.currentMonth,
+                                                 'text-red-900': day.available === 0 && !day.maintenance && day.currentMonth,
+                                                 'text-orange-900': day.available > 0 && day.available < product.stock * 0.7 && !day.maintenance && day.currentMonth,
+                                                 'text-slate-400': !day.currentMonth
+                                             }" 
+                                             x-text="day.day"></div>
+                                        <div class="text-xs mt-1 font-semibold">
+                                            <template x-if="day.maintenance && day.currentMonth">
+                                                <div class="text-yellow-900 flex items-center justify-center">
+                                                    <i class="fas fa-wrench text-sm"></i>
+                                                </div>
+                                            </template>
+                                            <template x-if="!day.maintenance && day.currentMonth">
+                                                <div :class="{
+                                                    'text-green-800': day.available >= product.stock * 0.7,
+                                                    'text-orange-800': day.available > 0 && day.available < product.stock * 0.7,
+                                                    'text-red-800': day.available === 0
+                                                }">
+                                                    <template x-if="day.available === 0">
+                                                        <div class="text-center">
+                                                            <i class="fas fa-ban text-sm"></i>
+                                                            <div class="text-[10px]">Habis</div>
+                                                        </div>
+                                                    </template>
+                                                    <template x-if="day.available > 0">
+                                                        <div class="text-center" x-text="day.available + '/' + product.stock"></div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </main>
+    </div>
+
+    <!-- Day Detail Modal -->
+    <div x-show="showDayModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showDayModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold text-slate-900" x-text="selectedDay ? selectedDay.date : ''"></h3>
+                    <button @click="showDayModal = false" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-4" x-show="selectedProduct && selectedDay">
+                    <div class="flex items-center space-x-4 p-4 bg-slate-50 rounded-lg">
+                        <div class="w-16 h-16 bg-slate-200 rounded-lg"></div>
+                        <div>
+                            <h4 class="font-semibold text-slate-900" x-text="selectedProduct?.name"></h4>
+                            <p class="text-sm text-slate-500" x-text="'SKU: ' + selectedProduct?.sku"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Status Alert -->
+                    <template x-if="selectedDay?.maintenance">
+                        <div class="p-4 bg-yellow-100 border-2 border-yellow-500 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-wrench text-yellow-900 text-2xl"></i>
+                                <div>
+                                    <p class="font-bold text-yellow-900">Sedang Maintenance</p>
+                                    <p class="text-sm text-yellow-800">Produk tidak tersedia untuk disewa pada tanggal ini</p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <template x-if="selectedDay?.available === 0 && !selectedDay?.maintenance">
+                        <div class="p-4 bg-red-100 border-2 border-red-500 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-ban text-red-900 text-2xl"></i>
+                                <div>
+                                    <p class="font-bold text-red-900">Fully Booked</p>
+                                    <p class="text-sm text-red-800">Semua unit sudah dibooking pada tanggal ini</p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 border-2 rounded-lg"
+                             :class="selectedDay?.maintenance ? 'border-yellow-300 bg-yellow-50' : 'border-slate-200'">
+                            <p class="text-sm text-slate-500 mb-1">Total Stock</p>
+                            <p class="text-2xl font-bold text-slate-900" x-text="selectedProduct?.stock"></p>
+                        </div>
+                        <div class="p-4 border-2 rounded-lg"
+                             :class="{
+                                 'border-green-300 bg-green-50': selectedDay?.available > 0 && !selectedDay?.maintenance,
+                                 'border-red-300 bg-red-50': selectedDay?.available === 0 && !selectedDay?.maintenance,
+                                 'border-yellow-300 bg-yellow-50': selectedDay?.maintenance
+                             }">
+                            <p class="text-sm text-slate-500 mb-1">Tersedia</p>
+                            <p class="text-2xl font-bold" 
+                               :class="{
+                                   'text-green-600': selectedDay?.available > 0 && !selectedDay?.maintenance,
+                                   'text-red-600': selectedDay?.available === 0 && !selectedDay?.maintenance,
+                                   'text-yellow-800': selectedDay?.maintenance
+                               }"
+                               x-text="selectedDay?.available"></p>
+                        </div>
+                    </div>
+                    
+                    <template x-if="!selectedDay?.maintenance && selectedDay?.available < selectedProduct?.stock">
+                        <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <p class="text-sm font-medium text-blue-900 mb-2">
+                                <i class="fas fa-calendar-check mr-2"></i>Booking Aktif
+                            </p>
+                            <ul class="space-y-2">
+                                <li class="text-sm text-blue-800 flex items-center">
+                                    <i class="fas fa-user w-4 mr-2"></i>#BK-001 - Ahmad Rizki (2 unit)
+                                </li>
+                                <li class="text-sm text-blue-800 flex items-center">
+                                    <i class="fas fa-user w-4 mr-2"></i>#BK-002 - Siti N. (1 unit)
+                                </li>
+                            </ul>
+                        </div>
+                    </template>
+                    
+                    <button @click="showDayModal = false; window.location.href='booking-create.html'" 
+                            class="w-full px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                        <i class="fas fa-plus mr-2"></i> Buat Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function availabilityApp() {
+            return {
+                searchQuery: '',
+                selectedCategory: '',
+                currentMonth: 3, // April (0-indexed)
+                monthNames: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+                showDayModal: false,
+                selectedProduct: null,
+                selectedDay: null,
+                
+                products: [
+                    { id: 1, name: 'Nike Mercurial', sku: 'NK-001', stock: 5, available: 3, expanded: true },
+                    { id: 2, name: 'Adidas Predator', sku: 'AD-001', stock: 4, available: 1, expanded: false },
+                    { id: 3, name: 'Specs Accelerator', sku: 'SP-001', stock: 6, available: 5, expanded: false },
+                    { id: 4, name: 'Puma Future', sku: 'PM-001', stock: 3, available: 0, expanded: false },
+                ],
+                
+                get filteredProducts() {
+                    return this.products.filter(p => {
+                        const matchSearch = !this.searchQuery || p.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+                        return matchSearch;
+                    });
+                },
+                
+                get calendarDays() {
+                    // Generate calendar days for current month
+                    const year = 2024;
+                    const month = this.currentMonth;
+                    const firstDay = new Date(year, month, 1).getDay();
+                    const daysInMonth = new Date(year, month + 1, 0).getDate();
+                    
+                    const days = [];
+                    
+                    // Previous month days
+                    for (let i = firstDay - 1; i >= 0; i--) {
+                        const prevMonth = month - 1;
+                        const prevMonthDays = new Date(year, month, 0).getDate();
+                        days.push({
+                            day: prevMonthDays - i,
+                            date: `${prevMonthDays - i} ${this.monthNames[prevMonth < 0 ? 11 : prevMonth]}`,
+                            available: Math.floor(Math.random() * 6),
+                            maintenance: false,
+                            currentMonth: false
+                        });
+                    }
+                    
+                    // Current month days dengan data realistis
+                    const bookedDates = [12, 13, 14, 18, 19, 25, 26]; // Tanggal yang fully booked
+                    const maintenanceDates = [10, 20, 27]; // Tanggal maintenance
+                    const limitedDates = [16, 17, 22, 23, 24]; // Tanggal dengan stock terbatas
+                    
+                    for (let i = 1; i <= daysInMonth; i++) {
+                        const isMaintenance = maintenanceDates.includes(i);
+                        const isBooked = bookedDates.includes(i);
+                        const isLimited = limitedDates.includes(i);
+                        
+                        let available;
+                        if (isMaintenance) {
+                            available = 0;
+                        } else if (isBooked) {
+                            available = 0; // Fully booked
+                        } else if (isLimited) {
+                            available = 1; // Hanya 1 tersedia
+                        } else if (i < new Date().getDate() && month === 3) {
+                            // Past dates - random booking
+                            available = Math.floor(Math.random() * 4);
+                        } else {
+                            // Future dates - mostly available
+                            available = Math.floor(Math.random() * 3) + 3; // 3-5 available
+                        }
+                        
+                        days.push({
+                            day: i,
+                            date: `${i} ${this.monthNames[month]} 2024`,
+                            available: available,
+                            maintenance: isMaintenance,
+                            booked: isBooked,
+                            currentMonth: true
+                        });
+                    }
+                    
+                    // Next month days to fill grid
+                    const remainingDays = 42 - days.length; // 6 rows * 7 days
+                    for (let i = 1; i <= remainingDays; i++) {
+                        days.push({
+                            day: i,
+                            date: `${i} ${this.monthNames[(month + 1) % 12]}`,
+                            available: Math.floor(Math.random() * 6),
+                            maintenance: false,
+                            currentMonth: false
+                        });
+                    }
+                    
+                    return days;
+                },
+                
+                loadCalendar() {
+                    // Trigger reactivity
+                    if (this.currentMonth < 0) this.currentMonth = 11;
+                    if (this.currentMonth > 11) this.currentMonth = 0;
+                },
+                
+                openDayDetail(product, day) {
+                    if (!day.currentMonth) return;
+                    this.selectedProduct = product;
+                    this.selectedDay = day;
+                    this.showDayModal = true;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
