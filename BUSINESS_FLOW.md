@@ -520,6 +520,7 @@ Revenue Streams:
 
 ### For Customers (Rental Payment)
 
+#### Standard Rental Calculation
 ```
 ┌────────────────────────────────────────┐
 │  BOOKING AMOUNT CALCULATION            │
@@ -536,14 +537,53 @@ Revenue Streams:
 │  ────────────────────────────────────  │
 │  TOTAL           = Rp 450,000          │
 └────────────────────────────────────────┘
+```
 
-Payment Timeline:
+#### Flexible Pickup & Return (Semua Rental) ⭐ NEW
+```
+┌────────────────────────────────────────┐
+│  RENTAL DENGAN CUSTOM PICKUP/RETURN    │
+├────────────────────────────────────────┤
+│  Periode Sewa    = 2-10 Apr 2026 (9d)  │
+│  Pickup Custom   = 1 Apr, 16:00 📅     │
+│  Return Custom   = 11 Apr, 09:00 📅    │
+│  ────────────────────────────────────  │
+│  Base Price      = Rp 75,000/day       │
+│  Duration        = 9 days ✓            │
+│  Quantity        = 1 unit              │
+│  ────────────────────────────────────  │
+│  Subtotal        = 75,000 × 9 × 1      │
+│                  = Rp 675,000          │
+│  Deposit         = Rp 200,000          │
+│  ────────────────────────────────────  │
+│  TOTAL           = Rp 875,000          │
+│  ────────────────────────────────────  │
+│  BLOCKED DATES   = 1-11 Apr (11 hari)  │
+│  (11 hari di-block, charge 9 hari)    │
+└────────────────────────────────────────┘
+
+Timeline:
+├── Booking:  31 Mar, pay DP
+├── Pickup:   1 Apr, 16:00 (Custom) 📅
+├── Rental:   2-10 Apr (9 hari) ← Charge
+├── Return:   11 Apr, 09:00 (Custom) 📅
+└── Charge:   9 hari, Block: 11 hari!
+
+Benefits:
+✓ Berlaku untuk SEMUA durasi rental (1d, 2d, 9d, dst)
+✓ Customer tentukan sendiri waktu pickup/return
+✓ Fleksibilitas penuh (tidak terbatas jam tertentu)
+✓ Charge sesuai periode sewa yang dipilih
+✓ Availability blocking akurat (full days)
+✓ Default: Pickup = Start date 09:00, Return = End date 17:00
+```
+
+**Payment Timeline**:
 1. DP paid: When booking confirmed
 2. Remaining: When pickup
 3. Additional fees: When return (if any)
-   - Late fee: Rp X/day
+   - Late fee: Rp X/day (dari return deadline)
    - Damage fee: Varies
-```
 
 ### For Outlets (Subscription Billing)
 

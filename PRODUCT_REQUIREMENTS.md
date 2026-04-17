@@ -265,6 +265,7 @@ role:assign
 - Tanggal & jam rental (start/end)
 - Actual pickup date/time
 - Actual return date/time
+- Rental type: Standard / 1 Hari Fleksibel ⭐ NEW
 - Kondisi barang saat pickup
 - Kondisi barang saat return
 - Total biaya
@@ -273,6 +274,42 @@ role:assign
 - Late fees (jika ada)
 - Notes/catatan
 - Photos (saat pickup & return)
+```
+
+#### Rental 1 Hari Fleksibel ⭐ NEW FEATURE
+**Use Case**: Customer sewa produk untuk event 1 hari tapi butuh fleksibilitas pickup & return
+
+**Fitur**:
+- Toggle "Rental 1 Hari Fleksibel" saat create booking
+- **Hanya untuk rental 1 hari** (tidak bisa multi-hari)
+- Sistem auto-set:
+  - Tanggal Sewa: Tanggal event/acara (contoh: 18 Apr)
+  - Pickup Window: H-1 sore (17 Apr, 16:00-21:00)
+  - Return Deadline: H+1 pagi (19 Apr, 07:00-12:00)
+- **Harga tetap 1 hari** meskipun produk di customer ~36 jam
+- Availability blocking: ~1.5 hari (sore H-1 + full H + pagi H+1)
+
+**Business Benefits**:
+- Meningkatkan kepuasan customer (fleksibilitas waktu)
+- Tetap charge 1 hari (revenue tidak berkurang)
+- Ideal untuk event: pernikahan, acara formal, pemotretan, dll
+- Competitive advantage
+
+**Calculation Example**:
+```
+Tanggal Sewa: 18 Apr 2026
+├── Pickup: 17 Apr, 18:00 ✓
+├── Event: 18 Apr (full day)
+└── Return: 19 Apr, 10:00 ✓
+
+Duration di customer: ~40 jam
+Charge: 1 hari × Rp 50.000 = Rp 50.000 ✓
+Deposit: Rp 200.000
+Total: Rp 250.000
+
+VS Standard Rental 3 hari:
+17-19 Apr = 3 hari × Rp 50.000 = Rp 150.000 ❌
+(Customer hanya pakai 1 hari tapi bayar 3 hari)
 ```
 
 #### Check-in (Pickup)

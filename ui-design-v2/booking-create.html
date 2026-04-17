@@ -162,6 +162,57 @@
                                         Durasi: <span class="font-semibold" x-text="duration"></span> hari
                                     </p>
                                 </div>
+
+                                <!-- Custom Pickup & Return (Always Available) -->
+                                <div class="mt-4 border-2 border-slate-200 rounded-xl p-5 bg-white">
+                                    <div class="flex items-center space-x-2 mb-4">
+                                        <i class="fas fa-calendar-alt text-slate-700"></i>
+                                        <span class="font-semibold text-slate-900">Waktu Pickup & Return</span>
+                                        <span class="text-xs text-slate-500">(Opsional - ada default)</span>
+                                    </div>
+                                    
+                                    <div class="space-y-4">
+                                        <!-- Custom Pickup -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                                <i class="fas fa-arrow-down text-green-600 mr-1"></i> Waktu Pickup
+                                            </label>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <input type="date" x-model="pickupDate" 
+                                                       class="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white">
+                                                <input type="time" x-model="pickupTime" 
+                                                       class="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white">
+                                            </div>
+                                            <p class="text-xs text-slate-500 mt-1">Default: <span class="font-semibold" x-text="startDate + ' 09:00'"></span></p>
+                                        </div>
+                                        
+                                        <!-- Custom Return -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                                <i class="fas fa-arrow-up text-red-600 mr-1"></i> Waktu Return
+                                            </label>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <input type="date" x-model="returnDate" 
+                                                       class="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white">
+                                                <input type="time" x-model="returnTime" 
+                                                       class="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white">
+                                            </div>
+                                            <p class="text-xs text-slate-500 mt-1">Default: <span class="font-semibold" x-text="endDate + ' 17:00'"></span></p>
+                                        </div>
+                                        
+                                        <!-- Info Summary -->
+                                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
+                                            <div class="flex items-start space-x-2">
+                                                <i class="fas fa-info-circle text-blue-600 mt-0.5"></i>
+                                                <div class="text-blue-800">
+                                                    <div class="font-semibold mb-1">Availability Blocking:</div>
+                                                    <div class="text-xs">Barang di-block dari <span class="font-semibold" x-text="pickupDate"></span> sampai <span class="font-semibold" x-text="returnDate"></span></div>
+                                                    <div class="text-xs mt-1">Charge: <strong x-text="duration"></strong> hari (<span x-text="startDate + ' - ' + endDate"></span>)</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Product Selection -->
@@ -281,8 +332,31 @@
                                     <span class="font-medium" x-text="startDate && endDate ? startDate + ' - ' + endDate : '-'"></span>
                                 </div>
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-slate-600">Durasi</span>
-                                    <span class="font-medium" x-text="duration + ' hari'"></span>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-slate-500">Durasi</span>
+                                        <span class="font-medium" x-text="duration + ' hari'"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pickup/Return Info in Summary -->
+                            <div class="mb-6 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                <p class="text-xs font-semibold text-slate-700 mb-2">
+                                    <i class="fas fa-calendar-alt mr-1"></i> Pickup & Return
+                                </p>
+                                <div class="space-y-1.5 text-xs text-slate-600">
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-arrow-down text-green-600 w-3"></i>
+                                        <span>Pickup: <span class="font-semibold" x-text="pickupDate + ' ' + pickupTime"></span></span>
+                                    </div>
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-arrow-up text-red-600 w-3"></i>
+                                        <span>Return: <span class="font-semibold" x-text="returnDate + ' ' + returnTime"></span></span>
+                                    </div>
+                                    <div class="pt-1.5 mt-1.5 border-t border-slate-200 text-[10px]">
+                                        <div><i class="fas fa-ban mr-1"></i>Blocked: <strong x-text="getBlockedDaysCount()"></strong> hari</div>
+                                        <div><i class="fas fa-money-bill mr-1"></i>Charge: <strong x-text="duration"></strong> hari</div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -386,8 +460,8 @@
             return {
                 step: 1,
                 selectedCustomer: '',
-                startDate: '2024-04-15',
-                endDate: '2024-04-17',
+                startDate: '2024-04-02',
+                endDate: '2024-04-10',
                 selectedProducts: [],
                 paymentType: 'dp',
                 dpAmount: 200000,
@@ -395,12 +469,42 @@
                 notes: '',
                 showCustomerModal: false,
                 showProductModal: false,
+                pickupDate: '2024-04-01',  // Default: 1 day before
+                pickupTime: '16:00',
+                returnDate: '2024-04-11',   // Default: 1 day after
+                returnTime: '09:00',
                 
                 get duration() {
                     if (!this.startDate || !this.endDate) return 0;
                     const start = new Date(this.startDate);
                     const end = new Date(this.endDate);
                     return Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                },
+
+                getPickupWindow() {
+                    if (!this.pickupDate || !this.pickupTime) return '-';
+                    return this.pickupDate + ' ' + this.pickupTime;
+                },
+
+                getReturnDeadline() {
+                    if (!this.returnDate || !this.returnTime) return '-';
+                    return this.returnDate + ' ' + this.returnTime;
+                },
+
+                getBlockedDaysCount() {
+                    if (!this.pickupDate || !this.returnDate) return 0;
+                    const pickup = new Date(this.pickupDate);
+                    const returnD = new Date(this.returnDate);
+                    return Math.ceil((returnD - pickup) / (1000 * 60 * 60 * 24)) + 1;
+                },
+                
+                hasCustomSchedule() {
+                    // Check if pickup/return is different from default
+                    const defaultPickup = this.startDate + ' 09:00';
+                    const defaultReturn = this.endDate + ' 17:00';
+                    const currentPickup = this.pickupDate + ' ' + this.pickupTime;
+                    const currentReturn = this.returnDate + ' ' + this.returnTime;
+                    return currentPickup !== defaultPickup || currentReturn !== defaultReturn;
                 },
                 
                 addProduct(product) {
@@ -418,8 +522,16 @@
                 },
                 
                 confirmBooking() {
-                    alert('Booking berhasil dibuat!\n\nBooking ID: #BK-003\nTotal: Rp ' + this.calculateTotal().toLocaleString('id-ID') + 
-                          (this.paymentType === 'dp' ? '\nDP Dibayar: Rp ' + this.dpAmount.toLocaleString('id-ID') : '\nStatus: Lunas'));
+                    let message = 'Booking berhasil dibuat!\n\n';
+                    message += 'Booking ID: #BK-005\n';
+                    message += 'Periode Sewa: ' + this.startDate + ' - ' + this.endDate + ' (' + this.duration + ' hari)\n';
+                    message += '\n📅 Pickup: ' + this.pickupDate + ' jam ' + this.pickupTime + '\n';
+                    message += '📅 Return: ' + this.returnDate + ' jam ' + this.returnTime + '\n';
+                    message += '\n🚫 Blocked: ' + this.getBlockedDaysCount() + ' hari (' + this.pickupDate + ' s/d ' + this.returnDate + ')\n';
+                    message += '💰 Charge: ' + this.duration + ' hari\n';
+                    message += '\nTotal: Rp ' + this.calculateTotal().toLocaleString('id-ID');
+                    message += (this.paymentType === 'dp' ? '\nDP Dibayar: Rp ' + this.dpAmount.toLocaleString('id-ID') : '\nStatus: Lunas');
+                    alert(message);
                     window.location.href = 'bookings.html';
                 }
             }

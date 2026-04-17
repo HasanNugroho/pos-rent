@@ -12,7 +12,7 @@
         * { font-family: 'Inter', sans-serif; }
         [x-cloak] { display: none !important; }
     </style>
-</head>
+</head>F
 <body class="bg-slate-50" x-data="bookingsApp()">
     <!-- Sidebar (sama seperti sebelumnya) -->
     <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-slate-200 z-50">
@@ -83,26 +83,22 @@
         <!-- Content -->
         <main class="p-6 space-y-6">
             <!-- Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-                    <p class="text-sm font-medium text-slate-500">Total</p>
+                    <p class="text-sm font-medium text-slate-500">Total Booking</p>
                     <p class="text-2xl font-bold text-slate-900 mt-1">156</p>
                 </div>
                 <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-                    <p class="text-sm font-medium text-slate-500">Active</p>
-                    <p class="text-2xl font-bold text-green-600 mt-1">24</p>
-                </div>
-                <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-                    <p class="text-sm font-medium text-slate-500">Confirmed</p>
+                    <p class="text-sm font-medium text-slate-500">Dikonfirmasi</p>
                     <p class="text-2xl font-bold text-blue-600 mt-1">12</p>
                 </div>
                 <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-                    <p class="text-sm font-medium text-slate-500">Overdue</p>
-                    <p class="text-2xl font-bold text-red-600 mt-1">3</p>
+                    <p class="text-sm font-medium text-slate-500">Aktif</p>
+                    <p class="text-2xl font-bold text-green-600 mt-1">24</p>
                 </div>
                 <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-                    <p class="text-sm font-medium text-slate-500">Completed</p>
-                    <p class="text-2xl font-bold text-slate-600 mt-1">117</p>
+                    <p class="text-sm font-medium text-slate-500">Selesai</p>
+                    <p class="text-2xl font-bold text-slate-600 mt-1">120</p>
                 </div>
             </div>
 
@@ -118,10 +114,9 @@
                         </div>
                         <select x-model="filterStatus" class="px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
                             <option value="">Semua Status</option>
-                            <option value="active">Active</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="overdue">Overdue</option>
-                            <option value="completed">Completed</option>
+                            <option value="confirmed">Dikonfirmasi</option>
+                            <option value="active">Aktif</option>
+                            <option value="completed">Selesai</option>
                         </select>
                     </div>
                 </div>
@@ -146,9 +141,15 @@
                         <tbody class="divide-y divide-slate-200">
                             <template x-for="booking in filteredBookings" :key="booking.id">
                                 <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <p class="text-sm font-semibold text-slate-900" x-text="booking.id"></p>
-                                        <p class="text-xs text-slate-500" x-text="booking.date"></p>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-medium text-slate-900" x-text="booking.id"></span>
+                                            <template x-if="booking.hasCustomSchedule">
+                                                <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-semibold">
+                                                    <i class="fas fa-calendar-alt mr-1"></i>Custom
+                                                </span>
+                                            </template>
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <p class="text-sm font-medium text-slate-900" x-text="booking.customer"></p>
@@ -178,21 +179,37 @@
                                     <td class="px-6 py-4">
                                         <span class="px-2.5 py-1 rounded-full text-xs font-semibold"
                                               :class="{
-                                                  'bg-green-100 text-green-800': booking.status === 'active',
                                                   'bg-blue-100 text-blue-800': booking.status === 'confirmed',
-                                                  'bg-red-100 text-red-800': booking.status === 'overdue',
+                                                  'bg-green-100 text-green-800': booking.status === 'active',
                                                   'bg-slate-100 text-slate-800': booking.status === 'completed'
                                               }"
-                                              x-text="booking.status.charAt(0).toUpperCase() + booking.status.slice(1)"></span>
+                                              x-text="booking.status === 'confirmed' ? 'Dikonfirmasi' : booking.status === 'active' ? 'Aktif' : 'Selesai'"></span>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center space-x-2">
-                                            <button @click="viewBooking(booking)" class="p-2 hover:bg-slate-100 rounded-lg">
+                                            <!-- Detail - Semua Status -->
+                                            <button @click="viewBooking(booking)" class="p-2 hover:bg-slate-100 rounded-lg" title="Lihat Detail">
                                                 <i class="fas fa-eye text-slate-600"></i>
                                             </button>
-                                            <template x-if="booking.paymentType === 'dp' && booking.status !== 'completed'">
-                                                <button @click="processPayment(booking)" class="p-2 hover:bg-green-50 rounded-lg">
-                                                    <i class="fas fa-money-bill-wave text-green-600"></i>
+                                            
+                                            <!-- Edit - Hanya Dikonfirmasi -->
+                                            <template x-if="booking.status === 'confirmed'">
+                                                <button @click="editBooking(booking)" class="p-2 hover:bg-blue-50 rounded-lg" title="Edit">
+                                                    <i class="fas fa-edit text-blue-600"></i>
+                                                </button>
+                                            </template>
+                                            
+                                            <!-- Pickup - Hanya Dikonfirmasi -->
+                                            <template x-if="booking.status === 'confirmed'">
+                                                <button @click="processPickup(booking)" class="p-2 hover:bg-purple-50 rounded-lg" title="Proses Pickup">
+                                                    <i class="fas fa-box-open text-purple-600"></i>
+                                                </button>
+                                            </template>
+                                            
+                                            <!-- Return - Hanya Aktif -->
+                                            <template x-if="booking.status === 'active'">
+                                                <button @click="processReturn(booking)" class="p-2 hover:bg-orange-50 rounded-lg" title="Proses Return">
+                                                    <i class="fas fa-undo text-orange-600"></i>
                                                 </button>
                                             </template>
                                         </div>
@@ -288,7 +305,14 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="p-4 bg-slate-50 rounded-lg">
                             <p class="text-sm text-slate-500 mb-1">Booking ID</p>
-                            <p class="font-semibold text-slate-900" x-text="selectedBooking?.id"></p>
+                            <div class="flex items-center space-x-2">
+                                <p class="font-semibold text-slate-900" x-text="selectedBooking?.id"></p>
+                                <template x-if="selectedBooking?.isFlexible">
+                                    <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-semibold">
+                                        <i class="fas fa-clock"></i> 1H Fleksibel
+                                    </span>
+                                </template>
+                            </div>
                         </div>
                         <div class="p-4 bg-slate-50 rounded-lg">
                             <p class="text-sm text-slate-500 mb-1">Status</p>
@@ -306,6 +330,50 @@
                         <p class="text-sm font-medium text-slate-700 mb-3">Customer</p>
                         <p class="font-semibold text-slate-900" x-text="selectedBooking?.customer"></p>
                         <p class="text-sm text-slate-500" x-text="selectedBooking?.phone"></p>
+                    </div>
+
+                    <!-- Rental Schedule Info (Always Show) -->
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <i class="fas fa-calendar-alt text-slate-700"></i>
+                            <p class="text-sm font-semibold text-slate-900">Jadwal Pickup & Return</p>
+                            <template x-if="selectedBooking?.hasCustomSchedule">
+                                <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-semibold">Custom</span>
+                            </template>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-calendar-day text-slate-600 mt-0.5 w-4"></i>
+                                <div>
+                                    <p class="text-xs text-slate-500">Periode Sewa</p>
+                                    <p class="font-semibold text-slate-900" x-text="selectedBooking?.period + ' (' + selectedBooking?.duration + ' hari)'"></p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-arrow-down text-green-600 mt-0.5 w-4"></i>
+                                <div>
+                                    <p class="text-xs text-green-700">Waktu Pickup</p>
+                                    <p class="font-semibold text-green-900" x-text="selectedBooking?.pickupDatetime"></p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-arrow-up text-red-600 mt-0.5 w-4"></i>
+                                <div>
+                                    <p class="text-xs text-red-700">Waktu Return</p>
+                                    <p class="font-semibold text-red-900" x-text="selectedBooking?.returnDatetime"></p>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-slate-200 space-y-1">
+                                <p class="text-xs text-slate-600">
+                                    <i class="fas fa-ban mr-1"></i>
+                                    Blocked: <strong x-text="selectedBooking?.blockedDays"></strong>
+                                </p>
+                                <p class="text-xs text-slate-600">
+                                    <i class="fas fa-money-bill mr-1"></i>
+                                    Charge: <strong x-text="selectedBooking?.duration + ' hari'"></strong>
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="p-4 border border-slate-200 rounded-lg">
@@ -344,6 +412,454 @@
         </div>
     </div>
 
+    <!-- Edit Booking Modal -->
+    <div x-show="showEditModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showEditModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-3xl shadow-xl max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold text-slate-900">Edit Booking</h3>
+                    <button @click="showEditModal = false" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-6" x-show="editForm">
+                    <!-- Booking Info -->
+                    <div class="grid grid-cols-2 gap-4 p-4 bg-slate-50 rounded-lg">
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Booking ID</p>
+                            <p class="font-semibold text-slate-900" x-text="editForm?.id"></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Customer</p>
+                            <p class="font-semibold text-slate-900" x-text="editForm?.customer"></p>
+                        </div>
+                    </div>
+
+                    <!-- Date Selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Periode Rental</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">Tanggal Mulai</label>
+                                <input type="date" x-model="editForm.startDate" 
+                                       class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">Tanggal Selesai</label>
+                                <input type="date" x-model="editForm.endDate"
+                                       class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2">
+                            Durasi: <span class="font-semibold" x-text="getEditDuration()"></span> hari
+                        </p>
+                    </div>
+
+                    <!-- Pickup & Return Schedule (Always Available) -->
+                    <div class="border border-slate-200 rounded-xl p-4 bg-white">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <i class="fas fa-calendar-alt text-slate-700"></i>
+                            <span class="font-semibold text-slate-900">Waktu Pickup & Return</span>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <!-- Custom Pickup -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">
+                                    <i class="fas fa-arrow-down text-green-600 mr-1"></i> Waktu Pickup
+                                </label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="date" x-model="editForm.pickupDate" 
+                                           class="px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white">
+                                    <input type="time" x-model="editForm.pickupTime" 
+                                           class="px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white">
+                                </div>
+                            </div>
+                            
+                            <!-- Custom Return -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">
+                                    <i class="fas fa-arrow-up text-red-600 mr-1"></i> Waktu Return
+                                </label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="date" x-model="editForm.returnDate" 
+                                           class="px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white">
+                                    <input type="time" x-model="editForm.returnTime" 
+                                           class="px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 bg-white">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Catatan</label>
+                        <textarea rows="3" x-model="editForm.notes" placeholder="Tambahkan catatan..."
+                                  class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"></textarea>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex space-x-3 pt-4 border-t border-slate-200">
+                        <button @click="showEditModal = false" 
+                                class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50">
+                            Batal
+                        </button>
+                        <button @click="saveEdit()" 
+                                class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pickup Modal -->
+    <div x-show="showPickupModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showPickupModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-slate-900">Proses Pickup Barang</h3>
+                        <p class="text-sm text-slate-500 mt-1">Dokumentasi pengambilan barang oleh customer</p>
+                    </div>
+                    <button @click="showPickupModal = false" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Booking Info -->
+                    <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                                <p class="text-purple-600">Booking ID</p>
+                                <p class="font-semibold text-purple-900" x-text="selectedBooking?.id"></p>
+                            </div>
+                            <div>
+                                <p class="text-purple-600">Customer</p>
+                                <p class="font-semibold text-purple-900" x-text="selectedBooking?.customer"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tipe Jaminan -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-id-card mr-1 text-blue-600"></i> Tipe Jaminan <span class="text-red-500">*</span>
+                        </label>
+                        <select x-model="pickupForm.collateralType" 
+                                class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="">Pilih Tipe Jaminan</option>
+                            <option value="ktp">KTP</option>
+                            <option value="sim">SIM</option>
+                            <option value="passport">Passport</option>
+                            <option value="cash">Uang Tunai</option>
+                            <option value="other">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <!-- Bukti Jaminan -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-file-alt mr-1 text-blue-600"></i> Bukti Jaminan <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" x-model="pickupForm.collateralProof" 
+                               placeholder="Nomor KTP / Jumlah uang / Deskripsi"
+                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <p class="text-xs text-slate-500 mt-1">Contoh: 3273xxxxxxxxxxxx atau Rp 500.000</p>
+                    </div>
+
+                    <!-- Upload Foto Jaminan -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-camera mr-1 text-blue-600"></i> Foto Jaminan
+                        </label>
+                        <input type="file" accept="image/*" 
+                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <p class="text-xs text-slate-500 mt-1">Upload foto KTP/SIM atau bukti jaminan lainnya</p>
+                    </div>
+
+                    <!-- Foto Kondisi Awal Barang -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-camera mr-1 text-green-600"></i> Foto Kondisi Awal Barang <span class="text-red-500">*</span>
+                        </label>
+                        <input type="file" accept="image/*" multiple 
+                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <p class="text-xs text-slate-500 mt-1">Upload beberapa foto kondisi barang sebelum diserahkan (bisa multiple)</p>
+                    </div>
+
+                    <!-- Pelunasan (if DP) -->
+                    <template x-if="selectedBooking?.paymentType === 'dp'">
+                        <div class="p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-exclamation-circle text-yellow-600 text-xl"></i>
+                                    <p class="text-sm font-semibold text-yellow-900">Pelunasan Pembayaran</p>
+                                </div>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" x-model="pickupForm.payNow" 
+                                           class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                                    <span class="text-sm font-medium text-slate-700">Lunasi sekarang</span>
+                                </label>
+                            </div>
+                            
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-600">Total Booking:</span>
+                                    <span class="font-medium" x-text="'Rp ' + selectedBooking?.total.toLocaleString('id-ID')"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-600">DP Dibayar:</span>
+                                    <span class="text-green-600 font-medium" x-text="'Rp ' + selectedBooking?.dpPaid.toLocaleString('id-ID')"></span>
+                                </div>
+                                <div class="flex justify-between pt-2 border-t border-yellow-300">
+                                    <span class="font-semibold text-slate-900">Sisa Pembayaran:</span>
+                                    <span class="font-bold text-red-600" x-text="'Rp ' + (selectedBooking?.total - selectedBooking?.dpPaid).toLocaleString('id-ID')"></span>
+                                </div>
+                            </div>
+
+                            <template x-if="pickupForm.payNow">
+                                <div class="mt-3 pt-3 border-t border-yellow-300">
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Metode Pembayaran</label>
+                                    <select x-model="pickupForm.paymentMethod" 
+                                            class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                        <option value="">Pilih Metode</option>
+                                        <option value="cash">Cash</option>
+                                        <option value="transfer">Transfer Bank</option>
+                                        <option value="qris">QRIS</option>
+                                    </select>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- Catatan Pickup -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-sticky-note mr-1"></i> Catatan Pickup
+                        </label>
+                        <textarea rows="3" x-model="pickupForm.notes" 
+                                  placeholder="Catatan tambahan saat pickup..."
+                                  class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex space-x-3 pt-4 border-t border-slate-200">
+                        <button @click="showPickupModal = false" 
+                                class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50">
+                            Batal
+                        </button>
+                        <button @click="confirmPickup()" 
+                                class="flex-1 px-4 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                            <i class="fas fa-check mr-2"></i> Konfirmasi Pickup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Return Modal -->
+    <div x-show="showReturnModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showReturnModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-slate-900">Proses Return Barang</h3>
+                        <p class="text-sm text-slate-500 mt-1">Dokumentasi pengembalian barang dari customer</p>
+                    </div>
+                    <button @click="showReturnModal = false" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Booking Info -->
+                    <div class="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                                <p class="text-orange-600">Booking ID</p>
+                                <p class="font-semibold text-orange-900" x-text="selectedBooking?.id"></p>
+                            </div>
+                            <div>
+                                <p class="text-orange-600">Customer</p>
+                                <p class="font-semibold text-orange-900" x-text="selectedBooking?.customer"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Foto Kondisi Akhir Barang -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-camera mr-1 text-orange-600"></i> Foto Kondisi Akhir Barang <span class="text-red-500">*</span>
+                        </label>
+                        <input type="file" accept="image/*" multiple 
+                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <p class="text-xs text-slate-500 mt-1">Upload beberapa foto kondisi barang setelah dikembalikan (bisa multiple)</p>
+                    </div>
+
+                    <!-- Kondisi Barang -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-check-circle mr-1 text-green-600"></i> Kondisi Barang
+                        </label>
+                        <select x-model="returnForm.itemCondition" 
+                                class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            <option value="good">Baik (Tidak ada masalah)</option>
+                            <option value="minor_damage">Kerusakan Ringan</option>
+                            <option value="major_damage">Kerusakan Berat</option>
+                        </select>
+                    </div>
+
+                    <!-- Charge Keterlambatan -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-clock mr-1 text-red-600"></i> Charge Keterlambatan
+                        </label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <label class="text-xs text-slate-500">Hari Terlambat</label>
+                                <input type="number" x-model="returnForm.lateDays" min="0" 
+                                       class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-500">Tarif/Hari</label>
+                                <input type="number" x-model="returnForm.lateRatePerDay" min="0" 
+                                       class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-500">Total Late Fee</label>
+                                <input type="text" readonly 
+                                       :value="'Rp ' + (returnForm.lateDays * returnForm.lateRatePerDay).toLocaleString('id-ID')"
+                                       class="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charge Kerusakan -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-exclamation-triangle mr-1 text-yellow-600"></i> Charge Kerusakan
+                        </label>
+                        <input type="number" x-model="returnForm.damageFee" min="0" 
+                               placeholder="0"
+                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <p class="text-xs text-slate-500 mt-1">Biaya perbaikan atau penggantian jika ada kerusakan</p>
+                    </div>
+
+                    <!-- Deskripsi Kerusakan -->
+                    <template x-if="returnForm.damageFee > 0">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                <i class="fas fa-file-alt mr-1"></i> Deskripsi Kerusakan
+                            </label>
+                            <textarea rows="3" x-model="returnForm.damageDescription" 
+                                      placeholder="Jelaskan kerusakan yang terjadi..."
+                                      class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
+                        </div>
+                    </template>
+
+                    <!-- Summary Charges -->
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                        <p class="text-sm font-semibold text-slate-900 mb-3">Ringkasan Charge</p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Late Fee:</span>
+                                <span class="font-semibold" x-text="'Rp ' + (returnForm.lateDays * returnForm.lateRatePerDay).toLocaleString('id-ID')"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Damage Fee:</span>
+                                <span class="font-semibold" x-text="'Rp ' + returnForm.damageFee.toLocaleString('id-ID')"></span>
+                            </div>
+                            <div class="flex justify-between pt-2 border-t border-slate-300">
+                                <span class="font-semibold text-slate-900">Total Charge:</span>
+                                <span class="font-bold text-red-600" x-text="'Rp ' + ((returnForm.lateDays * returnForm.lateRatePerDay) + returnForm.damageFee).toLocaleString('id-ID')"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pelunasan (if DP or has Charges) - WAJIB -->
+                    <template x-if="selectedBooking?.paymentType === 'dp' || (returnForm.lateDays > 0 || returnForm.damageFee > 0)">
+                        <div class="p-4 bg-red-50 border-2 border-red-300 rounded-lg">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                                <p class="text-sm font-bold text-red-900">Pelunasan Pembayaran (WAJIB)</p>
+                            </div>
+                            
+                            <div class="space-y-2 text-sm mb-3">
+                                <template x-if="selectedBooking?.paymentType === 'dp'">
+                                    <div>
+                                        <div class="flex justify-between">
+                                            <span class="text-slate-600">Total Booking:</span>
+                                            <span class="font-medium" x-text="'Rp ' + selectedBooking?.total.toLocaleString('id-ID')"></span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-slate-600">DP Dibayar:</span>
+                                            <span class="text-green-600 font-medium" x-text="'Rp ' + selectedBooking?.dpPaid.toLocaleString('id-ID')"></span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-slate-600">Sisa Pembayaran:</span>
+                                            <span class="font-semibold text-orange-600" x-text="'Rp ' + (selectedBooking?.total - selectedBooking?.dpPaid).toLocaleString('id-ID')"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-600">Additional Charges:</span>
+                                    <span class="font-semibold text-red-600" x-text="'Rp ' + ((returnForm.lateDays * returnForm.lateRatePerDay) + returnForm.damageFee).toLocaleString('id-ID')"></span>
+                                </div>
+                                <div class="flex justify-between pt-2 border-t border-red-400">
+                                    <span class="font-bold text-slate-900">Total yang Harus Dibayar:</span>
+                                    <span class="font-bold text-red-700" x-text="'Rp ' + ((selectedBooking?.paymentType === 'dp' ? (selectedBooking?.total - selectedBooking?.dpPaid) : 0) + (returnForm.lateDays * returnForm.lateRatePerDay) + returnForm.damageFee).toLocaleString('id-ID')"></span>
+                                </div>
+                            </div>
+
+                            <div class="pt-3 border-t border-red-300">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">
+                                    Metode Pembayaran <span class="text-red-500">*</span>
+                                </label>
+                                <select x-model="returnForm.paymentMethod" 
+                                        class="w-full px-4 py-2.5 border-2 border-red-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                    <option value="">Pilih Metode</option>
+                                    <option value="cash">Cash</option>
+                                    <option value="transfer">Transfer Bank</option>
+                                    <option value="qris">QRIS</option>
+                                </select>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Catatan Return -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-sticky-note mr-1"></i> Catatan Return
+                        </label>
+                        <textarea rows="3" x-model="returnForm.notes" 
+                                  placeholder="Catatan tambahan saat return..."
+                                  class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex space-x-3 pt-4 border-t border-slate-200">
+                        <button @click="showReturnModal = false" 
+                                class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50">
+                            Batal
+                        </button>
+                        <button @click="confirmReturn()" 
+                                class="flex-1 px-4 py-2.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
+                            <i class="fas fa-check mr-2"></i> Konfirmasi Return
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function bookingsApp() {
             return {
@@ -351,14 +867,38 @@
                 filterStatus: '',
                 showPaymentModal: false,
                 showViewModal: false,
+                showEditModal: false,
+                showPickupModal: false,
+                showReturnModal: false,
                 selectedBooking: null,
                 paymentMethod: '',
                 paymentNotes: '',
+                editForm: null,
+                pickupForm: {
+                    collateralType: '',
+                    collateralProof: '',
+                    notes: '',
+                    payNow: false,
+                    paymentMethod: ''
+                },
+                returnForm: {
+                    itemCondition: 'good',
+                    lateDays: 0,
+                    lateRatePerDay: 50000,
+                    damageFee: 0,
+                    damageDescription: '',
+                    notes: '',
+                    payNow: false,
+                    paymentMethod: ''
+                },
                 
                 bookings: [
-                    { id: '#BK-001', customer: 'Ahmad Rizki', phone: '08123456789', items: 2, period: '15-17 Apr', duration: 3, total: 406000, dpPaid: 200000, paymentType: 'dp', status: 'active', date: '15 Apr 2024' },
-                    { id: '#BK-002', customer: 'Siti Nurhaliza', phone: '08234567890', items: 1, period: '15-16 Apr', duration: 2, total: 164000, dpPaid: 164000, paymentType: 'full', status: 'confirmed', date: '15 Apr 2024' },
-                    { id: '#BK-003', customer: 'Budi Santoso', phone: '08345678901', items: 1, period: '14-15 Apr', duration: 2, total: 128000, dpPaid: 50000, paymentType: 'dp', status: 'overdue', date: '14 Apr 2024' },
+                    { id: '#BK-001', customer: 'Ahmad Rizki', phone: '08123456789', items: 2, period: '15-17 Apr', duration: 3, total: 406000, dpPaid: 200000, paymentType: 'dp', status: 'active', date: '15 Apr 2024', pickupDatetime: '2024-04-15 09:00', returnDatetime: '2024-04-17 17:00', blockedDays: '15-17 Apr (3 hari)' },
+                    { id: '#BK-002', customer: 'Siti Nurhaliza', phone: '08234567890', items: 1, period: '15-16 Apr', duration: 2, total: 164000, dpPaid: 164000, paymentType: 'full', status: 'confirmed', date: '15 Apr 2024', pickupDatetime: '2024-04-15 09:00', returnDatetime: '2024-04-16 17:00', blockedDays: '15-16 Apr (2 hari)' },
+                    { id: '#BK-003', customer: 'Budi Santoso', phone: '08345678901', items: 1, period: '14-15 Apr', duration: 2, total: 128000, dpPaid: 50000, paymentType: 'dp', status: 'active', date: '14 Apr 2024', pickupDatetime: '2024-04-14 09:00', returnDatetime: '2024-04-15 17:00', blockedDays: '14-15 Apr (2 hari)' },
+                    { id: '#BK-004', customer: 'Maya Putri', phone: '08456789012', items: 1, period: '2-10 Apr', duration: 9, total: 850000, dpPaid: 850000, paymentType: 'full', status: 'confirmed', date: '31 Mar 2024', pickupDatetime: '2024-04-01 16:00', returnDatetime: '2024-04-11 09:00', blockedDays: '1-11 Apr (11 hari)', hasCustomSchedule: true },
+                    { id: '#BK-005', customer: 'Dewi Lestari', phone: '08567890123', items: 1, period: '10-12 Apr', duration: 3, total: 320000, dpPaid: 320000, paymentType: 'full', status: 'completed', date: '10 Apr 2024', pickupDatetime: '2024-04-10 09:00', returnDatetime: '2024-04-12 17:00', blockedDays: '10-12 Apr (3 hari)' },
+                    { id: '#BK-006', customer: 'Rina Wijaya', phone: '08678901234', items: 1, period: '16-18 Apr', duration: 3, total: 280000, dpPaid: 100000, paymentType: 'dp', status: 'confirmed', date: '16 Apr 2024', pickupDatetime: '2024-04-16 09:00', returnDatetime: '2024-04-18 17:00', blockedDays: '16-18 Apr (3 hari)' },
                 ],
                 
                 get filteredBookings() {
@@ -387,6 +927,201 @@
                     const remaining = this.selectedBooking.total - this.selectedBooking.dpPaid;
                     alert(`Pelunasan berhasil!\n\nJumlah: Rp ${remaining.toLocaleString('id-ID')}\nMetode: ${this.paymentMethod}\n\nBooking ${this.selectedBooking.id} sudah lunas.`);
                     this.showPaymentModal = false;
+                },
+
+                editBooking(booking) {
+                    const pickupParts = booking.pickupDatetime ? booking.pickupDatetime.split(' ') : ['2024-04-15', '09:00'];
+                    const returnParts = booking.returnDatetime ? booking.returnDatetime.split(' ') : ['2024-04-17', '17:00'];
+                    
+                    this.editForm = {
+                        id: booking.id,
+                        customer: booking.customer,
+                        startDate: '2024-04-' + booking.period.split('-')[0].trim(),
+                        endDate: '2024-04-' + (booking.period.split('-')[1]?.trim() || booking.period.split(' ')[0]),
+                        pickupDate: pickupParts[0],
+                        pickupTime: pickupParts[1],
+                        returnDate: returnParts[0],
+                        returnTime: returnParts[1],
+                        notes: ''
+                    };
+                    this.showEditModal = true;
+                },
+
+                getEditDuration() {
+                    if (!this.editForm?.startDate || !this.editForm?.endDate) return 0;
+                    const start = new Date(this.editForm.startDate);
+                    const end = new Date(this.editForm.endDate);
+                    return Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                },
+
+                getEditPickupWindow() {
+                    if (!this.editForm?.pickupDate || !this.editForm?.pickupTime) return '-';
+                    return this.editForm.pickupDate + ' ' + this.editForm.pickupTime;
+                },
+
+                getEditReturnDeadline() {
+                    if (!this.editForm?.returnDate || !this.editForm?.returnTime) return '-';
+                    return this.editForm.returnDate + ' ' + this.editForm.returnTime;
+                },
+
+                getEditBlockedDays() {
+                    if (!this.editForm?.pickupDate || !this.editForm?.returnDate) return 0;
+                    const pickup = new Date(this.editForm.pickupDate);
+                    const returnD = new Date(this.editForm.returnDate);
+                    return Math.ceil((returnD - pickup) / (1000 * 60 * 60 * 24)) + 1;
+                },
+
+                saveEdit() {
+                    let message = 'Booking berhasil diupdate!\n\n';
+                    message += 'Booking ID: ' + this.editForm.id + '\n';
+                    message += 'Periode Sewa: ' + this.editForm.startDate + ' - ' + this.editForm.endDate + '\n';
+                    message += 'Durasi: ' + this.getEditDuration() + ' hari\n';
+                    message += '\n📅 Pickup: ' + this.editForm.pickupDate + ' jam ' + this.editForm.pickupTime + '\n';
+                    message += '📅 Return: ' + this.editForm.returnDate + ' jam ' + this.editForm.returnTime + '\n';
+                    message += '\n🚫 Blocked: ' + this.getEditBlockedDays() + ' hari\n';
+                    message += '💰 Charge: ' + this.getEditDuration() + ' hari\n';
+                    alert(message);
+                    this.showEditModal = false;
+                },
+
+                processPickup(booking) {
+                    this.selectedBooking = booking;
+                    this.pickupForm = {
+                        collateralType: '',
+                        collateralProof: '',
+                        notes: '',
+                        payNow: false,
+                        paymentMethod: ''
+                    };
+                    this.showPickupModal = true;
+                },
+
+                confirmPickup() {
+                    if (!this.pickupForm.collateralType || !this.pickupForm.collateralProof) {
+                        alert('Mohon lengkapi Tipe Jaminan dan Bukti Jaminan!');
+                        return;
+                    }
+
+                    if (this.pickupForm.payNow && !this.pickupForm.paymentMethod) {
+                        alert('Mohon pilih Metode Pembayaran untuk pelunasan!');
+                        return;
+                    }
+
+                    let message = '✅ Pickup berhasil dikonfirmasi!\n\n';
+                    message += 'Booking ID: ' + this.selectedBooking.id + '\n';
+                    message += 'Customer: ' + this.selectedBooking.customer + '\n\n';
+                    message += '📋 Jaminan:\n';
+                    message += 'Tipe: ' + this.pickupForm.collateralType.toUpperCase() + '\n';
+                    message += 'Bukti: ' + this.pickupForm.collateralProof + '\n\n';
+                    message += '📸 Foto kondisi awal barang telah didokumentasikan\n';
+                    
+                    if (this.pickupForm.payNow && this.selectedBooking.paymentType === 'dp') {
+                        const sisaPembayaran = this.selectedBooking.total - this.selectedBooking.dpPaid;
+                        message += '\n💰 PELUNASAN:\n';
+                        message += 'Sisa Pembayaran: Rp ' + sisaPembayaran.toLocaleString('id-ID') + '\n';
+                        message += 'Metode: ' + this.pickupForm.paymentMethod.toUpperCase() + '\n';
+                        message += 'Status Payment: DP → LUNAS ✅\n';
+                    }
+                    
+                    message += '\nStatus: Dikonfirmasi → Aktif';
+                    
+                    alert(message);
+                    
+                    // Update status booking (in real app, this would be API call)
+                    const bookingIndex = this.bookings.findIndex(b => b.id === this.selectedBooking.id);
+                    if (bookingIndex !== -1) {
+                        this.bookings[bookingIndex].status = 'active';
+                        if (this.pickupForm.payNow) {
+                            this.bookings[bookingIndex].paymentType = 'full';
+                            this.bookings[bookingIndex].dpPaid = this.bookings[bookingIndex].total;
+                        }
+                    }
+                    
+                    this.showPickupModal = false;
+                },
+
+                processReturn(booking) {
+                    this.selectedBooking = booking;
+                    this.returnForm = {
+                        itemCondition: 'good',
+                        lateDays: 0,
+                        lateRatePerDay: 50000,
+                        damageFee: 0,
+                        damageDescription: '',
+                        notes: '',
+                        payNow: false,
+                        paymentMethod: ''
+                    };
+                    this.showReturnModal = true;
+                },
+
+                confirmReturn() {
+                    const totalCharge = (this.returnForm.lateDays * this.returnForm.lateRatePerDay) + this.returnForm.damageFee;
+                    const sisaPembayaran = this.selectedBooking.paymentType === 'dp' ? (this.selectedBooking.total - this.selectedBooking.dpPaid) : 0;
+                    const totalBayar = sisaPembayaran + totalCharge;
+                    
+                    // Validation: Jika ada yang harus dibayar, metode wajib dipilih
+                    if (totalBayar > 0 && !this.returnForm.paymentMethod) {
+                        alert('Mohon pilih Metode Pembayaran!\n\nTotal yang harus dibayar: Rp ' + totalBayar.toLocaleString('id-ID'));
+                        return;
+                    }
+                    
+                    let message = '✅ Return berhasil dikonfirmasi!\n\n';
+                    message += 'Booking ID: ' + this.selectedBooking.id + '\n';
+                    message += 'Customer: ' + this.selectedBooking.customer + '\n\n';
+                    message += '📸 Foto kondisi akhir: Terdokumentasi\n';
+                    message += '✅ Kondisi: ' + this.returnForm.itemCondition + '\n\n';
+                    
+                    if (totalCharge > 0) {
+                        message += '💰 Additional Charges:\n';
+                        if (this.returnForm.lateDays > 0) {
+                            message += '⏰ Late Fee: ' + this.returnForm.lateDays + ' hari × Rp ' + this.returnForm.lateRatePerDay.toLocaleString('id-ID') + '\n';
+                            message += '   = Rp ' + (this.returnForm.lateDays * this.returnForm.lateRatePerDay).toLocaleString('id-ID') + '\n';
+                        }
+                        if (this.returnForm.damageFee > 0) {
+                            message += '🔧 Damage Fee: Rp ' + this.returnForm.damageFee.toLocaleString('id-ID') + '\n';
+                            if (this.returnForm.damageDescription) {
+                                message += '   (' + this.returnForm.damageDescription + ')\n';
+                            }
+                        }
+                        message += '\n📍 Total Charge: Rp ' + totalCharge.toLocaleString('id-ID') + '\n';
+                    } else {
+                        message += '✅ Tidak ada charge tambahan\n';
+                    }
+                    
+                    // Pelunasan - WAJIB jika ada yang harus dibayar
+                    if (totalBayar > 0) {
+                        message += '\n💰 PELUNASAN (WAJIB):\n';
+                        if (sisaPembayaran > 0) {
+                            message += 'Sisa Pembayaran Booking: Rp ' + sisaPembayaran.toLocaleString('id-ID') + '\n';
+                        }
+                        if (totalCharge > 0) {
+                            message += 'Additional Charges: Rp ' + totalCharge.toLocaleString('id-ID') + '\n';
+                        }
+                        message += '═══════════════════════════════\n';
+                        message += 'TOTAL DIBAYAR: Rp ' + totalBayar.toLocaleString('id-ID') + '\n';
+                        message += 'Metode: ' + this.returnForm.paymentMethod.toUpperCase() + '\n';
+                        if (sisaPembayaran > 0) {
+                            message += 'Status Payment: DP → LUNAS ✅\n';
+                        }
+                    }
+                    
+                    message += '\nStatus: Aktif → Selesai ✅';
+                    
+                    alert(message);
+                    
+                    // Update status booking (in real app, this would be API call)
+                    const bookingIndex = this.bookings.findIndex(b => b.id === this.selectedBooking.id);
+                    if (bookingIndex !== -1) {
+                        this.bookings[bookingIndex].status = 'completed';
+                        // Always update payment to full if there was any payment
+                        if (totalBayar > 0) {
+                            this.bookings[bookingIndex].paymentType = 'full';
+                            this.bookings[bookingIndex].dpPaid = this.bookings[bookingIndex].total;
+                        }
+                    }
+                    
+                    this.showReturnModal = false;
                 }
             }
         }

@@ -230,6 +230,106 @@ Staff actions:
 
 ---
 
+#### US-007B: Flexible Pickup & Return untuk Semua Rental ⭐ NEW
+**As a** customer  
+**I want to** tentukan sendiri kapan ambil & kapan kembalikan barang  
+**So that** saya punya fleksibilitas waktu sesuai kebutuhan  
+
+**Business Context**:
+Customer butuh fleksibilitas waktu pickup & return:
+- Rental 2-3 Apr → Bisa pickup 1 Apr sore, return 4 Apr pagi
+- Rental 2-10 Apr → Bisa pickup 1 Apr, return 11 Apr
+- Event pagi → Perlu pickup malam sebelumnya
+- Event selesai sore → Return paginya tidak sempat
+
+**Acceptance Criteria**:
+- ✅ Semua booking (1 hari, 2 hari, multi-hari) bisa punya custom pickup/return
+- ✅ Form input di booking:
+  - Date picker untuk tanggal pickup
+  - Time picker untuk jam pickup
+  - Date picker untuk tanggal return
+  - Time picker untuk jam return
+- ✅ Default behavior (jika tidak diisi):
+  - Pickup datetime = Rental start date, 09:00
+  - Return datetime = Rental end date, 17:00
+- ✅ Validation rules:
+  - Pickup datetime <= Rental start datetime
+  - Return datetime >= Rental end datetime
+  - Pickup datetime < Return datetime
+- ✅ Show info jelas di booking detail:
+  - "Sewa: 2-10 Apr 2026 (9 hari)"
+  - "Pickup: 1 Apr 2026, 18:00"
+  - "Return: 11 Apr 2026, 10:00"
+- ✅ Availability blocking:
+  - Block PENUH dari tanggal pickup sampai tanggal return
+  - Contoh: Pickup 1 Apr → Rental 2-10 Apr → Return 11 Apr = Block 1-11 Apr (11 hari)
+  - Charge: 9 hari (2-10 Apr)
+- ✅ Late fee dihitung dari return datetime yang dipilih user
+- ✅ Optional: Show badge "Custom Pickup/Return" jika berbeda dari default
+
+**Story Points**: 8
+
+**Example Scenario 1 - Short Rental**:
+```
+Customer: "Saya mau sewa sepatu 2-3 Apr (2 hari),
+           tapi bisa ambil tanggal 1 Apr sore jam 18:00?
+           Dan returnnya tanggal 4 Apr pagi jam 10:00?"
+
+Staff: "Bisa! Anda bisa tentukan sendiri waktu pickup & return"
+
+Staff actions:
+1. Create booking baru
+2. Select customer & product
+3. Set periode sewa: 2-3 Apr 2026 (2 hari)
+4. Input custom schedule:
+   - Pickup: 1 Apr 2026, jam 18:00
+   - Return: 4 Apr 2026, jam 10:00
+5. System calculate:
+   - Rental: 2 hari × Rp 50.000 = Rp 100.000 ✓
+   - Deposit: Rp 200.000
+   - Total: Rp 300.000
+   - Availability blocked: 1-4 Apr (4 hari penuh)
+6. Customer bayar Rp 300.000
+
+Timeline:
+- 1 Apr jam 18:00: Customer pickup ✓
+- 2-3 Apr: Customer pakai sepatu ← Periode sewa (2 hari)
+- 4 Apr jam 10:00: Customer return ✓
+- Blocked: 1, 2, 3, 4 Apr (4 hari)
+- Charge: Rp 100.000 (2 hari) ✓
+```
+
+**Example Scenario 2 - Long Rental**:
+```
+Customer: "Saya mau sewa 2-10 Apr (9 hari),
+           bisa diambil 1 Apr dan dikembalikan 11 Apr?"
+
+Staff actions:
+1. Set periode sewa: 2-10 Apr 2026 (9 hari)
+2. Input custom schedule:
+   - Pickup: 1 Apr 2026, jam 16:00
+   - Return: 11 Apr 2026, jam 09:00
+3. System calculate:
+   - Rental: 9 hari × Rp 50.000 = Rp 450.000 ✓
+   - Blocked: 1-11 Apr (11 hari)
+   - Charge: 9 hari
+```
+
+**Technical Notes**:
+- Add fields `pickup_datetime: timestamp` & `return_datetime: timestamp`
+- Default values:
+  - `pickup_datetime` = rental_start_date + 09:00
+  - `return_datetime` = rental_end_date + 17:00
+- Validation: 
+  - Pickup datetime <= Rental start datetime
+  - Return datetime >= Rental end datetime
+  - Pickup datetime < Return datetime
+- Availability blocking:
+  - Block PENUH dari pickup_date sampai return_date
+  - Contoh: Pickup 1 Apr, Rental 2-10 Apr, Return 11 Apr = Block 11 hari (1-11 Apr)
+
+---
+
 ### Epic 4: Customer Management
 
 #### US-008: Quick Add Customer
