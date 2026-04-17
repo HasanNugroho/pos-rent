@@ -126,75 +126,122 @@
             </div>
 
             <!-- Maintenance List -->
-            <div class="space-y-4">
-                <template x-for="maintenance in filteredMaintenance" :key="maintenance.id">
-                    <div class="bg-white rounded-xl border-2 border-slate-200 p-6 shadow-sm hover:shadow-lg transition-all"
-                         :class="{
-                             'border-yellow-300': maintenance.status === 'in_progress',
-                             'border-blue-300': maintenance.status === 'scheduled',
-                             'border-green-300': maintenance.status === 'completed'
-                         }">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-3 mb-3">
-                                    <h3 class="text-lg font-bold text-slate-900" x-text="maintenance.id"></h3>
-                                    <span class="px-3 py-1 rounded-full text-xs font-semibold"
-                                          :class="{
-                                              'bg-yellow-100 text-yellow-800': maintenance.status === 'in_progress',
-                                              'bg-blue-100 text-blue-800': maintenance.status === 'scheduled',
-                                              'bg-green-100 text-green-800': maintenance.status === 'completed'
-                                          }"
-                                          x-text="maintenance.status === 'in_progress' ? 'In Progress' : maintenance.status === 'scheduled' ? 'Scheduled' : 'Completed'"></span>
-                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700"
-                                          x-text="maintenance.type === 'cleaning' ? 'Cuci' : maintenance.type === 'repair' ? 'Perbaikan' : 'Inspeksi'"></span>
-                                </div>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                                    <div>
-                                        <p class="text-xs text-slate-500 mb-1">Produk</p>
-                                        <p class="font-medium text-slate-900" x-text="maintenance.product"></p>
+            <div class="space-y-6">
+                <template x-for="(product, index) in productsWithMaintenance" :key="product.id">
+                    <div class="bg-white rounded-xl border-2 border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition-all">
+                        <!-- Product Header -->
+                        <div class="p-5 bg-slate-50 border-b border-slate-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-slate-200 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-shoe-prints text-slate-500 text-xl"></i>
                                     </div>
                                     <div>
-                                        <p class="text-xs text-slate-500 mb-1">Tanggal</p>
-                                        <p class="font-medium text-slate-900" x-text="maintenance.date"></p>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs text-slate-500 mb-1">Durasi</p>
-                                        <p class="font-medium text-slate-900" x-text="maintenance.duration"></p>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs text-slate-500 mb-1">Biaya</p>
-                                        <p class="font-medium text-green-600" x-text="'Rp ' + maintenance.cost.toLocaleString('id-ID')"></p>
+                                        <h3 class="text-lg font-bold text-slate-900" x-text="product.name"></h3>
+                                        <p class="text-sm text-slate-500" x-text="product.category + ' - Size ' + product.size"></p>
                                     </div>
                                 </div>
-
-                                <div class="mb-4" x-show="maintenance.status === 'in_progress'">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <p class="text-sm font-medium text-slate-700">Progress</p>
-                                        <p class="text-sm font-bold text-yellow-600" x-text="maintenance.progress + '%'"></p>
+                                <div class="flex items-center space-x-6">
+                                    <div class="text-center">
+                                        <p class="text-xs text-slate-500">Total Unit</p>
+                                        <p class="text-lg font-bold text-slate-900" x-text="product.totalUnits"></p>
                                     </div>
-                                    <div class="w-full bg-slate-200 rounded-full h-2">
-                                        <div class="bg-yellow-600 h-2 rounded-full transition-all" 
-                                             :style="'width: ' + maintenance.progress + '%'"></div>
+                                    <div class="text-center">
+                                        <p class="text-xs text-slate-500">Available</p>
+                                        <p class="text-lg font-bold text-green-600" x-text="product.availableUnits"></p>
                                     </div>
+                                    <div class="text-center">
+                                        <p class="text-xs text-slate-500">In Maintenance</p>
+                                        <p class="text-lg font-bold text-yellow-600" x-text="product.inMaintenanceUnits"></p>
+                                    </div>
+                                    <button @click="openScheduleModal(product)" class="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+                                        <i class="fas fa-wrench mr-2"></i> Maintenance
+                                    </button>
                                 </div>
-
-                                <p class="text-sm text-slate-600" x-text="maintenance.notes"></p>
                             </div>
+                        </div>
 
-                            <div class="ml-4 flex flex-col space-y-2">
-                                <button @click="viewDetail(maintenance)" class="px-4 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button x-show="maintenance.status === 'in_progress'" @click="updateProgress(maintenance)" 
-                                        class="px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm hover:bg-yellow-700">
-                                    <i class="fas fa-tasks"></i>
-                                </button>
-                                <button x-show="maintenance.status === 'in_progress'" @click="completeMaintenance(maintenance)"
-                                        class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
-                                    <i class="fas fa-check"></i>
-                                </button>
-                            </div>
+                        <!-- Individual Units Maintenance List -->
+                        <div class="divide-y divide-slate-200" x-show="product.maintenances.length > 0">
+                            <template x-for="maintenance in product.maintenances" :key="maintenance.id">
+                                <div class="p-5 hover:bg-slate-50 transition-colors"
+                                     :class="{
+                                         'bg-yellow-50': maintenance.status === 'in_progress',
+                                         'bg-blue-50': maintenance.status === 'scheduled',
+                                         'bg-green-50': maintenance.status === 'completed'
+                                     }">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <span class="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-bold" 
+                                                      x-text="'Unit #' + maintenance.unitNumber"></span>
+                                                <h4 class="text-sm font-bold text-slate-900" x-text="maintenance.id"></h4>
+                                                <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                                      :class="{
+                                                          'bg-yellow-100 text-yellow-800': maintenance.status === 'in_progress',
+                                                          'bg-blue-100 text-blue-800': maintenance.status === 'scheduled',
+                                                          'bg-green-100 text-green-800': maintenance.status === 'completed'
+                                                      }"
+                                                      x-text="maintenance.status === 'in_progress' ? 'In Progress' : maintenance.status === 'scheduled' ? 'Scheduled' : 'Completed'"></span>
+                                                <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700"
+                                                      x-text="maintenance.type === 'cleaning' ? 'Cuci' : maintenance.type === 'repair' ? 'Perbaikan' : 'Inspeksi'"></span>
+                                            </div>
+                                            
+                                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-3">
+                                                <div>
+                                                    <p class="text-xs text-slate-500 mb-1">Tanggal Mulai</p>
+                                                    <p class="font-medium text-slate-900 text-sm" x-text="maintenance.date"></p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-xs text-slate-500 mb-1">Estimasi Selesai</p>
+                                                    <p class="font-medium text-slate-900 text-sm" x-text="maintenance.estimatedCompletion"></p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-xs text-slate-500 mb-1">Durasi</p>
+                                                    <p class="font-medium text-slate-900 text-sm" x-text="maintenance.duration"></p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-xs text-slate-500 mb-1">Biaya</p>
+                                                    <p class="font-medium text-green-600 text-sm" x-text="'Rp ' + maintenance.cost.toLocaleString('id-ID')"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3" x-show="maintenance.status === 'in_progress'">
+                                                <div class="flex items-center justify-between mb-1">
+                                                    <p class="text-xs font-medium text-slate-700">Progress</p>
+                                                    <p class="text-xs font-bold text-yellow-600" x-text="maintenance.progress + '%'"></p>
+                                                </div>
+                                                <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                                    <div class="bg-yellow-600 h-1.5 rounded-full transition-all" 
+                                                         :style="'width: ' + maintenance.progress + '%'"></div>
+                                                </div>
+                                            </div>
+
+                                            <p class="text-sm text-slate-600" x-text="maintenance.notes"></p>
+                                        </div>
+
+                                        <div class="ml-4 flex flex-col space-y-2">
+                                            <button @click="viewDetail(maintenance)" class="px-3 py-1.5 border border-slate-200 rounded-lg text-sm hover:bg-slate-50">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button x-show="maintenance.status === 'in_progress'" @click="updateProgress(maintenance)" 
+                                                    class="px-3 py-1.5 bg-yellow-600 text-white rounded-lg text-sm hover:bg-yellow-700">
+                                                <i class="fas fa-tasks"></i>
+                                            </button>
+                                            <button x-show="maintenance.status === 'in_progress'" @click="completeMaintenance(maintenance)"
+                                                    class="px-3 py-1.5 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- No maintenance message -->
+                        <div x-show="product.maintenances.length === 0" class="p-8 text-center">
+                            <i class="fas fa-check-circle text-green-500 text-3xl mb-3"></i>
+                            <p class="text-slate-500">Semua unit dalam kondisi baik. Tidak ada maintenance yang sedang berjalan.</p>
                         </div>
                     </div>
                 </template>
@@ -206,7 +253,7 @@
     <div x-show="showScheduleModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen px-4">
             <div @click="showScheduleModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
-            <div class="relative bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-semibold text-slate-900">Schedule Maintenance</h3>
                     <button @click="showScheduleModal = false" class="text-slate-400 hover:text-slate-600">
@@ -215,32 +262,57 @@
                 </div>
 
                 <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Produk</label>
-                        <select class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
-                            <option>Nike Mercurial - Size 42</option>
-                            <option>Adidas Predator - Size 41</option>
-                        </select>
+                    <!-- Product Info (Read-only) -->
+                    <div x-show="selectedProduct" class="p-4 bg-slate-50 rounded-lg">
+                        <p class="text-xs text-slate-500 mb-1">Produk</p>
+                        <p class="font-bold text-slate-900" x-text="selectedProduct?.name + ' (Size ' + selectedProduct?.size + ')'"></p>
                     </div>
+
+                    <!-- Unit Selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            Pilih Unit <span class="text-xs text-slate-500" x-text="'(Available: ' + (selectedProduct?.availableUnits || 0) + ' unit)'"></span>
+                        </label>
+                        <div class="grid grid-cols-5 gap-2 max-h-32 overflow-y-auto p-2 border border-slate-200 rounded-lg">
+                            <template x-for="unit in selectedProduct?.units" :key="unit.number">
+                                <button 
+                                    x-show="unit.status === 'available'"
+                                    @click="scheduleForm.unitNumber = unit.number"
+                                    class="px-2 py-2 text-sm rounded-lg border transition-all"
+                                    :class="scheduleForm.unitNumber === unit.number ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400'"
+                                    x-text="'#' + unit.number">
+                                </button>
+                            </template>
+                        </div>
+                        <p x-show="!scheduleForm.unitNumber" class="text-xs text-red-600 mt-1">* Pilih unit yang akan di-maintenance</p>
+                    </div>
+
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-2">Jenis Maintenance</label>
-                        <select class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        <select x-model="scheduleForm.type" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                            <option value="">Pilih Jenis</option>
                             <option value="cleaning">Cuci/Cleaning</option>
                             <option value="repair">Perbaikan</option>
                             <option value="inspection">Inspeksi</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Tanggal</label>
-                        <input type="date" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Tanggal Mulai</label>
+                            <input type="date" x-model="scheduleForm.date" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Estimasi Selesai</label>
+                            <input type="date" x-model="scheduleForm.estimatedCompletion" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-2">Estimasi Biaya</label>
-                        <input type="number" placeholder="Rp" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                        <input type="number" x-model="scheduleForm.cost" placeholder="Rp" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Catatan</label>
-                        <textarea rows="3" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"></textarea>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Catatan / Detail Kerusakan</label>
+                        <textarea x-model="scheduleForm.notes" rows="3" class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder="Jelaskan kondisi barang atau detail maintenance yang diperlukan..."></textarea>
                     </div>
                 </div>
 
@@ -254,35 +326,332 @@
         </div>
     </div>
 
+    <!-- Complete Maintenance Modal -->
+    <div x-show="showCompleteModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div @click="showCompleteModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-check-circle text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">Selesaikan Maintenance</h3>
+                            <p class="text-sm text-slate-500" x-text="selectedMaintenance?.id"></p>
+                        </div>
+                    </div>
+                    <button @click="showCompleteModal = false" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-5">
+                    <!-- Maintenance Info -->
+                    <div class="p-4 bg-slate-50 rounded-xl">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-shoe-prints text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-900" x-text="selectedProduct?.name"></p>
+                                <p class="text-xs text-slate-500" x-text="'Unit #' + selectedMaintenance?.unitNumber"></p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                                <span class="text-slate-500">Jenis:</span>
+                                <span class="font-medium text-slate-900 ml-1" x-text="selectedMaintenance?.type === 'cleaning' ? 'Cuci' : selectedMaintenance?.type === 'repair' ? 'Perbaikan' : 'Inspeksi'"></span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500">Estimasi Biaya:</span>
+                                <span class="font-medium text-slate-900 ml-1" x-text="'Rp ' + selectedMaintenance?.cost?.toLocaleString('id-ID')"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actual Cost -->
+                    <div class="p-4 bg-green-50 border-2 border-green-200 rounded-xl">
+                        <label class="block text-sm font-bold text-green-900 mb-2">
+                            <i class="fas fa-money-bill-wave mr-2"></i>Biaya Aktual
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">Rp</span>
+                            <input type="number" x-model="completeForm.actualCost" 
+                                   class="w-full pl-12 pr-4 py-3 text-lg font-bold border-2 border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                   placeholder="0">
+                        </div>
+                        <p class="text-xs text-green-700 mt-1">Masukkan biaya aktual yang dikeluarkan</p>
+                    </div>
+
+                    <!-- Receipt Upload -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-receipt mr-2 text-blue-600"></i>Upload Nota/Bukti Pembayaran
+                        </label>
+                        <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition-colors">
+                            <input type="file" accept="image/*,.pdf" @change="handleReceiptUpload" 
+                                   class="hidden" id="receipt-input">
+                            <label for="receipt-input" class="cursor-pointer">
+                                <template x-if="!completeForm.receiptPreview">
+                                    <div>
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-slate-400 mb-3"></i>
+                                        <p class="text-sm text-slate-600">Klik untuk upload nota</p>
+                                        <p class="text-xs text-slate-400 mt-1">JPG, PNG, atau PDF (max 5MB)</p>
+                                    </div>
+                                </template>
+                                <template x-if="completeForm.receiptPreview">
+                                    <div class="relative">
+                                        <img :src="completeForm.receiptPreview" class="max-h-48 mx-auto rounded-lg shadow-md">
+                                        <button @click.stop="completeForm.receiptPreview = null; completeForm.receiptFile = null" 
+                                                class="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600">
+                                            <i class="fas fa-times text-sm"></i>
+                                        </button>
+                                    </div>
+                                </template>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">
+                            <i class="fas fa-clipboard-check mr-2 text-slate-500"></i>Catatan Penyelesaian
+                        </label>
+                        <textarea x-model="completeForm.notes" rows="3" 
+                                  placeholder="Jelaskan pekerjaan yang telah dilakukan, kondisi akhir barang, dll..."
+                                  class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="p-4 bg-slate-100 rounded-xl">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-600">Status:</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold" x-text="selectedMaintenance?.progress + '% Complete'"></span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex space-x-3 pt-4 border-t border-slate-200">
+                        <button @click="showCompleteModal = false" 
+                                class="flex-1 px-4 py-3 border-2 border-slate-200 rounded-xl hover:bg-slate-50 font-medium">
+                            Batal
+                        </button>
+                        <button @click="confirmCompleteMaintenance()" 
+                                class="flex-1 px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 font-bold">
+                            <i class="fas fa-check mr-2"></i>Selesaikan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function maintenanceApp() {
             return {
                 filterStatus: '',
                 filterType: '',
                 showScheduleModal: false,
+                showCompleteModal: false,
+                selectedProduct: null,
+                selectedMaintenance: null,
+                scheduleForm: {
+                    unitNumber: null,
+                    type: '',
+                    date: '',
+                    estimatedCompletion: '',
+                    cost: '',
+                    notes: ''
+                },
+                completeForm: {
+                    actualCost: '',
+                    notes: '',
+                    receiptFile: null,
+                    receiptPreview: null
+                },
                 
-                maintenances: [
-                    { id: 'MAINT-001', product: 'Nike Mercurial Size 42', type: 'cleaning', status: 'scheduled', date: '20 Apr 2024', duration: '1 hari', cost: 50000, progress: 0, notes: 'Cuci dan perawatan rutin sepatu futsal' },
-                    { id: 'MAINT-002', product: 'Adidas Predator Size 41', type: 'repair', status: 'in_progress', date: '15 Apr 2024', duration: '2 hari', cost: 150000, progress: 60, notes: 'Perbaikan sol yang terkelupas' },
-                    { id: 'MAINT-003', product: 'Specs Accelerator Size 43', type: 'cleaning', status: 'completed', date: '10 Apr 2024', duration: '1 hari', cost: 45000, progress: 100, notes: 'Deep cleaning setelah pemakaian intensif' },
-                    { id: 'MAINT-004', product: 'Nike Jordan Size 44', type: 'inspection', status: 'in_progress', date: '16 Apr 2024', duration: '0.5 hari', cost: 0, progress: 80, notes: 'Inspeksi kondisi sebelum disewa' },
-                    { id: 'MAINT-005', product: 'Puma Future Size 42', type: 'repair', status: 'scheduled', date: '22 Apr 2024', duration: '3 hari', cost: 200000, progress: 0, notes: 'Penggantian tali dan perbaikan jahitan' },
+                // Products with multiple units
+                products: [
+                    {
+                        id: 'PROD-001',
+                        name: 'Nike Mercurial',
+                        category: 'Sepatu Futsal',
+                        size: '42',
+                        totalUnits: 5,
+                        units: [
+                            { number: 1, status: 'available' },
+                            { number: 2, status: 'rented' },
+                            { number: 3, status: 'maintenance' },
+                            { number: 4, status: 'available' },
+                            { number: 5, status: 'available' },
+                        ],
+                        maintenances: [
+                            { id: 'MAINT-001', unitNumber: 3, type: 'cleaning', status: 'in_progress', date: '20 Apr 2024', estimatedCompletion: '21 Apr 2024', duration: '1 hari', cost: 50000, progress: 60, notes: 'Cuci dan perawatan rutin sepatu futsal - Unit #3' },
+                        ]
+                    },
+                    {
+                        id: 'PROD-002',
+                        name: 'Adidas Predator',
+                        category: 'Sepatu Futsal',
+                        size: '41',
+                        totalUnits: 3,
+                        units: [
+                            { number: 1, status: 'available' },
+                            { number: 2, status: 'maintenance' },
+                            { number: 3, status: 'rented' },
+                        ],
+                        maintenances: [
+                            { id: 'MAINT-002', unitNumber: 2, type: 'repair', status: 'in_progress', date: '15 Apr 2024', estimatedCompletion: '17 Apr 2024', duration: '2 hari', cost: 150000, progress: 80, notes: 'Perbaikan sol yang terkelupas - Unit #2' },
+                        ]
+                    },
+                    {
+                        id: 'PROD-003',
+                        name: 'Specs Accelerator',
+                        category: 'Sepatu Futsal',
+                        size: '43',
+                        totalUnits: 4,
+                        units: [
+                            { number: 1, status: 'available' },
+                            { number: 2, status: 'available' },
+                            { number: 3, status: 'available' },
+                            { number: 4, status: 'available' },
+                        ],
+                        maintenances: [
+                            { id: 'MAINT-003', unitNumber: 4, type: 'cleaning', status: 'completed', date: '10 Apr 2024', estimatedCompletion: '11 Apr 2024', duration: '1 hari', cost: 45000, progress: 100, notes: 'Deep cleaning setelah pemakaian intensif - Unit #4' },
+                        ]
+                    },
+                    {
+                        id: 'PROD-004',
+                        name: 'Nike Jordan',
+                        category: 'Sepatu Basket',
+                        size: '44',
+                        totalUnits: 2,
+                        units: [
+                            { number: 1, status: 'maintenance' },
+                            { number: 2, status: 'rented' },
+                        ],
+                        maintenances: [
+                            { id: 'MAINT-004', unitNumber: 1, type: 'inspection', status: 'in_progress', date: '16 Apr 2024', estimatedCompletion: '16 Apr 2024', duration: '0.5 hari', cost: 0, progress: 90, notes: 'Inspeksi kondisi sebelum disewa - Unit #1' },
+                        ]
+                    },
+                    {
+                        id: 'PROD-005',
+                        name: 'Puma Future',
+                        category: 'Sepatu Futsal',
+                        size: '42',
+                        totalUnits: 6,
+                        units: [
+                            { number: 1, status: 'available' },
+                            { number: 2, status: 'available' },
+                            { number: 3, status: 'available' },
+                            { number: 4, status: 'maintenance' },
+                            { number: 5, status: 'rented' },
+                            { number: 6, status: 'available' },
+                        ],
+                        maintenances: [
+                            { id: 'MAINT-005', unitNumber: 4, type: 'repair', status: 'scheduled', date: '22 Apr 2024', estimatedCompletion: '25 Apr 2024', duration: '3 hari', cost: 200000, progress: 0, notes: 'Penggantian tali dan perbaikan jahitan - Unit #4' },
+                        ]
+                    },
+                    {
+                        id: 'PROD-006',
+                        name: 'Mizuno Morelia',
+                        category: 'Sepatu Futsal',
+                        size: '40',
+                        totalUnits: 3,
+                        units: [
+                            { number: 1, status: 'available' },
+                            { number: 2, status: 'available' },
+                            { number: 3, status: 'available' },
+                        ],
+                        maintenances: []
+                    },
                 ],
                 
-                get filteredMaintenance() {
-                    return this.maintenances.filter(m => {
-                        const matchStatus = !this.filterStatus || m.status === this.filterStatus;
-                        const matchType = !this.filterType || m.type === this.filterType;
-                        return matchStatus && matchType;
+                get productsWithMaintenance() {
+                    return this.products.map(product => {
+                        // Calculate available and maintenance units
+                        const availableUnits = product.units.filter(u => u.status === 'available').length;
+                        const inMaintenanceUnits = product.units.filter(u => u.status === 'maintenance').length;
+                        const rentedUnits = product.units.filter(u => u.status === 'rented').length;
+                        
+                        // Filter maintenances based on status filter
+                        let filteredMaintenances = product.maintenances;
+                        if (this.filterStatus) {
+                            filteredMaintenances = filteredMaintenances.filter(m => m.status === this.filterStatus);
+                        }
+                        if (this.filterType) {
+                            filteredMaintenances = filteredMaintenances.filter(m => m.type === this.filterType);
+                        }
+                        
+                        return {
+                            ...product,
+                            availableUnits,
+                            inMaintenanceUnits,
+                            rentedUnits,
+                            maintenances: filteredMaintenances
+                        };
+                    }).filter(product => {
+                        // Show products that have maintenances matching filters OR no filter applied
+                        if (!this.filterStatus && !this.filterType) return true;
+                        return product.maintenances.length > 0;
                     });
                 },
                 
-                openScheduleModal() {
+                openScheduleModal(product) {
+                    this.selectedProduct = product;
+                    this.scheduleForm = {
+                        unitNumber: null,
+                        type: '',
+                        date: new Date().toISOString().split('T')[0],
+                        estimatedCompletion: '',
+                        cost: '',
+                        notes: ''
+                    };
                     this.showScheduleModal = true;
                 },
                 
                 scheduleMaintenance() {
-                    alert('Maintenance berhasil dijadwalkan!');
+                    if (!this.scheduleForm.unitNumber) {
+                        alert('Pilih unit yang akan di-maintenance!');
+                        return;
+                    }
+                    if (!this.scheduleForm.type) {
+                        alert('Pilih jenis maintenance!');
+                        return;
+                    }
+                    if (!this.scheduleForm.date) {
+                        alert('Pilih tanggal mulai maintenance!');
+                        return;
+                    }
+                    
+                    // Add new maintenance
+                    const newMaintenance = {
+                        id: 'MAINT-' + Date.now(),
+                        unitNumber: this.scheduleForm.unitNumber,
+                        type: this.scheduleForm.type,
+                        status: 'scheduled',
+                        date: this.scheduleForm.date,
+                        estimatedCompletion: this.scheduleForm.estimatedCompletion || this.scheduleForm.date,
+                        duration: '1 hari',
+                        cost: parseInt(this.scheduleForm.cost) || 0,
+                        progress: 0,
+                        notes: this.scheduleForm.notes || 'Maintenance scheduled'
+                    };
+                    
+                    // Find product and add maintenance
+                    const productIndex = this.products.findIndex(p => p.id === this.selectedProduct.id);
+                    if (productIndex !== -1) {
+                        this.products[productIndex].maintenances.push(newMaintenance);
+                        
+                        // Update unit status
+                        const unitIndex = this.products[productIndex].units.findIndex(u => u.number === this.scheduleForm.unitNumber);
+                        if (unitIndex !== -1) {
+                            this.products[productIndex].units[unitIndex].status = 'maintenance';
+                        }
+                    }
+                    
+                    alert('Maintenance untuk Unit #' + this.scheduleForm.unitNumber + ' berhasil dijadwalkan!');
                     this.showScheduleModal = false;
                 },
                 
@@ -290,22 +659,101 @@
                     const newProgress = prompt('Update progress (0-100):', maintenance.progress);
                     if (newProgress !== null && newProgress >= 0 && newProgress <= 100) {
                         maintenance.progress = parseInt(newProgress);
+                        if (maintenance.progress > 0 && maintenance.status === 'scheduled') {
+                            maintenance.status = 'in_progress';
+                        }
                     }
                 },
                 
-                completeMaintenance(maintenance) {
-                    if (confirm('Tandai maintenance sebagai selesai?')) {
-                        maintenance.status = 'completed';
-                        maintenance.progress = 100;
-                        alert('Maintenance ditandai sebagai selesai!');
+                openCompleteModal(maintenance) {
+                    this.selectedMaintenance = maintenance;
+                    this.selectedProduct = this.products.find(p => p.maintenances.some(m => m.id === maintenance.id));
+                    this.completeForm = {
+                        actualCost: maintenance.cost || '',
+                        notes: '',
+                        receiptFile: null,
+                        receiptPreview: null
+                    };
+                    this.showCompleteModal = true;
+                },
+
+                handleReceiptUpload(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        this.completeForm.receiptFile = file;
+                        // Create preview URL
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.completeForm.receiptPreview = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
                     }
+                },
+
+                confirmCompleteMaintenance() {
+                    if (!this.completeForm.actualCost || this.completeForm.actualCost <= 0) {
+                        alert('Mohon masukkan biaya aktual!');
+                        return;
+                    }
+
+                    const actualCost = parseInt(this.completeForm.actualCost);
+                    const estimatedCost = this.selectedMaintenance.cost || 0;
+                    const costDiff = actualCost - estimatedCost;
+
+                    // Update maintenance record
+                    this.selectedMaintenance.status = 'completed';
+                    this.selectedMaintenance.progress = 100;
+                    this.selectedMaintenance.actualCost = actualCost;
+                    this.selectedMaintenance.completionNotes = this.completeForm.notes;
+                    this.selectedMaintenance.completionDate = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                    if (this.completeForm.receiptFile) {
+                        this.selectedMaintenance.receiptFileName = this.completeForm.receiptFile.name;
+                    }
+
+                    // Update unit status back to available
+                    this.products.forEach(product => {
+                        const maintIndex = product.maintenances.findIndex(m => m.id === this.selectedMaintenance.id);
+                        if (maintIndex !== -1) {
+                            const unitIndex = product.units.findIndex(u => u.number === this.selectedMaintenance.unitNumber);
+                            if (unitIndex !== -1) {
+                                product.units[unitIndex].status = 'available';
+                            }
+                        }
+                    });
+
+                    let message = '✅ Maintenance selesai!\n\n';
+                    message += 'ID: ' + this.selectedMaintenance.id + '\n';
+                    message += 'Unit: #' + this.selectedMaintenance.unitNumber + '\n';
+                    message += 'Produk: ' + (this.selectedProduct ? this.selectedProduct.name : 'Unknown') + '\n\n';
+                    message += '💰 Biaya:\n';
+                    message += 'Estimasi: Rp ' + estimatedCost.toLocaleString('id-ID') + '\n';
+                    message += 'Aktual: Rp ' + actualCost.toLocaleString('id-ID') + '\n';
+                    if (costDiff !== 0) {
+                        message += 'Selisih: Rp ' + (costDiff > 0 ? '+' : '') + costDiff.toLocaleString('id-ID') + '\n';
+                    }
+                    if (this.completeForm.receiptFile) {
+                        message += '\n🧾 Nota: ' + this.completeForm.receiptFile.name + '\n';
+                    }
+                    message += '\n✅ Unit sekarang tersedia untuk rental!';
+
+                    alert(message);
+                    this.showCompleteModal = false;
+                },
+
+                completeMaintenance(maintenance) {
+                    // Open the completion modal instead of simple confirm
+                    this.openCompleteModal(maintenance);
                 },
                 
                 viewDetail(maintenance) {
+                    const product = this.products.find(p => p.maintenances.some(m => m.id === maintenance.id));
                     alert('Detail Maintenance:\n\n' + 
                           'ID: ' + maintenance.id + '\n' +
-                          'Produk: ' + maintenance.product + '\n' +
-                          'Status: ' + maintenance.status);
+                          'Produk: ' + (product ? product.name : 'Unknown') + '\n' +
+                          'Unit: #' + maintenance.unitNumber + '\n' +
+                          'Status: ' + maintenance.status + '\n' +
+                          'Tanggal: ' + maintenance.date + '\n' +
+                          'Catatan: ' + maintenance.notes);
                 }
             }
         }

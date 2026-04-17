@@ -289,6 +289,147 @@
         </div>
     </div>
 
+    <!-- Invoice Modal -->
+    <div x-show="showInvoiceModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 py-8">
+            <div @click="showInvoiceModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
+            <div class="relative bg-white rounded-2xl p-8 w-full max-w-3xl shadow-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-file-invoice-dollar text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">INVOICE</h3>
+                            <p class="text-sm text-slate-500" x-text="selectedInvoice?.invoiceNumber"></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button @click="printInvoice()" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200">
+                            <i class="fas fa-print mr-2"></i> Cetak
+                        </button>
+                        <button @click="showInvoiceModal = false" class="text-slate-400 hover:text-slate-600">
+                            <i class="fas fa-times text-2xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Invoice Content -->
+                <div id="invoice-content" class="border-2 border-slate-200 rounded-xl p-8">
+                    <!-- Header -->
+                    <div class="flex justify-between items-start mb-8">
+                        <div>
+                            <h1 class="text-2xl font-bold text-slate-900">POS RENTAL</h1>
+                            <p class="text-sm text-slate-600">Sepatu & Perlengkapan Olahraga</p>
+                            <p class="text-sm text-slate-600">Jl. Sudirman No. 123, Jakarta</p>
+                            <p class="text-sm text-slate-600">Tel: 021-1234567</p>
+                        </div>
+                        <div class="text-right">
+                            <h2 class="text-xl font-bold text-slate-900">INVOICE</h2>
+                            <p class="text-sm text-slate-600" x-text="'No: ' + selectedInvoice?.invoiceNumber"></p>
+                            <p class="text-sm text-slate-600" x-text="'Tanggal: ' + selectedInvoice?.date"></p>
+                            <p class="text-sm text-slate-600" x-text="'Booking: ' + selectedInvoice?.bookingId"></p>
+                        </div>
+                    </div>
+
+                    <!-- Customer & Payment Info -->
+                    <div class="grid grid-cols-2 gap-8 mb-8">
+                        <div class="p-4 bg-slate-50 rounded-lg">
+                            <p class="text-xs font-semibold text-slate-500 uppercase mb-2">Ditagihkan Kepada</p>
+                            <p class="font-bold text-slate-900" x-text="selectedInvoice?.customerName"></p>
+                            <p class="text-sm text-slate-600" x-text="selectedInvoice?.customerPhone"></p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg">
+                            <p class="text-xs font-semibold text-slate-500 uppercase mb-2">Info Pembayaran</p>
+                            <p class="text-sm text-slate-900">
+                                <span class="font-semibold">Metode:</span> 
+                                <span x-text="selectedInvoice?.paymentMethod?.toUpperCase()"></span>
+                            </p>
+                            <p class="text-sm text-slate-900">
+                                <span class="font-semibold">Status:</span> 
+                                <span class="text-green-600 font-bold">LUNAS</span>
+                            </p>
+                            <p class="text-sm text-slate-600" x-text="selectedInvoice?.paymentDate" x-show="selectedInvoice?.paymentDate"></p>
+                        </div>
+                    </div>
+
+                    <!-- Items Table -->
+                    <table class="w-full mb-8">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600">Deskripsi</th>
+                                <th class="px-4 py-3 text-center text-xs font-semibold text-slate-600">Jumlah</th>
+                                <th class="px-4 py-3 text-right text-xs font-semibold text-slate-600">Harga</th>
+                                <th class="px-4 py-3 text-right text-xs font-semibold text-slate-600">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="px-4 py-4">
+                                    <p class="font-medium text-slate-900">Rental Sepatu</p>
+                                    <p class="text-sm text-slate-500" x-text="selectedInvoice?.productDetails"></p>
+                                </td>
+                                <td class="px-4 py-4 text-center text-slate-900">1</td>
+                                <td class="px-4 py-4 text-right text-slate-900" x-text="'Rp ' + selectedInvoice?.totalAmount?.toLocaleString('id-ID')"></td>
+                                <td class="px-4 py-4 text-right font-bold text-slate-900" x-text="'Rp ' + selectedInvoice?.totalAmount?.toLocaleString('id-ID')"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Totals -->
+                    <div class="flex justify-end mb-8">
+                        <div class="w-64 space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-600">Subtotal:</span>
+                                <span class="font-medium" x-text="'Rp ' + selectedInvoice?.totalAmount?.toLocaleString('id-ID')"></span>
+                            </div>
+                            <div class="flex justify-between text-sm" x-show="selectedInvoice?.dpAmount > 0">
+                                <span class="text-slate-600">DP Dibayar:</span>
+                                <span class="font-medium text-green-600" x-text="'- Rp ' + selectedInvoice?.dpAmount?.toLocaleString('id-ID')"></span>
+                            </div>
+                            <div class="h-px bg-slate-200 my-2"></div>
+                            <div class="flex justify-between">
+                                <span class="font-bold text-slate-900">TOTAL DIBAYAR:</span>
+                                <span class="font-bold text-xl text-slate-900" x-text="'Rp ' + selectedInvoice?.paidAmount?.toLocaleString('id-ID')"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="border-t border-slate-200 pt-6">
+                        <p class="text-sm text-slate-600 mb-2"><span class="font-semibold">Catatan:</span> <span x-text="selectedInvoice?.notes || '-'"></span></p>
+                        <p class="text-xs text-slate-500">Terima kasih telah menggunakan layanan rental kami. Simpan invoice ini sebagai bukti pembayaran.</p>
+                    </div>
+                </div>
+
+                <!-- Payment History -->
+                <div class="mt-6 p-4 bg-blue-50 rounded-xl">
+                    <h4 class="font-semibold text-blue-900 mb-3"><i class="fas fa-history mr-2"></i>Riwayat Pembayaran</h4>
+                    <div class="space-y-2">
+                        <template x-for="payment in selectedInvoice?.paymentHistory" :key="payment.id">
+                            <div class="flex items-center justify-between p-3 bg-white rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center"
+                                         :class="payment.type === 'dp' ? 'bg-yellow-100' : 'bg-green-100'">
+                                        <i class="fas" :class="payment.type === 'dp' ? 'fa-hand-holding-usd text-yellow-600' : 'fa-check-circle text-green-600'"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-slate-900" x-text="payment.type === 'dp' ? 'Down Payment (DP)' : 'Pelunasan'"></p>
+                                        <p class="text-xs text-slate-500" x-text="payment.date + ' - ' + payment.method.toUpperCase()"></p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-slate-900" x-text="'Rp ' + payment.amount.toLocaleString('id-ID')"></p>
+                                    <p class="text-xs text-slate-500" x-text="payment.invoiceNumber"></p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- View Booking Modal -->
     <div x-show="showViewModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen px-4">
@@ -403,10 +544,47 @@
                         </template>
                     </div>
 
-                    <button @click="showViewModal = false; window.open('https://wa.me/' + selectedBooking?.phone.replace(/\D/g,''))" 
-                            class="w-full px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        <i class="fab fa-whatsapp mr-2"></i> Hubungi Customer
-                    </button>
+                    <!-- Invoice Section -->
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg" x-show="selectedBooking?.invoices?.length > 0">
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-sm font-semibold text-blue-900"><i class="fas fa-file-invoice-dollar mr-2"></i>Invoice & Bukti Pembayaran</p>
+                        </div>
+                        <div class="space-y-2">
+                            <template x-for="invoice in selectedBooking?.invoices" :key="invoice.id">
+                                <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-blue-100">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full flex items-center justify-center"
+                                             :class="invoice.type === 'dp' ? 'bg-yellow-100' : 'bg-green-100'">
+                                            <i class="fas" :class="invoice.type === 'dp' ? 'fa-hand-holding-usd text-yellow-600' : 'fa-check-circle text-green-600'"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-slate-900 text-sm" x-text="invoice.invoiceNumber"></p>
+                                            <p class="text-xs text-slate-500" x-text="invoice.type === 'dp' ? 'Down Payment' : 'Pelunasan'"></p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-bold text-slate-900 text-sm" x-text="'Rp ' + invoice.amount.toLocaleString('id-ID')"></p>
+                                        <button @click="viewInvoice(invoice, selectedBooking)" 
+                                                class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                            <i class="fas fa-eye mr-1"></i> Lihat Invoice
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <button @click="showViewModal = false; window.open('https://wa.me/' + selectedBooking?.phone.replace(/\D/g,''))" 
+                                class="flex-1 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            <i class="fab fa-whatsapp mr-2"></i> Hubungi
+                        </button>
+                        <button x-show="selectedBooking?.status === 'completed' || selectedBooking?.dpPaid > 0"
+                                @click="generateInvoice(selectedBooking)" 
+                                class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-file-invoice mr-2"></i> Invoice
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -870,7 +1048,9 @@
                 showEditModal: false,
                 showPickupModal: false,
                 showReturnModal: false,
+                showInvoiceModal: false,
                 selectedBooking: null,
+                selectedInvoice: null,
                 paymentMethod: '',
                 paymentNotes: '',
                 editForm: null,
@@ -893,12 +1073,42 @@
                 },
                 
                 bookings: [
-                    { id: '#BK-001', customer: 'Ahmad Rizki', phone: '08123456789', items: 2, period: '15-17 Apr', duration: 3, total: 406000, dpPaid: 200000, paymentType: 'dp', status: 'active', date: '15 Apr 2024', pickupDatetime: '2024-04-15 09:00', returnDatetime: '2024-04-17 17:00', blockedDays: '15-17 Apr (3 hari)' },
-                    { id: '#BK-002', customer: 'Siti Nurhaliza', phone: '08234567890', items: 1, period: '15-16 Apr', duration: 2, total: 164000, dpPaid: 164000, paymentType: 'full', status: 'confirmed', date: '15 Apr 2024', pickupDatetime: '2024-04-15 09:00', returnDatetime: '2024-04-16 17:00', blockedDays: '15-16 Apr (2 hari)' },
-                    { id: '#BK-003', customer: 'Budi Santoso', phone: '08345678901', items: 1, period: '14-15 Apr', duration: 2, total: 128000, dpPaid: 50000, paymentType: 'dp', status: 'active', date: '14 Apr 2024', pickupDatetime: '2024-04-14 09:00', returnDatetime: '2024-04-15 17:00', blockedDays: '14-15 Apr (2 hari)' },
-                    { id: '#BK-004', customer: 'Maya Putri', phone: '08456789012', items: 1, period: '2-10 Apr', duration: 9, total: 850000, dpPaid: 850000, paymentType: 'full', status: 'confirmed', date: '31 Mar 2024', pickupDatetime: '2024-04-01 16:00', returnDatetime: '2024-04-11 09:00', blockedDays: '1-11 Apr (11 hari)', hasCustomSchedule: true },
-                    { id: '#BK-005', customer: 'Dewi Lestari', phone: '08567890123', items: 1, period: '10-12 Apr', duration: 3, total: 320000, dpPaid: 320000, paymentType: 'full', status: 'completed', date: '10 Apr 2024', pickupDatetime: '2024-04-10 09:00', returnDatetime: '2024-04-12 17:00', blockedDays: '10-12 Apr (3 hari)' },
-                    { id: '#BK-006', customer: 'Rina Wijaya', phone: '08678901234', items: 1, period: '16-18 Apr', duration: 3, total: 280000, dpPaid: 100000, paymentType: 'dp', status: 'confirmed', date: '16 Apr 2024', pickupDatetime: '2024-04-16 09:00', returnDatetime: '2024-04-18 17:00', blockedDays: '16-18 Apr (3 hari)' },
+                    { 
+                        id: '#BK-001', customer: 'Ahmad Rizki', phone: '08123456789', items: 2, period: '15-17 Apr', duration: 3, total: 406000, dpPaid: 200000, paymentType: 'dp', status: 'active', date: '15 Apr 2024', pickupDatetime: '2024-04-15 09:00', returnDatetime: '2024-04-17 17:00', blockedDays: '15-17 Apr (3 hari)',
+                        invoices: [
+                            { id: 'INV-001', invoiceNumber: 'INV/2024/001', type: 'dp', amount: 200000, date: '15 Apr 2024', method: 'transfer', notes: 'DP via Transfer BCA' }
+                        ]
+                    },
+                    { 
+                        id: '#BK-002', customer: 'Siti Nurhaliza', phone: '08234567890', items: 1, period: '15-16 Apr', duration: 2, total: 164000, dpPaid: 164000, paymentType: 'full', status: 'confirmed', date: '15 Apr 2024', pickupDatetime: '2024-04-15 09:00', returnDatetime: '2024-04-16 17:00', blockedDays: '15-16 Apr (2 hari)',
+                        invoices: [
+                            { id: 'INV-002', invoiceNumber: 'INV/2024/002', type: 'full', amount: 164000, date: '14 Apr 2024', method: 'qris', notes: 'Pembayaran penuh via QRIS' }
+                        ]
+                    },
+                    { 
+                        id: '#BK-003', customer: 'Budi Santoso', phone: '08345678901', items: 1, period: '14-15 Apr', duration: 2, total: 128000, dpPaid: 50000, paymentType: 'dp', status: 'active', date: '14 Apr 2024', pickupDatetime: '2024-04-14 09:00', returnDatetime: '2024-04-15 17:00', blockedDays: '14-15 Apr (2 hari)',
+                        invoices: [
+                            { id: 'INV-003', invoiceNumber: 'INV/2024/003', type: 'dp', amount: 50000, date: '13 Apr 2024', method: 'cash', notes: 'DP tunai' }
+                        ]
+                    },
+                    { 
+                        id: '#BK-004', customer: 'Maya Putri', phone: '08456789012', items: 1, period: '2-10 Apr', duration: 9, total: 850000, dpPaid: 850000, paymentType: 'full', status: 'confirmed', date: '31 Mar 2024', pickupDatetime: '2024-04-01 16:00', returnDatetime: '2024-04-11 09:00', blockedDays: '1-11 Apr (11 hari)', hasCustomSchedule: true,
+                        invoices: [
+                            { id: 'INV-004', invoiceNumber: 'INV/2024/004', type: 'full', amount: 850000, date: '30 Mar 2024', method: 'transfer', notes: 'Pembayaran penuh rental 9 hari' }
+                        ]
+                    },
+                    { 
+                        id: '#BK-005', customer: 'Dewi Lestari', phone: '08567890123', items: 1, period: '10-12 Apr', duration: 3, total: 320000, dpPaid: 320000, paymentType: 'full', status: 'completed', date: '10 Apr 2024', pickupDatetime: '2024-04-10 09:00', returnDatetime: '2024-04-12 17:00', blockedDays: '10-12 Apr (3 hari)',
+                        invoices: [
+                            { id: 'INV-005', invoiceNumber: 'INV/2024/005', type: 'full', amount: 320000, date: '09 Apr 2024', method: 'ewallet', notes: 'Pembayaran via OVO' }
+                        ]
+                    },
+                    { 
+                        id: '#BK-006', customer: 'Rina Wijaya', phone: '08678901234', items: 1, period: '16-18 Apr', duration: 3, total: 280000, dpPaid: 100000, paymentType: 'dp', status: 'confirmed', date: '16 Apr 2024', pickupDatetime: '2024-04-16 09:00', returnDatetime: '2024-04-18 17:00', blockedDays: '16-18 Apr (3 hari)',
+                        invoices: [
+                            { id: 'INV-006', invoiceNumber: 'INV/2024/006', type: 'dp', amount: 100000, date: '15 Apr 2024', method: 'transfer', notes: 'DP 50%' }
+                        ]
+                    },
                 ],
                 
                 get filteredBookings() {
@@ -1122,6 +1332,80 @@
                     }
                     
                     this.showReturnModal = false;
+                },
+
+                // Invoice Functions
+                viewInvoice(invoice, booking) {
+                    // Build payment history
+                    const paymentHistory = booking.invoices?.map(inv => ({
+                        id: inv.id,
+                        type: inv.type,
+                        amount: inv.amount,
+                        date: inv.date,
+                        method: inv.method,
+                        invoiceNumber: inv.invoiceNumber
+                    })) || [];
+
+                    this.selectedInvoice = {
+                        ...invoice,
+                        bookingId: booking.id,
+                        customerName: booking.customer,
+                        customerPhone: booking.phone,
+                        productDetails: `${booking.items} item - ${booking.period}`,
+                        totalAmount: booking.total,
+                        dpAmount: booking.dpPaid,
+                        paidAmount: invoice.type === 'dp' ? invoice.amount : (booking.total - booking.dpPaid + invoice.amount),
+                        paymentHistory: paymentHistory,
+                        paymentMethod: invoice.method,
+                        paymentDate: invoice.date,
+                        notes: invoice.notes
+                    };
+                    this.showInvoiceModal = true;
+                },
+
+                generateInvoice(booking) {
+                    // Determine invoice type based on payment
+                    const isDP = booking.paymentType === 'dp' && booking.dpPaid < booking.total;
+                    const invoiceType = isDP ? 'dp' : 'full';
+                    const amount = isDP ? booking.dpPaid : booking.total;
+                    
+                    // Generate invoice number
+                    const invoiceCount = booking.invoices?.length || 0;
+                    const newInvoiceNumber = 'INV/2024/' + String(invoiceCount + 1).padStart(3, '0');
+                    
+                    // Create new invoice
+                    const newInvoice = {
+                        id: 'INV-' + Date.now(),
+                        invoiceNumber: newInvoiceNumber,
+                        type: invoiceType,
+                        amount: amount,
+                        date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+                        method: 'manual',
+                        notes: 'Invoice generated manually'
+                    };
+                    
+                    // Add to booking
+                    if (!booking.invoices) booking.invoices = [];
+                    booking.invoices.push(newInvoice);
+                    
+                    // Show the invoice
+                    this.viewInvoice(newInvoice, booking);
+                    
+                    alert('Invoice ' + newInvoiceNumber + ' berhasil dibuat!');
+                },
+
+                printInvoice() {
+                    const printContents = document.getElementById('invoice-content').innerHTML;
+                    const originalContents = document.body.innerHTML;
+                    
+                    document.body.innerHTML = `
+                        <div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+                            ${printContents}
+                        </div>
+                    `;
+                    window.print();
+                    document.body.innerHTML = originalContents;
+                    location.reload();
                 }
             }
         }
