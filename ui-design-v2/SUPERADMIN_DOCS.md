@@ -291,12 +291,12 @@ Check role
 - System usage statistics
 - Export to PDF/Excel
 
-### 6. **Admin Settings**
-- System configuration
-- Email templates
-- Pricing plans
-- Feature toggles
-- API keys
+### 6. **Admin Settings** (`admin-settings.html`) ⭐ NEW
+- System configuration & Feature Toggles
+- Role & Permissions Management (Global)
+- Pricing plans (UI Implemented)
+- Communication Templates (Email, Push, WhatsApp) (UI Implemented)
+- API keys & Integrations (UI Implemented)
 
 ---
 
@@ -371,10 +371,12 @@ Super Admin Panel memberikan **kontrol penuh** atas sistem multi-tenant, memungk
 - ✅ User management cross-tenant
 - ✅ Subscription & billing tracking
 - ✅ System analytics & reporting
+- ✅ Global configuration & custom roles management
 
-**Total Halaman Super Admin yang sudah dibuat: 5 halaman** 🎉
+**Total Halaman Super Admin yang sudah dibuat: 6 halaman** 🎉
 - admin-dashboard.html ✅
 - admin-outlets.html ✅
 - admin-users.html ✅
-- admin-subscriptions.html ✅ NEW
-- admin-reports.html ✅ NEW
+- admin-subscriptions.html ✅
+- admin-reports.html ✅
+- admin-settings.html ✅ NEW

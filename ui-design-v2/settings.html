@@ -112,6 +112,11 @@
                                     class="px-4 py-2 rounded-lg font-medium transition-colors">
                                 <i class="fas fa-store mr-2"></i> Outlet
                             </button>
+                            <button @click="activeTab = 'subscription'" 
+                                    :class="activeTab === 'subscription' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50'"
+                                    class="px-4 py-2 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-file-invoice-dollar mr-2"></i> Langganan
+                            </button>
                         </div>
                     </div>
 
@@ -293,6 +298,165 @@
                             <button class="px-6 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
                                 <i class="fas fa-save mr-2"></i> Simpan Perubahan
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Subscription Tab -->
+                    <div x-show="activeTab === 'subscription'" class="p-6 space-y-6" x-data="{
+                        showAddonModal: false,
+                        addons: [
+                            { name: '+1 Outlet Tambahan', icon: 'fas fa-store', price: 50000, qty: 0 },
+                            { name: '+1 User Tambahan', icon: 'fas fa-user-plus', price: 15000, qty: 0 },
+                            { name: '+500 Produk', icon: 'fas fa-boxes', price: 25000, qty: 0 }
+                        ],
+                        get addonTotal() { return this.addons.reduce((s, a) => s + (a.price * a.qty), 0) }
+                    }">
+                        <!-- Current Subscription Card -->
+                        <div>
+                            <h3 class="font-semibold text-slate-900 mb-4">Langganan Aktif</h3>
+                            <div class="bg-gradient-to-r from-slate-900 to-slate-700 rounded-xl p-6 text-white relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+                                <div class="relative z-10">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <span class="text-slate-400 text-xs uppercase tracking-wider">Paket Saat Ini</span>
+                                            <h4 class="text-2xl font-bold">Pro Plan</h4>
+                                        </div>
+                                        <span class="bg-green-500/20 text-green-300 text-xs font-semibold px-3 py-1 rounded-full border border-green-500/30">Aktif</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+                                        <div>
+                                            <p class="text-slate-400 text-xs">Biaya</p>
+                                            <p class="text-lg font-bold">Rp 199.000<span class="text-xs text-slate-400 font-normal">/bln</span></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-400 text-xs">Outlet</p>
+                                            <p class="text-lg font-bold">2 <span class="text-xs text-slate-400 font-normal">/ 3</span></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-400 text-xs">Pengguna</p>
+                                            <p class="text-lg font-bold">8 <span class="text-xs text-slate-400 font-normal">/ ∞</span></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-400 text-xs">Perpanjangan</p>
+                                            <p class="text-lg font-bold">12 Mei 2026</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-3">
+                                        <button class="px-4 py-2 bg-white text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-100 transition-colors">
+                                            <i class="fas fa-arrow-up mr-2"></i>Upgrade Plan
+                                        </button>
+                                        <button @click="showAddonModal = true" class="px-4 py-2 border border-white/30 text-white rounded-lg text-sm font-medium hover:bg-white/10 transition-colors">
+                                            <i class="fas fa-cart-plus mr-2"></i>Beli Add-on
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add-on Purchase Modal -->
+                        <div x-show="showAddonModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4" x-transition.opacity>
+                            <div @click="showAddonModal = false" class="fixed inset-0 bg-black/50"></div>
+                            <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden" @click.away="showAddonModal = false"
+                                 x-transition:enter="ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+                                <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                                    <h4 class="font-bold text-slate-900 text-lg">Beli Add-on</h4>
+                                    <button @click="showAddonModal = false" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <template x-for="(addon, i) in addons" :key="i">
+                                        <div class="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500">
+                                                    <i :class="addon.icon"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm font-medium text-slate-900" x-text="addon.name"></p>
+                                                    <p class="text-xs text-slate-500">Rp <span x-text="addon.price.toLocaleString('id-ID')"></span>/bln</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <button @click="if(addon.qty > 0) addon.qty--" class="w-7 h-7 rounded bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center text-xs font-bold">−</button>
+                                                <span class="w-6 text-center text-sm font-semibold" x-text="addon.qty"></span>
+                                                <button @click="addon.qty++" class="w-7 h-7 rounded bg-slate-900 text-white hover:bg-slate-800 flex items-center justify-center text-xs font-bold">+</button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="px-6 py-4 bg-slate-50 border-t border-slate-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-sm text-slate-600">Total Tambahan /bulan</span>
+                                        <span class="text-lg font-bold text-slate-900">Rp <span x-text="addonTotal.toLocaleString('id-ID')"></span></span>
+                                    </div>
+                                    <button :disabled="addonTotal === 0" :class="addonTotal === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-800'" class="w-full py-2.5 bg-slate-900 text-white rounded-lg font-medium transition-colors">
+                                        <i class="fas fa-shopping-cart mr-2"></i>Bayar Sekarang
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subscription History -->
+                        <div class="pt-6 border-t border-slate-200">
+                            <h3 class="font-semibold text-slate-900 mb-4">Riwayat Pembayaran</h3>
+                            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-sm text-slate-600">
+                                        <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500">
+                                            <tr>
+                                                <th class="px-5 py-3">Invoice</th>
+                                                <th class="px-5 py-3">Deskripsi</th>
+                                                <th class="px-5 py-3">Jumlah</th>
+                                                <th class="px-5 py-3">Tanggal</th>
+                                                <th class="px-5 py-3">Status</th>
+                                                <th class="px-5 py-3 text-right">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100">
+                                            <tr class="hover:bg-slate-50">
+                                                <td class="px-5 py-3 font-mono text-xs text-slate-500">INV-202604-001</td>
+                                                <td class="px-5 py-3">Pro Plan (Bulanan) + 1 Extra Outlet</td>
+                                                <td class="px-5 py-3 font-medium">Rp 249.000</td>
+                                                <td class="px-5 py-3 text-slate-500">12 Apr 2026</td>
+                                                <td class="px-5 py-3"><span class="bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 rounded">Lunas</span></td>
+                                                <td class="px-5 py-3 text-right">
+                                                    <button class="text-slate-500 hover:text-slate-900 text-xs font-medium"><i class="fas fa-download mr-1"></i>Invoice</button>
+                                                </td>
+                                            </tr>
+                                            <tr class="hover:bg-slate-50">
+                                                <td class="px-5 py-3 font-mono text-xs text-slate-500">INV-202603-012</td>
+                                                <td class="px-5 py-3">Pro Plan (Bulanan)</td>
+                                                <td class="px-5 py-3 font-medium">Rp 199.000</td>
+                                                <td class="px-5 py-3 text-slate-500">12 Mar 2026</td>
+                                                <td class="px-5 py-3"><span class="bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 rounded">Lunas</span></td>
+                                                <td class="px-5 py-3 text-right">
+                                                    <button class="text-slate-500 hover:text-slate-900 text-xs font-medium"><i class="fas fa-download mr-1"></i>Invoice</button>
+                                                </td>
+                                            </tr>
+                                            <tr class="hover:bg-slate-50">
+                                                <td class="px-5 py-3 font-mono text-xs text-slate-500">INV-202602-008</td>
+                                                <td class="px-5 py-3">Basic → Pro (Upgrade)</td>
+                                                <td class="px-5 py-3 font-medium">Rp 199.000</td>
+                                                <td class="px-5 py-3 text-slate-500">12 Feb 2026</td>
+                                                <td class="px-5 py-3"><span class="bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 rounded">Lunas</span></td>
+                                                <td class="px-5 py-3 text-right">
+                                                    <button class="text-slate-500 hover:text-slate-900 text-xs font-medium"><i class="fas fa-download mr-1"></i>Invoice</button>
+                                                </td>
+                                            </tr>
+                                            <tr class="hover:bg-slate-50">
+                                                <td class="px-5 py-3 font-mono text-xs text-slate-500">INV-202601-003</td>
+                                                <td class="px-5 py-3">Basic Plan (Bulanan)</td>
+                                                <td class="px-5 py-3 font-medium">Rp 99.000</td>
+                                                <td class="px-5 py-3 text-slate-500">12 Jan 2026</td>
+                                                <td class="px-5 py-3"><span class="bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 rounded">Lunas</span></td>
+                                                <td class="px-5 py-3 text-right">
+                                                    <button class="text-slate-500 hover:text-slate-900 text-xs font-medium"><i class="fas fa-download mr-1"></i>Invoice</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

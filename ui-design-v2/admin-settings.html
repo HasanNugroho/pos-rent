@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Settings - POS Rental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        /* Custom Scrollbar for matrix */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50" x-data="adminSettingsApp()">
+    <!-- Sidebar Superadmin -->
+    <aside
+        class="fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-purple-900 to-indigo-900 border-r border-purple-800 z-50">
+        <div class="h-16 flex items-center px-6 border-b border-purple-800">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-yellow-400 flex items-center justify-center">
+                    <i class="fas fa-crown text-purple-900"></i>
+                </div>s
+                <div>
+                    <h1 class="text-lg font-bold text-white">Super Admin</h1>
+                    <p class="text-xs text-purple-200">POS Rental System</p>
+                </div>
+            </div>
+        </div>
+        <nav class="p-4 space-y-1">
+            <a href="admin-dashboard.html"
+                class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10 transition-colors">
+                <i class="fas fa-chart-pie w-5"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="admin-outlets.html"
+                class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10 transition-colors">
+                <i class="fas fa-store-alt w-5"></i>
+                <span class="font-medium">Outlets</span>
+            </a>
+            <a href="admin-users.html"
+                class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10 transition-colors">
+                <i class="fas fa-users-cog w-5"></i>
+                <span class="font-medium">Users</span>
+            </a>
+            <a href="admin-subscriptions.html"
+                class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10 transition-colors">
+                <i class="fas fa-credit-card w-5"></i>
+                <span class="font-medium">Subscriptions</span>
+            </a>
+            <a href="admin-reports.html"
+                class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10 transition-colors">
+                <i class="fas fa-file-invoice w-5"></i>
+                <span class="font-medium">Reports</span>
+            </a>
+            <div class="pt-4 mt-4 border-t border-purple-800">
+                <a href="admin-settings.html"
+                    class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-white bg-opacity-20 text-white transition-colors">
+                    <i class="fas fa-cog w-5"></i>
+                    <span class="font-medium">Settings</span>
+                </a>
+                <a href="login.html"
+                    class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-purple-100 hover:bg-white hover:bg-opacity-10 transition-colors">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span class="font-medium">Logout</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-40">
+            <div class="h-full px-6 flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">System Settings</h2>
+                    <p class="text-sm text-slate-500">Konfigurasi global dan manajemen akses role</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm font-medium text-slate-900">Super Admin</p>
+                        <p class="text-xs text-slate-500">admin@posrental.com</p>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Super+Admin&background=7c3aed&color=fff"
+                        class="w-10 h-10 rounded-full ring-2 ring-purple-200" alt="Avatar">
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="p-6">
+            <div class="max-w-6xl mx-auto space-y-6">
+
+                <!-- Tabs Container -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="border-b border-slate-200 bg-slate-50 px-2 pt-2">
+                        <div class="flex space-x-1 overflow-x-auto custom-scrollbar pb-2">
+                            <button @click="activeTab = 'system'"
+                                :class="activeTab === 'system' ? 'bg-white text-purple-900 border-t-2 border-purple-600 shadow-sm' : 'text-slate-600 hover:bg-slate-100 border-t-2 border-transparent'"
+                                class="px-5 py-3 rounded-t-lg font-medium transition-all min-w-max">
+                                <i class="fas fa-server mr-2"></i> System Configuration
+                            </button>
+                            <button @click="activeTab = 'roles'"
+                                :class="activeTab === 'roles' ? 'bg-white text-purple-900 border-t-2 border-purple-600 shadow-sm' : 'text-slate-600 hover:bg-slate-100 border-t-2 border-transparent'"
+                                class="px-5 py-3 rounded-t-lg font-medium transition-all min-w-max">
+                                <i class="fas fa-shield-alt mr-2"></i> Roles & Permissions
+                            </button>
+                            <button @click="activeTab = 'plans'"
+                                :class="activeTab === 'plans' ? 'bg-white text-purple-900 border-t-2 border-purple-600 shadow-sm' : 'text-slate-600 hover:bg-slate-100 border-t-2 border-transparent'"
+                                class="px-5 py-3 rounded-t-lg font-medium transition-all min-w-max">
+                                <i class="fas fa-tags mr-2"></i> Pricing Plans
+                            </button>
+                            <button @click="activeTab = 'email'"
+                                :class="activeTab === 'email' ? 'bg-white text-purple-900 border-t-2 border-purple-600 shadow-sm' : 'text-slate-600 hover:bg-slate-100 border-t-2 border-transparent'"
+                                class="px-5 py-3 rounded-t-lg font-medium transition-all min-w-max">
+                                <i class="fas fa-envelope mr-2"></i> Email Templates
+                            </button>
+                            <button @click="activeTab = 'integration'"
+                                :class="activeTab === 'integration' ? 'bg-white text-purple-900 border-t-2 border-purple-600 shadow-sm' : 'text-slate-600 hover:bg-slate-100 border-t-2 border-transparent'"
+                                class="px-5 py-3 rounded-t-lg font-medium transition-all min-w-max">
+                                <i class="fas fa-code-branch mr-2"></i> API & Integrations
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- System Tab -->
+                    <div x-show="activeTab === 'system'" class="p-6 space-y-8 animate-fade-in">
+
+                        <!-- General Settings -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-900 mb-4 border-b border-slate-100 pb-2">General
+                                Settings</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Application
+                                        Name</label>
+                                    <input type="text" value="POS Rental System"
+                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Support Email</label>
+                                    <input type="email" value="support@posrental.com"
+                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Default Trial Duration
+                                        (Days)</label>
+                                    <input type="number" value="14"
+                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Timezone</label>
+                                    <select
+                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                        <option>Asia/Jakarta (WIB)</option>
+                                        <option>Asia/Makassar (WITA)</option>
+                                        <option>Asia/Jayapura (WIT)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Toggles -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-900 mb-4 border-b border-slate-100 pb-2">Global
+                                Feature Toggles</h3>
+                            <div class="space-y-4">
+                                <label
+                                    class="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer">
+                                    <div>
+                                        <p class="font-medium text-slate-900">Allow New Outlet Registrations</p>
+                                        <p class="text-sm text-slate-500">Buka akses pendaftaran untuk tenant baru</p>
+                                    </div>
+                                    <div class="relative inline-flex items-center">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div
+                                            class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600">
+                                        </div>
+                                    </div>
+                                </label>
+                                <label
+                                    class="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer">
+                                    <div>
+                                        <p class="font-medium text-slate-900">Maintenance Mode</p>
+                                        <p class="text-sm text-slate-500">Tutup akses aplikasi untuk semua tenant
+                                            (kecuali Super Admin)</p>
+                                    </div>
+                                    <div class="relative inline-flex items-center">
+                                        <input type="checkbox" class="sr-only peer">
+                                        <div
+                                            class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600">
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-200 flex justify-end">
+                            <button
+                                class="px-6 py-2.5 bg-purple-900 text-white rounded-lg hover:bg-purple-800 transition-colors">
+                                <i class="fas fa-save mr-2"></i> Save System Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Roles & Permissions Tab -->
+                    <div x-show="activeTab === 'roles'" class="p-6 animate-fade-in" x-cloak>
+
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900">Role Management</h3>
+                                <p class="text-sm text-slate-500">Kelola Role dan Permission yang tersedia untuk semua
+                                    tenant</p>
+                            </div>
+                            <button @click="openRoleModal()"
+                                class="px-4 py-2 bg-purple-900 text-white rounded-lg hover:bg-purple-800 transition-colors shadow-sm">
+                                <i class="fas fa-plus mr-2"></i> Create Custom Role
+                            </button>
+                        </div>
+
+                        <!-- Roles Table -->
+                        <div class="overflow-x-auto bg-white border border-slate-200 rounded-lg">
+                            <table class="w-full text-left text-sm text-slate-600">
+                                <thead class="bg-slate-50 text-slate-700 font-medium border-b border-slate-200">
+                                    <tr>
+                                        <th class="px-6 py-4">Role Name</th>
+                                        <th class="px-6 py-4">Description</th>
+                                        <th class="px-6 py-4">Type</th>
+                                        <th class="px-6 py-4">Total Permissions</th>
+                                        <th class="px-6 py-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200">
+                                    <template x-for="role in roles" :key="role.id">
+                                        <tr class="hover:bg-slate-50">
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center">
+                                                    <div class="font-semibold text-slate-900" x-text="role.name"></div>
+                                                    <span x-show="role.isSystem"
+                                                        class="ml-2 px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">System</span>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 text-slate-500" x-text="role.description"></td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-2.5 py-1 rounded-full text-xs font-medium"
+                                                    :class="role.isSystem ? 'bg-slate-100 text-slate-600' : 'bg-green-100 text-green-700'"
+                                                    x-text="role.isSystem ? 'Default' : 'Custom'"></span>
+                                            </td>
+                                            <td class="px-6 py-4 font-medium text-slate-700"
+                                                x-text="role.permissionCount + ' / 85'"></td>
+                                            <td class="px-6 py-4 text-right space-x-2">
+                                                <button @click="editRole(role)"
+                                                    class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                                    title="Edit Permissions">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button x-show="!role.isSystem" @click="deleteRole(role)"
+                                                    class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Delete Role">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <!-- Pricing Plans Tab -->
+                    <div x-show="activeTab === 'plans'" class="p-6 animate-fade-in" x-cloak x-data="{ showPlanForm: false }">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900">Subscription Plans</h3>
+                                <p class="text-sm text-slate-500">Manage available subscription packages and feature limits.</p>
+                            </div>
+                            <button x-show="!showPlanForm" @click="showPlanForm = true" class="px-4 py-2 bg-purple-900 text-white rounded-lg hover:bg-purple-800 transition-colors shadow-sm">
+                                <i class="fas fa-plus mr-2"></i> Add New Plan
+                            </button>
+                            <button x-show="showPlanForm" @click="showPlanForm = false" class="px-4 py-2 border border-slate-300 text-slate-700 bg-white rounded-lg hover:bg-slate-50 transition-colors">
+                                <i class="fas fa-arrow-left mr-2"></i> Back to Plans
+                            </button>
+                        </div>
+                        
+                        <!-- Create / Edit Plan Form -->
+                        <div x-show="showPlanForm" class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden" x-transition.opacity>
+                            <div class="p-6 border-b border-slate-200 bg-slate-50">
+                                <h4 class="text-lg font-bold text-slate-800">Configure Subscription Plan</h4>
+                                <p class="text-xs text-slate-500 mt-1">Set limits and add-on pricing</p>
+                            </div>
+                            <div class="p-6 space-y-6">
+                                <!-- Basic details -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Plan Name</label>
+                                        <input type="text" placeholder="e.g. Pro Plan" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-2">Price</label>
+                                            <input type="number" placeholder="199000" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-2">Interval</label>
+                                            <select class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                                <option>Monthly</option>
+                                                <option>Yearly</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Core Limits -->
+                                <div class="bg-blue-50 border border-blue-100 rounded-lg p-5">
+                                    <h5 class="text-sm font-bold text-blue-900 mb-4 border-b border-blue-200 pb-2">Core Feature Limits</h5>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-blue-800 mb-1">Max Outlets</label>
+                                            <input type="number" value="3" class="w-full px-3 py-2 border border-blue-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-blue-800 mb-1">Max Users</label>
+                                            <input type="number" value="10" placeholder="Empty for unlimited" class="w-full px-3 py-2 border border-blue-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-blue-800 mb-1">Max Products</label>
+                                            <input type="number" value="2000" class="w-full px-3 py-2 border border-blue-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Accessible Features -->
+                                <div>
+                                    <h5 class="text-sm font-bold text-slate-800 mb-3 block">Accessible Features</h5>
+                                    <p class="text-xs text-slate-500 mb-4">Toggle module access logic for this subscription tier.</p>
+                                    
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 border border-slate-200 p-4 rounded-lg">
+                                        <label class="flex items-center space-x-2 text-sm text-slate-700">
+                                            <input type="checkbox" checked class="rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                                            <span>Multi-Branch Sync</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2 text-sm text-slate-700">
+                                            <input type="checkbox" checked class="rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                                            <span>Inventory Tracking</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2 text-sm text-slate-700">
+                                            <input type="checkbox" class="rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                                            <span>Advanced Reporting</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2 text-sm text-slate-700">
+                                            <input type="checkbox" class="rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                                            <span>API Access & Webhooks</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2 text-sm text-slate-700">
+                                            <input type="checkbox" class="rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                                            <span>Custom Domain</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Add-ons -->
+                                <div>
+                                    <h5 class="text-sm font-bold text-slate-800 mb-3 block">Available Add-ons (Upsells)</h5>
+                                    <p class="text-xs text-slate-500 mb-4">Allow tenants to purchase extra quotas without upgrading their plan.</p>
+                                    
+                                    <div class="space-y-3">
+                                        <!-- Addon 1 -->
+                                        <div class="flex items-center space-x-3 p-3 border border-slate-200 rounded-lg bg-slate-50">
+                                            <div class="w-1/3">
+                                                <label class="text-xs text-slate-500 font-bold uppercase block mb-1">Add-on Item</label>
+                                                <span class="font-medium text-slate-800 text-sm"><i class="fas fa-store text-slate-400 mr-2"></i> +1 Additional Outlet</span>
+                                            </div>
+                                            <div class="w-1/3">
+                                                <label class="text-xs text-slate-500 font-bold uppercase block mb-1">Price</label>
+                                                <div class="relative">
+                                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500 text-sm">Rp</span>
+                                                    <input type="number" value="50000" class="w-full pl-9 px-3 py-1.5 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-purple-600 text-sm">
+                                                </div>
+                                            </div>
+                                            <div class="w-1/3 flex items-center justify-end">
+                                                <label class="flex items-center space-x-2 text-sm">
+                                                    <input type="checkbox" checked class="rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                                                    <span class="font-medium text-slate-700">Enable Add-on</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Addon 2 -->
+                                        <div class="flex items-center space-x-3 p-3 border border-slate-200 rounded-lg bg-slate-50">
+                                            <div class="w-1/3">
+                                                <span class="font-medium text-slate-800 text-sm"><i class="fas fa-users text-slate-400 mr-2"></i> +1 Additional User</span>
+                                            </div>
+                                            <div class="w-1/3">
+                                                <div class="relative">
+                                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500 text-sm">Rp</span>
+                                                    <input type="number" value="15000" class="w-full pl-9 px-3 py-1.5 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-purple-600 text-sm">
+                                                </div>
+                                            </div>
+                                            <div class="w-1/3 flex items-center justify-end">
+                                                <label class="flex items-center space-x-2 text-sm">
+                                                    <input type="checkbox" checked class="rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                                                    <span class="font-medium text-slate-700">Enable Add-on</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end">
+                                <button class="px-6 py-2 bg-purple-900 text-white rounded-lg hover:bg-purple-800 transition-colors font-medium">Save Subscription Plan</button>
+                            </div>
+                        </div>
+
+                        <!-- Plans List (Grid) -->
+                        <div x-show="!showPlanForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <!-- Trial Plan -->
+                            <div class="bg-white border-2 border-slate-200 rounded-xl p-6 relative flex flex-col">
+                                <div class="absolute top-0 right-0 bg-slate-100 text-slate-600 px-3 py-1 rounded-bl-lg rounded-tr-lg text-xs font-bold uppercase">Default</div>
+                                <h4 class="text-xl font-bold text-slate-900 mb-2">Free Trial</h4>
+                                <div class="flex items-baseline mb-4">
+                                    <span class="text-3xl font-extrabold text-slate-900">Rp 0</span>
+                                    <span class="text-sm font-medium text-slate-500 ml-1">/ 14 days</span>
+                                </div>
+                                <ul class="space-y-3 mb-6 text-sm text-slate-600 flex-1">
+                                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> 1 Outlet</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Max 5 Users</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Max 50 Products</li>
+                                </ul>
+                                <button @click="showPlanForm = true" class="w-full py-2 border border-slate-300 rounded-lg text-slate-700 font-medium hover:bg-slate-50 transition-colors mt-auto">Edit Plan</button>
+                            </div>
+                            <!-- Basic Plan -->
+                            <div class="bg-white border-2 border-slate-200 rounded-xl p-6 flex flex-col">
+                                <h4 class="text-xl font-bold text-slate-900 mb-2">Basic</h4>
+                                <div class="flex items-baseline mb-4">
+                                    <span class="text-3xl font-extrabold text-slate-900">Rp 99K</span>
+                                    <span class="text-sm font-medium text-slate-500 ml-1">/ month</span>
+                                </div>
+                                <ul class="space-y-3 mb-6 text-sm text-slate-600 flex-1">
+                                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> 1 Outlet</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Max 10 Users</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Max 500 Products</li>
+                                </ul>
+                                <button @click="showPlanForm = true" class="w-full py-2 border border-slate-300 rounded-lg text-slate-700 font-medium hover:bg-slate-50 transition-colors mt-auto">Edit Plan</button>
+                            </div>
+                            <!-- Pro Plan -->
+                            <div class="bg-white border-2 border-purple-500 shadow-md rounded-xl p-6 relative transform scale-105 z-10 flex flex-col">
+                                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-purple-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Popular</div>
+                                <h4 class="text-xl font-bold text-purple-900 mb-2">Pro</h4>
+                                <div class="flex items-baseline mb-4">
+                                    <span class="text-3xl font-extrabold text-slate-900">Rp 199K</span>
+                                    <span class="text-sm font-medium text-slate-500 ml-1">/ month</span>
+                                </div>
+                                <ul class="space-y-3 mb-6 text-sm text-slate-600 flex-1">
+                                    <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-2"></i> Up to 3 Outlets</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-2"></i> Unlimited Users</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-2"></i> Max 2000 Products</li>
+                                </ul>
+                                <div class="bg-purple-50 mb-4 p-2 rounded-lg text-xs text-purple-800">
+                                    <span class="font-bold">Add-ons:</span> +Outlet (50k), +User (15k)
+                                </div>
+                                <button @click="showPlanForm = true" class="w-full py-2 bg-purple-100 text-purple-700 rounded-lg font-medium hover:bg-purple-200 transition-colors mt-auto">Edit Plan</button>
+                            </div>
+                            <!-- Enterprise Plan -->
+                            <div class="bg-white border-2 border-slate-200 rounded-xl p-6 flex flex-col">
+                                <h4 class="text-xl font-bold text-slate-900 mb-2">Enterprise</h4>
+                                <div class="flex items-baseline mb-4">
+                                    <span class="text-3xl font-extrabold text-slate-900">Rp 499K</span>
+                                    <span class="text-sm font-medium text-slate-500 ml-1">/ month</span>
+                                </div>
+                                <ul class="space-y-3 mb-6 text-sm text-slate-600 flex-1">
+                                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Unlimited Outlets</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Unlimited Users</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Unlimited Products</li>
+                                </ul>
+                                <button @click="showPlanForm = true" class="w-full py-2 border border-slate-300 rounded-lg text-slate-700 font-medium hover:bg-slate-50 transition-colors mt-auto">Edit Plan</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Communications / Email Templates Tab -->
+                    <div x-show="activeTab === 'email'" class="p-6 animate-fade-in" x-cloak x-data="{ activeTrigger: 'auth', channelTab: 'email' }">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900">Communication Templates</h3>
+                                <p class="text-sm text-slate-500">Configure automated messages for Email, WhatsApp, and Push Notifications.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row border border-slate-200 rounded-lg bg-white overflow-hidden shadow-sm">
+                            <!-- Left Sidebar: Triggers -->
+                            <div class="w-full md:w-1/3 border-r border-slate-200 bg-slate-50">
+                                <div class="p-4 border-b border-slate-200">
+                                    <h4 class="font-semibold text-slate-700 text-sm uppercase tracking-wider">Event Triggers</h4>
+                                </div>
+                                <div class="divide-y divide-slate-100">
+                                    <button @click="activeTrigger = 'auth_verify'" :class="activeTrigger === 'auth_verify' ? 'bg-purple-50 border-l-4 border-purple-600 text-purple-900 pl-3' : 'hover:bg-slate-100 text-slate-700 border-l-4 border-transparent pl-4'" class="w-full text-left py-3 pr-4 transition-colors flex items-center justify-between">
+                                        <span class="font-medium text-sm">Verify Email Address</span>
+                                        <i class="fas fa-chevron-right text-xs opacity-50"></i>
+                                    </button>
+                                    <button @click="activeTrigger = 'auth_forgot'" :class="activeTrigger === 'auth_forgot' ? 'bg-purple-50 border-l-4 border-purple-600 text-purple-900 pl-3' : 'hover:bg-slate-100 text-slate-700 border-l-4 border-transparent pl-4'" class="w-full text-left py-3 pr-4 transition-colors flex items-center justify-between">
+                                        <span class="font-medium text-sm">Forgot Password</span>
+                                        <i class="fas fa-chevron-right text-xs opacity-50"></i>
+                                    </button>
+                                    <button @click="activeTrigger = 'sub_remind'" :class="activeTrigger === 'sub_remind' ? 'bg-purple-50 border-l-4 border-purple-600 text-purple-900 pl-3' : 'hover:bg-slate-100 text-slate-700 border-l-4 border-transparent pl-4'" class="w-full text-left py-3 pr-4 transition-colors flex items-center justify-between">
+                                        <span class="font-medium text-sm">Subscription Reminder</span>
+                                        <i class="fas fa-chevron-right text-xs opacity-50"></i>
+                                    </button>
+                                    <button @click="activeTrigger = 'payment_success'" :class="activeTrigger === 'payment_success' ? 'bg-purple-50 border-l-4 border-purple-600 text-purple-900 pl-3' : 'hover:bg-slate-100 text-slate-700 border-l-4 border-transparent pl-4'" class="w-full text-left py-3 pr-4 transition-colors flex items-center justify-between">
+                                        <span class="font-medium text-sm">Payment Reciept</span>
+                                        <i class="fas fa-chevron-right text-xs opacity-50"></i>
+                                    </button>
+                                    <button @click="activeTrigger = 'booking_created'" :class="activeTrigger === 'booking_created' ? 'bg-purple-50 border-l-4 border-purple-600 text-purple-900 pl-3' : 'hover:bg-slate-100 text-slate-700 border-l-4 border-transparent pl-4'" class="w-full text-left py-3 pr-4 transition-colors flex items-center justify-between">
+                                        <span class="font-medium text-sm">New Booking (Tenant)</span>
+                                        <i class="fas fa-chevron-right text-xs opacity-50"></i>
+                                    </button>
+                                    <button @click="activeTrigger = 'overdue'" :class="activeTrigger === 'overdue' ? 'bg-purple-50 border-l-4 border-purple-600 text-purple-900 pl-3' : 'hover:bg-slate-100 text-slate-700 border-l-4 border-transparent pl-4'" class="w-full text-left py-3 pr-4 transition-colors flex items-center justify-between">
+                                        <span class="font-medium text-sm">Overdue Return</span>
+                                        <i class="fas fa-chevron-right text-xs opacity-50"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Side: Template Editor -->
+                            <div class="w-full md:w-2/3 flex flex-col">
+                                <!-- Channel Tabs -->
+                                <div class="flex border-b border-slate-200 px-2 pt-2 bg-white">
+                                    <button @click="channelTab = 'email'" :class="channelTab === 'email' ? 'border-purple-600 text-purple-700' : 'border-transparent text-slate-500 hover:text-slate-700'" class="px-4 py-3 border-b-2 font-medium text-sm flex items-center transition-colors">
+                                        <i class="fas fa-envelope mr-2"></i> Email
+                                    </button>
+                                    <button @click="channelTab = 'whatsapp'" :class="channelTab === 'whatsapp' ? 'border-purple-600 text-purple-700' : 'border-transparent text-slate-500 hover:text-slate-700'" class="px-4 py-3 border-b-2 font-medium text-sm flex items-center transition-colors">
+                                        <i class="fab fa-whatsapp mr-2 text-green-500"></i> WhatsApp/Telegram
+                                    </button>
+                                    <button @click="channelTab = 'push'" :class="channelTab === 'push' ? 'border-purple-600 text-purple-700' : 'border-transparent text-slate-500 hover:text-slate-700'" class="px-4 py-3 border-b-2 font-medium text-sm flex items-center transition-colors">
+                                        <i class="fas fa-bell mr-2 text-blue-500"></i> Push Notification
+                                    </button>
+                                </div>
+                                
+                                <!-- Editor Area -->
+                                <div class="p-6 flex-1 bg-white">
+                                    <!-- Dynamic Topic Title -->
+                                    <div class="mb-4 flex items-center justify-between">
+                                        <h5 class="font-bold text-slate-800" x-text="
+                                            activeTrigger === 'auth_verify' ? 'Email Verification' : 
+                                            activeTrigger === 'auth_forgot' ? 'Forgot Password Reset' : 
+                                            activeTrigger === 'sub_remind' ? 'Subscription Expiring Reminder' : 
+                                            activeTrigger === 'payment_success' ? 'Payment Success Receipt' : 
+                                            activeTrigger === 'booking_created' ? 'Tenant New Booking Alert' : 'Overdue Return Warning'"></h5>
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <span class="text-xs text-slate-500">Enable this channel</span>
+                                            <div class="relative inline-flex items-center">
+                                                <input type="checkbox" checked class="sr-only peer">
+                                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="space-y-4">
+                                        <!-- Subject (only for email/push) -->
+                                        <div x-show="channelTab !== 'whatsapp'">
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">Subject / Title</label>
+                                            <input type="text" :value="channelTab === 'push' ? 'Welcome!' : 'Welcome to POS Rental, {{user_name}}!'" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm">
+                                        </div>
+                                        
+                                        <!-- Message Body -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">Message Body</label>
+                                            <textarea rows="8" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm font-mono leading-relaxed" x-text="
+                                            channelTab === 'whatsapp' && activeTrigger === 'auth_verify' ? 'Hi {{user_name}},\n\nYour OTP for verification is {{otp_code}}' : 
+                                            activeTrigger === 'auth_forgot' ? 'Hi {{user_name}},\n\nClick the link below to reset your password:\n{{reset_url}}' : 
+                                            channelTab === 'push' ? 'Your POS Rental account has an update. Tap to view.' : 
+                                            'Hi {{user_name}},\n\nPlease verify your email for outlet \u0022{{outlet_name}}\u0022. \nClick here: {{verify_url}}\n\nThanks,\nSuper Admin Team'"></textarea>
+                                        </div>
+                                        
+                                        <!-- Available Variables -->
+                                        <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-lg">
+                                            <p class="text-xs font-semibold text-indigo-800 mb-2">Available Variables:</p>
+                                            <div class="flex flex-wrap gap-2">
+                                                <span class="px-2 py-1 bg-white text-indigo-600 border border-indigo-200 rounded text-xs cursor-pointer hover:bg-indigo-100">`{{user_name}}`</span>
+                                                <span class="px-2 py-1 bg-white text-indigo-600 border border-indigo-200 rounded text-xs cursor-pointer hover:bg-indigo-100">`{{outlet_name}}`</span>
+                                                <span class="px-2 py-1 bg-white text-indigo-600 border border-indigo-200 rounded text-xs cursor-pointer hover:bg-indigo-100">`{{login_url}}`</span>
+                                                <span class="px-2 py-1 bg-white text-indigo-600 border border-indigo-200 rounded text-xs cursor-pointer hover:bg-indigo-100">`{{trial_end_date}}`</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-6 flex justify-end space-x-3">
+                                        <button class="px-4 py-2 text-sm border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">Send Test</button>
+                                        <button class="px-4 py-2 text-sm bg-purple-900 text-white rounded-lg hover:bg-purple-800 transition-colors shadow-sm">Save Template</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- API Integration Tab -->
+                    <div x-show="activeTab === 'integration'" class="p-6 animate-fade-in" x-cloak x-data="{ payProv: 'Midtrans', storageProv: 'Cloudflare R2', waProv: 'Wablas' }">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900">API & Integrations</h3>
+                                <p class="text-sm text-slate-500">Configure third-party services and webhooks globally.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Payment Gateway -->
+                            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                <div class="bg-blue-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="bg-white p-2 rounded-lg shadow-sm border border-slate-100 text-blue-600 w-10 h-10 flex items-center justify-center">
+                                            <i class="fas fa-credit-card text-xl"></i>
+                                        </div>
+                                        <h4 class="font-bold text-slate-800">Payment Gateway</h4>
+                                    </div>
+                                    <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200">Connected</span>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">Provider</label>
+                                            <select x-model="payProv" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 bg-slate-50 text-slate-700 text-sm">
+                                                <option>Midtrans</option>
+                                                <option>Xendit</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">Environment</label>
+                                            <select class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 bg-slate-50 text-slate-700 text-sm">
+                                                <option>Sandbox</option>
+                                                <option>Production</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div x-show="payProv === 'Midtrans'">
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Server Key</label>
+                                        <div class="relative">
+                                            <input type="password" value="Midtrans-Server-Key" class="w-full px-4 py-2 text-sm font-mono border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 pr-10">
+                                            <button class="absolute inset-y-0 right-0 px-3 text-slate-400 hover:text-slate-600"><i class="fas fa-eye"></i></button>
+                                        </div>
+                                        <label class="block text-sm font-medium text-slate-700 mt-3 mb-1">Client Key</label>
+                                        <input type="text" value="Midtrans-Client-Key-Here" class="w-full px-4 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                    </div>
+                                    <div x-show="payProv === 'Xendit'" style="display: none;">
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Secret API Key</label>
+                                        <div class="relative">
+                                            <input type="password" value="xnd_production_..." class="w-full px-4 py-2 text-sm font-mono border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 pr-10">
+                                            <button class="absolute inset-y-0 right-0 px-3 text-slate-400 hover:text-slate-600"><i class="fas fa-eye"></i></button>
+                                        </div>
+                                        <label class="block text-sm font-medium text-slate-700 mt-3 mb-1">Webhook Token</label>
+                                        <input type="text" value="v2_webook_token_here" class="w-full px-4 py-2 text-sm font-mono border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                                    </div>
+                                    <div class="pt-2">
+                                        <button class="w-full py-2 bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-100 transition-colors">Update Credentials</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Storage Integrations -->
+                            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                <div class="bg-orange-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="bg-white p-2 rounded-lg shadow-sm border border-slate-100 text-orange-600 w-10 h-10 flex items-center justify-center">
+                                            <i class="fas fa-database text-xl"></i>
+                                        </div>
+                                        <h4 class="font-bold text-slate-800">Cloud Storage</h4>
+                                    </div>
+                                    <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200">Active</span>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">Provider</label>
+                                            <select x-model="storageProv" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm">
+                                                <option>AWS S3</option>
+                                                <option>Cloudflare R2</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">Bucket Name</label>
+                                            <input type="text" value="posrental-assets" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm">
+                                        </div>
+                                    </div>
+                                    <div x-show="storageProv === 'Cloudflare R2'">
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Account ID</label>
+                                        <input type="text" value="1234567890abcdef" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 font-mono text-sm">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4" x-show="storageProv === 'AWS S3'" style="display: none;">
+                                        <div class="col-span-2">
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">Region</label>
+                                            <input type="text" value="ap-southeast-1" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Access Key ID</label>
+                                        <input type="text" value="AKIAIOSFODNN7EXAMPLE" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 font-mono text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Secret Access Key</label>
+                                        <div class="relative">
+                                            <input type="password" value="wJalrXUtnFEMI/K7MD" class="w-full px-4 py-2 font-mono border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm pr-10">
+                                            <button class="absolute inset-y-0 right-0 px-3 text-slate-400 hover:text-slate-600"><i class="fas fa-eye"></i></button>
+                                        </div>
+                                    </div>
+                                    <div x-show="storageProv === 'Cloudflare R2'">
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Public Domain URL (Optional)</label>
+                                        <input type="text" placeholder="https://pub-xxxx.r2.dev" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm">
+                                    </div>
+                                    <div class="pt-2">
+                                        <button class="w-full py-2 bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-100 transition-colors">Test Connection</button>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+
+                            <!-- WhatsApp Gateway -->
+                            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                <div class="bg-green-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="bg-white p-2 rounded-lg shadow-sm border border-slate-100 text-green-600 w-10 h-10 flex items-center justify-center">
+                                            <i class="fab fa-whatsapp text-xl"></i>
+                                        </div>
+                                        <h4 class="font-bold text-slate-800">WhatsApp Gateway</h4>
+                                    </div>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full border border-yellow-200">Needs Sync</span>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Provider</label>
+                                        <select x-model="waProv" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm">
+                                            <option>Wablas</option>
+                                            <option>Fonnte</option>
+                                        </select>
+                                    </div>
+                                    <div x-show="waProv === 'Wablas'">
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Server URL / Domain</label>
+                                        <input type="text" placeholder="https://selo.wablas.com" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm font-mono">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">API Token</label>
+                                        <input type="password" value="your-secret-token" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm font-mono">
+                                    </div>
+                                    <div class="pt-2 flex space-x-3">
+                                        <button x-show="waProv === 'Wablas'" class="flex-1 py-2 bg-slate-50 border border-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-100 transition-colors"><i class="fas fa-qrcode mr-2"></i>Generate QR</button>
+                                        <button class="flex-1 py-2 bg-purple-50 text-purple-700 border border-purple-200 rounded-lg text-sm font-medium hover:bg-purple-100 transition-colors">Save Details</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Firebase Push Notification -->
+                            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                <div class="bg-yellow-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="bg-white p-2 rounded-lg shadow-sm border border-slate-100 text-yellow-600 w-10 h-10 flex items-center justify-center">
+                                            <i class="fas fa-fire text-xl"></i>
+                                        </div>
+                                        <h4 class="font-bold text-slate-800">Firebase (Push)</h4>
+                                    </div>
+                                    <span class="px-2 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full border border-slate-200">Inactive</span>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Server Key (Legacy)</label>
+                                        <input type="password" placeholder="AIzaSyA..." class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm font-mono">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Service Account JSON</label>
+                                        <textarea rows="3" placeholder='{ "type": "service_account", ... }' class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm font-mono"></textarea>
+                                    </div>
+                                    <div class="pt-2 flex justify-between items-center">
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                                            <span class="text-sm font-medium text-slate-700">Enable Push</span>
+                                        </label>
+                                        <button class="px-4 py-2 bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-100 transition-colors">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- SMTP Email Notifications -->
+                            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                <div class="bg-indigo-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="bg-white p-2 rounded-lg shadow-sm border border-slate-100 text-indigo-600 w-10 h-10 flex items-center justify-center">
+                                            <i class="fas fa-envelope-open-text text-xl"></i>
+                                        </div>
+                                        <h4 class="font-bold text-slate-800">SMTP Email Gateway</h4>
+                                    </div>
+                                    <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200">Connected</span>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">SMTP Host</label>
+                                            <input type="text" value="smtp.mailgun.org" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">Port</label>
+                                            <input type="number" value="587" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Username</label>
+                                        <input type="text" value="postmaster@mg.posrental.com" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 font-mono text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                                        <input type="password" value="*****************" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm">
+                                    </div>
+                                    <div class="pt-2">
+                                        <button class="w-full py-2 bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-100 transition-colors">Test Configurations</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Role & Permissions Modal -->
+    <div x-show="showRoleModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <!-- Background overlay -->
+            <div @click="closeRoleModal()" x-show="showRoleModal" x-transition.opacity
+                class="fixed inset-0 bg-slate-900 bg-opacity-60 transition-opacity"></div>
+
+            <!-- Modal Panel -->
+            <div x-show="showRoleModal" x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="relative inline-block bg-white rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:max-w-4xl w-full">
+
+                <div
+                    class="bg-gradient-to-r from-slate-50 to-white px-6 py-4 border-b border-slate-200 flex justify-between items-center sticky top-0 z-10">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900"
+                            x-text="isEditingRole ? 'Edit Role & Permissions' : 'Create Custom Role'"></h3>
+                        <p class="text-xs text-slate-500 mt-1"
+                            x-text="currentRole.isSystem ? 'System roles have locked permissions.' : 'Define permissions for this role.'">
+                        </p>
+                    </div>
+                    <button @click="closeRoleModal()" class="text-slate-400 hover:text-slate-600 transition-colors p-2">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="p-6 bg-slate-50/50">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Role Name</label>
+                            <input type="text" x-model="currentRole.name" :disabled="currentRole.isSystem"
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 disabled:bg-slate-100 disabled:text-slate-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Description</label>
+                            <input type="text" x-model="currentRole.description" :disabled="currentRole.isSystem"
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 disabled:bg-slate-100 disabled:text-slate-500">
+                        </div>
+                    </div>
+
+                    <h4 class="text-md font-semibold text-slate-900 mb-4 flex items-center">
+                        <i class="fas fa-key text-purple-600 mr-2"></i> Permissions Matrix
+                    </h4>
+
+                    <div x-show="currentRole.isSystem"
+                        class="mb-4 bg-blue-50 border border-blue-200 p-4 rounded-lg flex items-start">
+                        <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-3"></i>
+                        <p class="text-sm text-blue-800">Permissions for <b>System Roles</b> are predefined and cannot
+                            be edited. You can create a new custom role to assign specific permissions.</p>
+                    </div>
+
+                    <!-- Permissions Grid -->
+                    <div
+                        class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[50vh] overflow-y-auto custom-scrollbar pr-2">
+                        <!-- Loop through permission groups -->
+                        <template x-for="(group, groupName) in permissionGroups" :key="groupName">
+                            <div class="bg-white border text-sm border-slate-200 rounded-lg shadow-sm">
+                                <div
+                                    class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center rounded-t-lg">
+                                    <h5 class="font-semibold text-slate-800 capitalize"
+                                        x-text="groupName + ' Management'"></h5>
+                                    <label
+                                        class="flex items-center space-x-2 text-xs font-medium text-slate-500 cursor-pointer hover:text-slate-800"
+                                        x-show="!currentRole.isSystem">
+                                        <span>Select All</span>
+                                        <input type="checkbox"
+                                            class="rounded text-purple-600 focus:ring-purple-500 border-slate-300"
+                                            @change="toggleGroup(groupName, $event.target.checked)">
+                                    </label>
+                                </div>
+                                <div class="p-4 grid grid-cols-2 gap-y-3 gap-x-4">
+                                    <template x-for="perm in group" :key="perm.id">
+                                        <label class="flex items-start space-x-3"
+                                            :class="currentRole.isSystem ? 'cursor-not-allowed opacity-75' : 'cursor-pointer hover:bg-slate-50'">
+                                            <input type="checkbox" :value="perm.id" x-model="currentRole.permissions"
+                                                :disabled="currentRole.isSystem"
+                                                class="mt-0.5 border-slate-300 rounded text-purple-600 focus:ring-purple-500 disabled:bg-slate-200">
+                                            <div>
+                                                <p class="font-medium text-slate-700 text-xs" x-text="perm.action"></p>
+                                                <p class="text-[10px] text-slate-500 leading-tight mt-0.5"
+                                                    x-text="perm.desc"></p>
+                                            </div>
+                                        </label>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex items-center justify-end space-x-3 rounded-b-xl">
+                    <button @click="closeRoleModal()"
+                        class="px-4 py-2 border border-slate-300 text-slate-700 bg-white rounded-lg hover:bg-slate-50 transition-colors font-medium">Batal</button>
+                    <button x-show="!currentRole.isSystem" @click="saveRole()"
+                        class="px-6 py-2 bg-purple-900 text-white rounded-lg hover:bg-purple-800 transition-colors shadow-md font-medium">
+                        <i class="fas fa-save mr-2"></i> Simpan Role
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function adminSettingsApp() {
+            return {
+                activeTab: 'roles',
+                showRoleModal: false,
+                isEditingRole: false,
+
+                // Permission structure mapped from PERMISSIONS_LIST.md
+                permissionGroups: {
+                    user: [
+                        { id: 'user:create', action: 'Create', desc: 'Create/invite user baru' },
+                        { id: 'user:read', action: 'Read', desc: 'View user detail' },
+                        { id: 'user:update', action: 'Update', desc: 'Update user data' },
+                        { id: 'user:delete', action: 'Delete', desc: 'Delete/deactivate user' },
+                        { id: 'user:list', action: 'List', desc: 'List semua user' },
+                        { id: 'user:assign-role', action: 'Assign Role', desc: 'Assign role ke user' }
+                    ],
+                    role: [
+                        { id: 'role:create', action: 'Create', desc: 'Create custom role' },
+                        { id: 'role:read', action: 'Read', desc: 'View role detail' },
+                        { id: 'role:update', action: 'Update', desc: 'Update role & permissions' },
+                        { id: 'role:delete', action: 'Delete', desc: 'Delete custom role' },
+                        { id: 'role:list', action: 'List', desc: 'List all roles' }
+                    ],
+                    product: [
+                        { id: 'product:create', action: 'Create', desc: 'Create produk baru' },
+                        { id: 'product:read', action: 'Read', desc: 'View produk detail' },
+                        { id: 'product:update', action: 'Update', desc: 'Update produk' },
+                        { id: 'product:delete', action: 'Delete', desc: 'Delete produk' },
+                        { id: 'product:list', action: 'List', desc: 'List semua produk' },
+                        { id: 'product:import', action: 'Import', desc: 'Import produk excel' },
+                        { id: 'product:export', action: 'Export', desc: 'Export produk excel' }
+                    ],
+                    booking: [
+                        { id: 'booking:create', action: 'Create', desc: 'Create booking baru' },
+                        { id: 'booking:read', action: 'Read', desc: 'View booking detail' },
+                        { id: 'booking:update', action: 'Update', desc: 'Update booking' },
+                        { id: 'booking:cancel', action: 'Cancel', desc: 'Cancel booking' },
+                        { id: 'booking:list', action: 'List All', desc: 'List semua booking' },
+                        { id: 'booking:list-own', action: 'List Own', desc: 'List booking sendiri' },
+                        { id: 'booking:checkin', action: 'Check In', desc: 'Process check-in' },
+                        { id: 'booking:checkout', action: 'Check Out', desc: 'Process check-out' }
+                    ],
+                    payment: [
+                        { id: 'payment:create', action: 'Create', desc: 'Record payment' },
+                        { id: 'payment:read', action: 'Read', desc: 'View payment detail' },
+                        { id: 'payment:refund', action: 'Refund', desc: 'Process refund' },
+                        { id: 'payment:list', action: 'List', desc: 'List semua payment' }
+                    ],
+                    tenant: [
+                        { id: 'tenant:settings', action: 'Settings', desc: 'Manage tenant settings' },
+                        { id: 'tenant:billing', action: 'Billing', desc: 'Manage subscription' },
+                        { id: 'tenant:branding', action: 'Branding', desc: 'Manage logo & brand' }
+                    ],
+                    report: [
+                        { id: 'report:view-dashboard', action: 'Dashboard', desc: 'View dashboard' },
+                        { id: 'report:view-revenue', action: 'Revenue', desc: 'View revenue report' },
+                        { id: 'report:export', action: 'Export', desc: 'Export reports' }
+                    ]
+                },
+
+                // Mocks of system & custom roles
+                roles: [
+                    { id: 1, name: 'Owner', description: 'Tenant Owner dengan full akses ke semua fitur', isSystem: true, permissionCount: 85, permissions: ['user:create', 'user:read', 'user:update', 'product:create', 'product:read', 'booking:create'] }, // Sample permissions array
+                    { id: 2, name: 'Manager', description: 'Manager operasional (tanpa akses user & billing)', isSystem: true, permissionCount: 62, permissions: [] },
+                    { id: 3, name: 'Staff/Kasir', description: 'Staff kasir POS operations', isSystem: true, permissionCount: 30, permissions: [] },
+                    { id: 4, name: 'Inventory Staff', description: 'Pengelola produk dan gudang', isSystem: true, permissionCount: 35, permissions: [] },
+                    { id: 5, name: 'Customer Service', description: 'Akses chat dan view orders', isSystem: false, permissionCount: 15, permissions: ['user:read', 'booking:read', 'booking:list'] }
+                ],
+
+                currentRole: {
+                    id: null,
+                    name: '',
+                    description: '',
+                    isSystem: false,
+                    permissions: []
+                },
+
+                openRoleModal() {
+                    this.isEditingRole = false;
+                    this.currentRole = {
+                        id: null,
+                        name: '',
+                        description: '',
+                        isSystem: false,
+                        permissions: []
+                    };
+                    this.showRoleModal = true;
+                },
+
+                editRole(role) {
+                    this.isEditingRole = true;
+                    // Clone the role data
+                    this.currentRole = JSON.parse(JSON.stringify(role));
+                    this.showRoleModal = true;
+                },
+
+                deleteRole(role) {
+                    if (confirm(`Yakin ingin menghapus custom role "${role.name}"?`)) {
+                        this.roles = this.roles.filter(r => r.id !== role.id);
+                        alert('Role berhasil dihapus!');
+                    }
+                },
+
+                saveRole() {
+                    if (!this.currentRole.name) {
+                        alert('Role name required');
+                        return;
+                    }
+
+                    if (this.isEditingRole) {
+                        const index = this.roles.findIndex(r => r.id === this.currentRole.id);
+                        if (index !== -1) {
+                            this.roles[index] = { ...this.currentRole, permissionCount: this.currentRole.permissions.length };
+                        }
+                    } else {
+                        const newRole = {
+                            ...this.currentRole,
+                            id: Date.now(),
+                            permissionCount: this.currentRole.permissions.length
+                        };
+                        this.roles.push(newRole);
+                    }
+
+                    this.closeRoleModal();
+                },
+
+                closeRoleModal() {
+                    this.showRoleModal = false;
+                },
+
+                toggleGroup(groupName, isChecked) {
+                    const groupPerms = this.permissionGroups[groupName].map(p => p.id);
+                    if (isChecked) {
+                        // Add all permissions from this group
+                        groupPerms.forEach(permId => {
+                            if (!this.currentRole.permissions.includes(permId)) {
+                                this.currentRole.permissions.push(permId);
+                            }
+                        });
+                    } else {
+                        // Remove all permissions from this group
+                        this.currentRole.permissions = this.currentRole.permissions.filter(p => !groupPerms.includes(p));
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

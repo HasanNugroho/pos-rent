@@ -269,7 +269,7 @@ Modern, clean UI design untuk sistem Point of Sale rental dengan shadcn design p
   - Tampilkan sisa pembayaran
   - Alert konfirmasi
 
-### 7. **Settings** (`settings.html`) - 5 TABS
+### 7. **Settings** (`settings.html`) - 6 TABS
 - **Tab 1 - Profil**: Edit data personal, upload foto
 - **Tab 2 - Bisnis**: Info bisnis (nama, alamat, kontak)
 - **Tab 3 - Pembayaran**: Metode payment aktif (Tunai, Transfer, QRIS, E-Wallet)
@@ -282,8 +282,25 @@ Modern, clean UI design untuk sistem Point of Sale rental dengan shadcn design p
   - **Operating Hours**: Jam buka/tutup per hari
   - Toggle active/inactive untuk fields
   - Modal add/edit yang fully functional
+- **Tab 6 - Langganan**: Current plan, beli add-on, riwayat pembayaran + download invoice
 
-### 8. **Staff Management** (`staff.html`) ⭐ NEW
+### 8. **Outlet Management** (`outlets.html`) ⭐ NEW
+**Multi-branch/outlet management untuk Owner**
+
+- **Plan Limit Banner**: Kuota outlet terpakai/total dengan progress bar
+- **Stats**: Total Outlet, Aktif, Total Staff, Total Produk (aggregated)
+- **Outlet Switcher** (header): Dropdown untuk pindah konteks outlet aktif
+- **Outlet Cards** dengan:
+  - Logo, nama, ID, badge "Utama"
+  - Alamat, telepon, manager
+  - Metrics: Staff, Produk, Booking
+  - Pendapatan bulanan
+  - Actions: Pindah, Edit, Nonaktifkan
+- **Add Outlet Modal**: Nama, alamat, telepon, email, assign manager, jam operasional, toggle sinkronisasi katalog
+- **Deactivate Confirmation Modal**: Warning dengan detail dampak
+- **Placeholder Card**: Dashed border "Tambah Outlet Baru" dengan sisa kuota
+
+### 9. **Staff Management** (`staff.html`) ⭐ NEW
 - Grid view staff
 - Filter by role & status
 - Stats (Total, Active, Owner, Kasir)
