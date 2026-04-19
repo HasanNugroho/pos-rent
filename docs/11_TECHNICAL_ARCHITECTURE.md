@@ -54,116 +54,117 @@ src/
 │   ├── storage.module.ts
 │   └── storage.service.ts           # Upload, presigned URLs, delete
 │
-├── auth/                            # Authentication module
-│   ├── auth.module.ts
-│   ├── auth.controller.ts           # login, register, refresh, forgot-password
-│   ├── auth.service.ts
-│   ├── strategies/                  # JwtStrategy, LocalStrategy
-│   └── dto/
+├── jobs/                            # Scheduled tasks (Cron)
+│   ├── jobs.module.ts
+│   ├── overdue-checker.job.ts
+│   ├── subscription-renewal.job.ts
+│   ├── trial-expiry.job.ts
+│   └── report-aggregation.job.ts
 │
-├── users/                           # User management
-│   ├── users.module.ts
-│   ├── users.controller.ts
-│   ├── users.service.ts
-│   └── dto/
-│
-├── roles/                           # Role & permission management
-│   ├── roles.module.ts
-│   ├── roles.controller.ts
-│   ├── roles.service.ts
-│   └── dto/
-│
-├── tenants/                         # Tenant / outlet management
-│   ├── tenants.module.ts
-│   ├── tenants.controller.ts        # CRUD outlets (owner-side)
-│   ├── tenants.service.ts
-│   └── dto/
-│
-├── products/                        # Product management
-│   ├── products.module.ts
-│   ├── products.controller.ts
-│   ├── products.service.ts
-│   ├── categories.controller.ts
-│   ├── categories.service.ts
-│   └── dto/
-│
-├── bookings/                        # Booking management
-│   ├── bookings.module.ts
-│   ├── bookings.controller.ts
-│   ├── bookings.service.ts
-│   └── dto/
-│
-├── payments/                        # Payment processing
-│   ├── payments.module.ts
-│   ├── payments.controller.ts
-│   ├── payments.service.ts
-│   ├── gateways/
-│   │   ├── payment-gateway.interface.ts
-│   │   ├── midtrans.service.ts
-│   │   └── xendit.service.ts
-│   └── dto/
-│
-├── customers/                       # Customer CRM
-│   ├── customers.module.ts
-│   ├── customers.controller.ts
-│   ├── customers.service.ts
-│   └── dto/
-│
-├── maintenance/                     # Maintenance tracking
-│   ├── maintenance.module.ts
-│   ├── maintenance.controller.ts
-│   ├── maintenance.service.ts
-│   └── dto/
-│
-├── reports/                         # Reporting & analytics
-│   ├── reports.module.ts
-│   ├── reports.controller.ts
-│   ├── reports.service.ts
-│   └── dto/
-│
-├── subscriptions/                   # Subscription & billing
-│   ├── subscriptions.module.ts
-│   ├── subscriptions.controller.ts
-│   ├── subscriptions.service.ts
-│   ├── invoices.service.ts
-│   └── dto/
-│
-├── notifications/                   # Multi-channel notifications
-│   ├── notifications.module.ts
-│   ├── notifications.service.ts
-│   ├── channels/
-│   │   ├── email.service.ts         # SMTP
-│   │   ├── push.service.ts          # Firebase FCM
-│   │   └── whatsapp.service.ts      # Wablas/Fonnte
-│   └── templates/
-│
-├── settings/                        # Tenant settings
-│   ├── settings.module.ts
-│   ├── settings.controller.ts
-│   ├── settings.service.ts
-│   └── dto/
-│
-├── catalog/                         # Public catalog (no auth)
-│   ├── catalog.module.ts
-│   ├── catalog.controller.ts
-│   └── catalog.service.ts
-│
-├── admin/                           # Super Admin module
-│   ├── admin.module.ts
-│   ├── admin-dashboard.controller.ts
-│   ├── admin-outlets.controller.ts
-│   ├── admin-users.controller.ts
-│   ├── admin-subscriptions.controller.ts
-│   ├── admin-reports.controller.ts
-│   ├── admin-settings.controller.ts
-│   └── services/
-│
-└── jobs/                            # Scheduled tasks (Cron)
-    ├── jobs.module.ts
-    ├── overdue-checker.job.ts
-    ├── subscription-renewal.job.ts
-    ├── trial-expiry.job.ts
-    └── report-aggregation.job.ts
+└── modules/                         # Application Feature Modules
+    ├── auth/                        # Authentication module
+    │   ├── auth.module.ts
+    │   ├── auth.controller.ts       # login, register, refresh, forgot-password
+    │   ├── auth.service.ts
+    │   ├── strategies/              # JwtStrategy, LocalStrategy
+    │   └── dto/
+    │
+    ├── users/                       # User management
+    │   ├── users.module.ts
+    │   ├── users.controller.ts
+    │   ├── users.service.ts
+    │   └── dto/
+    │
+    ├── roles/                       # Role & permission management
+    │   ├── roles.module.ts
+    │   ├── roles.controller.ts
+    │   ├── roles.service.ts
+    │   └── dto/
+    │
+    ├── tenants/                     # Tenant / outlet management
+    │   ├── tenants.module.ts
+    │   ├── tenants.controller.ts    # CRUD outlets (owner-side)
+    │   ├── tenants.service.ts
+    │   └── dto/
+    │
+    ├── products/                    # Product management
+    │   ├── products.module.ts
+    │   ├── products.controller.ts
+    │   ├── products.service.ts
+    │   ├── categories.controller.ts
+    │   ├── categories.service.ts
+    │   └── dto/
+    │
+    ├── bookings/                    # Booking management
+    │   ├── bookings.module.ts
+    │   ├── bookings.controller.ts
+    │   ├── bookings.service.ts
+    │   └── dto/
+    │
+    ├── payments/                    # Payment processing
+    │   ├── payments.module.ts
+    │   ├── payments.controller.ts
+    │   ├── payments.service.ts
+    │   ├── gateways/
+    │   │   ├── payment-gateway.interface.ts
+    │   │   ├── midtrans.service.ts
+    │   │   └── xendit.service.ts
+    │   └── dto/
+    │
+    ├── customers/                   # Customer CRM
+    │   ├── customers.module.ts
+    │   ├── customers.controller.ts
+    │   ├── customers.service.ts
+    │   └── dto/
+    │
+    ├── maintenance/                 # Maintenance tracking
+    │   ├── maintenance.module.ts
+    │   ├── maintenance.controller.ts
+    │   ├── maintenance.service.ts
+    │   └── dto/
+    │
+    ├── reports/                     # Reporting & analytics
+    │   ├── reports.module.ts
+    │   ├── reports.controller.ts
+    │   ├── reports.service.ts
+    │   └── dto/
+    │
+    ├── subscriptions/               # Subscription & billing
+    │   ├── subscriptions.module.ts
+    │   ├── subscriptions.controller.ts
+    │   ├── subscriptions.service.ts
+    │   ├── invoices.service.ts
+    │   └── dto/
+    │
+    ├── notifications/               # Multi-channel notifications
+    │   ├── notifications.module.ts
+    │   ├── notifications.service.ts
+    │   ├── channels/
+    │   │   ├── email.service.ts     # SMTP
+    │   │   ├── push.service.ts      # Firebase FCM
+    │   │   └── whatsapp.service.ts  # Wablas/Fonnte
+    │   └── templates/
+    │
+    ├── settings/                    # Tenant settings
+    │   ├── settings.module.ts
+    │   ├── settings.controller.ts
+    │   ├── settings.service.ts
+    │   └── dto/
+    │
+    ├── catalog/                     # Public catalog (no auth)
+    │   ├── catalog.module.ts
+    │   ├── catalog.controller.ts
+    │   └── catalog.service.ts
+    │
+    └── admin/                       # Super Admin module
+        ├── admin.module.ts
+        ├── admin-dashboard.controller.ts
+        ├── admin-outlets.controller.ts
+        ├── admin-users.controller.ts
+        ├── admin-subscriptions.controller.ts
+        ├── admin-reports.controller.ts
+        ├── admin-settings.controller.ts
+        └── services/
 
 prisma/
 ├── schema.prisma                    # Full database schema
