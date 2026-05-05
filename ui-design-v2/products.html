@@ -152,11 +152,11 @@
                             <p class="text-xs text-slate-500 mb-2" x-text="'SKU: ' + product.sku"></p>
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-xs px-2 py-1 bg-slate-100 text-slate-700 rounded" x-text="product.category"></span>
-                                <span class="text-xs text-slate-500" x-text="'Size: ' + product.size"></span>
+                                <span class="text-xs text-slate-500" x-text="'Stock: ' + product.stock"></span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-xs text-slate-500">Harga/hari</p>
+                                    <p class="text-xs text-slate-500">Harga mulai</p>
                                     <p class="text-lg font-bold text-slate-900" x-text="'Rp ' + product.price.toLocaleString('id-ID')"></p>
                                 </div>
                                 <div class="text-right">
@@ -175,84 +175,277 @@
 
     <!-- Add/Edit Product Modal -->
     <div x-show="showProductModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
-        <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="flex items-center justify-center min-h-screen px-4 py-8">
             <div @click="showProductModal = false" class="fixed inset-0 bg-slate-900 bg-opacity-75"></div>
-            <div class="relative bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-semibold text-slate-900" x-text="editingProduct ? 'Edit Produk' : 'Tambah Produk Baru'"></h3>
-                    <button @click="showProductModal = false" class="text-slate-400 hover:text-slate-600">
+            <div class="relative bg-white rounded-2xl w-full max-w-4xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+                <!-- Modal Header -->
+                <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-white sticky top-0 z-10">
+                    <div>
+                        <h3 class="text-xl font-semibold text-slate-900" x-text="editingProduct ? 'Edit Produk' : 'Tambah Produk Baru'"></h3>
+                        <p class="text-xs text-slate-500 mt-1">Lengkapi detail produk, field kustom, dan daftar item fisik.</p>
+                    </div>
+                    <button @click="showProductModal = false" class="text-slate-400 hover:text-slate-600 transition-colors">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Nama Produk</label>
-                        <input type="text" x-model="productForm.name"
-                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                <!-- Modal Tabs -->
+                <div class="px-6 border-b border-slate-200 bg-slate-50/50">
+                    <div class="flex space-x-6">
+                        <button @click="activeModalTab = 'general'" 
+                                :class="activeModalTab === 'general' ? 'border-slate-900 text-slate-900' : 'border-transparent text-slate-500 hover:text-slate-700'"
+                                class="py-4 border-b-2 font-medium text-sm transition-all">
+                            <i class="fas fa-info-circle mr-2"></i>Informasi Umum
+                        </button>
+                        <button @click="activeModalTab = 'fields'" 
+                                :class="activeModalTab === 'fields' ? 'border-slate-900 text-slate-900' : 'border-transparent text-slate-500 hover:text-slate-700'"
+                                class="py-4 border-b-2 font-medium text-sm transition-all">
+                            <i class="fas fa-list-ul mr-2"></i>Custom Fields
+                        </button>
+                        <button @click="activeModalTab = 'items'" 
+                                :class="activeModalTab === 'items' ? 'border-slate-900 text-slate-900' : 'border-transparent text-slate-500 hover:text-slate-700'"
+                                class="py-4 border-b-2 font-medium text-sm transition-all">
+                            <i class="fas fa-boxes mr-2"></i>Daftar Item
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Body (Scrollable) -->
+                <div class="p-6 overflow-y-auto flex-1">
+                    <!-- General Tab -->
+                    <div x-show="activeModalTab === 'general'" class="space-y-6">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Nama Produk</label>
+                                    <input type="text" x-model="productForm.name" placeholder="Contoh: Nike Mercurial Vapor"
+                                           class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">SKU Base</label>
+                                        <input type="text" x-model="productForm.sku" placeholder="NK-MERC"
+                                               class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Kategori</label>
+                                        <select x-model="productForm.category"
+                                                class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all">
+                                            <option value="">Pilih kategori...</option>
+                                            <option value="futsal">Sepatu Futsal</option>
+                                            <option value="basket">Sepatu Basket</option>
+                                            <option value="running">Sepatu Running</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Deskripsi</label>
+                                    <textarea rows="4" x-model="productForm.description" placeholder="Ceritakan detail produk ini..."
+                                              class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all"></textarea>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Foto Produk (Master)</label>
+                                <div class="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center hover:border-slate-400 transition-all cursor-pointer bg-slate-50 group">
+                                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-cloud-upload-alt text-2xl text-slate-400 group-hover:text-slate-600"></i>
+                                    </div>
+                                    <p class="text-sm font-medium text-slate-700">Klik untuk upload foto</p>
+                                    <p class="text-xs text-slate-500 mt-1">Asset master untuk katalog utama</p>
+                                </div>
+                                <div class="grid grid-cols-4 gap-2">
+                                    <template x-for="i in 4">
+                                        <div class="aspect-square bg-slate-100 rounded-lg border border-slate-200"></div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">SKU</label>
-                            <input type="text" x-model="productForm.sku"
-                                   class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    <!-- Custom Fields Tab -->
+                    <div x-show="activeModalTab === 'fields'" class="space-y-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <h4 class="font-semibold text-slate-900">Definisi Field Kustom</h4>
+                                <p class="text-xs text-slate-500">Field ini akan muncul di setiap item untuk diisi nilainya.</p>
+                            </div>
+                            <button @click="addCustomField()" class="px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-medium hover:bg-slate-800 transition-colors">
+                                <i class="fas fa-plus mr-1.5"></i>Tambah Field
+                            </button>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Kategori</label>
-                            <select x-model="productForm.category"
-                                    class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
-                                <option value="">Pilih kategori...</option>
-                                <option value="futsal">Sepatu Futsal</option>
-                                <option value="basket">Sepatu Basket</option>
-                                <option value="running">Sepatu Running</option>
-                            </select>
+                        
+                        <div class="space-y-4">
+                            <template x-for="(field, index) in productForm.customFields" :key="field.id">
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 group transition-all">
+                                    <div class="flex items-end space-x-3 mb-3">
+                                        <div class="flex-1">
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nama Field</label>
+                                            <input type="text" x-model="field.label" placeholder="Contoh: Brand, Warna, Material"
+                                                   class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                        </div>
+                                        <div class="w-48">
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Tipe Data</label>
+                                            <select x-model="field.type" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900">
+                                                <option value="text">Text</option>
+                                                <option value="number">Number</option>
+                                                <option value="select">Dropdown / Select</option>
+                                                <option value="radio">Radio Button</option>
+                                                <option value="date">Date</option>
+                                            </select>
+                                        </div>
+                                        <button @click="removeCustomField(index)" class="p-2.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Options Section for Select/Radio -->
+                                    <div x-show="field.type === 'select' || field.type === 'radio'" x-transition class="mt-4 pl-4 border-l-2 border-slate-300">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <label class="text-[10px] font-bold text-slate-500 uppercase">Opsi Pilihan</label>
+                                            <button @click="addFieldOption(field)" class="text-[10px] text-slate-900 font-bold hover:underline">
+                                                <i class="fas fa-plus mr-1"></i>Tambah Opsi
+                                            </button>
+                                        </div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <template x-for="(option, optIndex) in field.options" :key="optIndex">
+                                                <div class="flex items-center bg-white border border-slate-200 rounded-lg px-2 py-1 space-x-2">
+                                                    <input type="text" x-model="field.options[optIndex]" 
+                                                           class="text-xs border-none focus:ring-0 p-0 w-20" placeholder="Opsi...">
+                                                    <button @click="removeFieldOption(field, optIndex)" class="text-slate-400 hover:text-red-500">
+                                                        <i class="fas fa-times text-[10px]"></i>
+                                                    </button>
+                                                </div>
+                                            </template>
+                                            <div x-show="field.options.length === 0" class="text-[10px] text-slate-400 italic">Belum ada opsi. Klik "Tambah Opsi".</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <div x-show="productForm.customFields.length === 0" class="py-12 text-center border-2 border-dashed border-slate-200 rounded-xl">
+                                <p class="text-slate-500 text-sm">Belum ada field kustom. Tambahkan jika perlu detail spesifik.</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Size</label>
-                            <input type="text" x-model="productForm.size"
-                                   class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    <!-- Items Tab -->
+                    <div x-show="activeModalTab === 'items'" class="space-y-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <h4 class="font-semibold text-slate-900">Daftar Item Fisik</h4>
+                                <p class="text-xs text-slate-500">Setiap item mewakili satu produk fisik dengan nomor seri unik.</p>
+                            </div>
+                            <button @click="addItem()" class="px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-medium hover:bg-slate-800 transition-colors">
+                                <i class="fas fa-plus mr-1.5"></i>Tambah Item
+                            </button>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Stock</label>
-                            <input type="number" x-model="productForm.stock"
-                                   class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Harga/Hari</label>
-                            <input type="number" x-model="productForm.price"
-                                   class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
-                        </div>
-                    </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Deskripsi</label>
-                        <textarea rows="3" x-model="productForm.description"
-                                  class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"></textarea>
-                    </div>
+                        <div class="space-y-4">
+                            <template x-for="(item, index) in productForm.items" :key="index">
+                                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                    <div class="px-4 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                                        <span class="text-xs font-bold text-slate-600 uppercase tracking-widest" x-text="'Item #' + (index + 1)"></span>
+                                        <button @click="removeItem(index)" class="text-xs text-red-500 hover:text-red-700 font-medium">
+                                            <i class="fas fa-times mr-1"></i>Hapus
+                                        </button>
+                                    </div>
+                                    <div class="p-4 grid grid-cols-12 gap-4">
+                                        <!-- Item Basic Info -->
+                                        <div class="col-span-3 space-y-3">
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Serial Number / Kode</label>
+                                                <input type="text" x-model="item.serialNumber" placeholder="SN-001"
+                                                       class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-slate-900">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ukuran (Size)</label>
+                                                <input type="text" x-model="item.size" placeholder="42"
+                                                       class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-slate-900">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Pricing -->
+                                        <div class="col-span-4 space-y-3">
+                                            <div class="flex space-x-2">
+                                                <div class="flex-1">
+                                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Harga Sewa</label>
+                                                    <div class="relative">
+                                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">Rp</span>
+                                                        <input type="number" x-model="item.price"
+                                                               class="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-slate-900">
+                                                    </div>
+                                                </div>
+                                                <div class="w-24">
+                                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Tipe</label>
+                                                    <select x-model="item.priceType" class="w-full px-2 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-slate-900">
+                                                        <option value="daily">Hari</option>
+                                                        <option value="hourly">Jam</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Foto Item (Optional)</label>
+                                                <div class="flex space-x-2">
+                                                    <button class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                                                        <i class="fas fa-camera"></i>
+                                                    </button>
+                                                    <div class="flex-1 flex space-x-1 overflow-x-auto">
+                                                        <div class="w-10 h-10 bg-slate-100 rounded-lg border border-slate-200 shrink-0"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Upload Foto</label>
-                        <div class="border-2 border-dashed border-slate-200 rounded-lg p-6 text-center hover:border-slate-400 transition-colors cursor-pointer">
-                            <i class="fas fa-cloud-upload-alt text-3xl text-slate-400 mb-2"></i>
-                            <p class="text-sm text-slate-600">Klik atau drag & drop foto produk</p>
-                            <p class="text-xs text-slate-500 mt-1">PNG, JPG hingga 5MB</p>
+                                        <!-- Custom Field Values -->
+                                        <div class="col-span-5 border-l border-slate-100 pl-4">
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Nilai Field Kustom</label>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <template x-for="field in productForm.customFields" :key="field.id">
+                                                    <div>
+                                                        <label class="block text-[10px] text-slate-500 mb-1" x-text="field.label"></label>
+                                                        
+                                                        <!-- Render Select if type is select or radio -->
+                                                        <template x-if="field.type === 'select' || field.type === 'radio'">
+                                                            <select x-model="item.fieldValues[field.id]"
+                                                                    class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-slate-900">
+                                                                <option value="">Pilih...</option>
+                                                                <template x-for="opt in field.options" :key="opt">
+                                                                    <option :value="opt" x-text="opt"></option>
+                                                                </template>
+                                                            </select>
+                                                        </template>
+                                                        
+                                                        <!-- Render regular input otherwise -->
+                                                        <template x-if="field.type !== 'select' && field.type !== 'radio'">
+                                                            <input :type="field.type" x-model="item.fieldValues[field.id]"
+                                                                   class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-slate-900">
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <div x-show="productForm.customFields.length === 0" class="col-span-2 py-4 text-center">
+                                                    <p class="text-[10px] text-slate-400 italic">Belum ada field kustom yang didefinisikan.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <div x-show="productForm.items.length === 0" class="py-12 text-center border-2 border-dashed border-slate-200 rounded-xl">
+                                <p class="text-slate-500 text-sm">Belum ada item fisik. Tambahkan setidaknya satu untuk disewakan.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex space-x-3 mt-6">
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 border-t border-slate-200 bg-white sticky bottom-0 z-10 flex space-x-3 justify-end">
                     <button @click="showProductModal = false" 
-                            class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50 font-medium">
+                            class="px-6 py-2.5 border-2 border-slate-200 rounded-lg hover:bg-slate-50 font-medium text-slate-700 transition-colors">
                         Batal
                     </button>
                     <button @click="saveProduct()" 
-                            class="flex-1 px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 font-medium">
+                            class="px-8 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 font-medium shadow-lg shadow-slate-200 transition-all active:scale-95">
                         <i class="fas fa-save mr-2"></i>
-                        <span x-text="editingProduct ? 'Update' : 'Simpan'"></span>
+                        <span x-text="editingProduct ? 'Update Produk' : 'Simpan Produk'"></span>
                     </button>
                 </div>
             </div>
@@ -311,20 +504,14 @@
                         </div>
 
                         <div>
-                            <p class="text-sm font-medium text-slate-700 mb-2">Informasi</p>
-                            <div class="space-y-2 text-sm">
-                                <div class="flex justify-between">
-                                    <span class="text-slate-500">Kategori:</span>
-                                    <span class="font-medium" x-text="viewingProduct?.category"></span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-slate-500">Size:</span>
-                                    <span class="font-medium" x-text="viewingProduct?.size"></span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-slate-500">Total Disewa:</span>
-                                    <span class="font-medium">42 kali</span>
-                                </div>
+                            <p class="text-sm font-medium text-slate-700 mb-2">Informasi Items</p>
+                            <div class="space-y-2 max-h-40 overflow-y-auto">
+                                <template x-for="item in viewingProduct?.items" :key="item.serialNumber">
+                                    <div class="flex justify-between text-xs border-b border-slate-100 pb-1">
+                                        <span class="text-slate-500" x-text="item.serialNumber + ' (' + item.size + ')'"></span>
+                                        <span class="font-medium" x-text="'Rp ' + item.price.toLocaleString('id-ID')"></span>
+                                    </div>
+                                </template>
                             </div>
                         </div>
 
@@ -352,25 +539,31 @@
                 filterStatus: '',
                 showProductModal: false,
                 showViewModal: false,
+                activeModalTab: 'general', // 'general', 'fields', 'items'
                 editingProduct: null,
                 viewingProduct: null,
                 
                 products: [
-                    { id: 1, name: 'Nike Mercurial', sku: 'NK-001', category: 'Sepatu Futsal', size: '42', stock: 5, available: 3, price: 35000, status: 'available' },
-                    { id: 2, name: 'Adidas Predator', sku: 'AD-001', category: 'Sepatu Futsal', size: '41', stock: 4, available: 0, price: 32000, status: 'rented' },
-                    { id: 3, name: 'Specs Accelerator', sku: 'SP-001', category: 'Sepatu Futsal', size: '43', stock: 6, available: 5, price: 28000, status: 'available' },
-                    { id: 4, name: 'Puma Future', sku: 'PM-001', category: 'Sepatu Futsal', size: '42', stock: 3, available: 0, price: 30000, status: 'maintenance' },
-                    { id: 5, name: 'Nike Jordan', sku: 'NK-002', category: 'Sepatu Basket', size: '44', stock: 2, available: 2, price: 45000, status: 'available' },
+                    { 
+                        id: 1, name: 'Nike Mercurial', sku: 'NK-001', category: 'Sepatu Futsal', stock: 5, available: 3, price: 35000, status: 'available',
+                        customFields: [{ id: 1, label: 'Brand', type: 'text' }],
+                        items: [
+                            { serialNumber: 'SN001', size: '42', price: 35000, priceType: 'daily', fieldValues: { 1: 'Nike' } }
+                        ]
+                    },
+                    { id: 2, name: 'Adidas Predator', sku: 'AD-001', category: 'Sepatu Futsal', stock: 4, available: 0, price: 32000, status: 'rented' },
+                    { id: 3, name: 'Specs Accelerator', sku: 'SP-001', category: 'Sepatu Futsal', stock: 6, available: 5, price: 28000, status: 'available' },
+                    { id: 4, name: 'Puma Future', sku: 'PM-001', category: 'Sepatu Futsal', stock: 3, available: 0, price: 30000, status: 'maintenance' },
+                    { id: 5, name: 'Nike Jordan', sku: 'NK-002', category: 'Sepatu Basket', stock: 2, available: 2, price: 45000, status: 'available' },
                 ],
                 
                 productForm: {
                     name: '',
                     sku: '',
                     category: '',
-                    size: '',
-                    stock: 0,
-                    price: 0,
-                    description: ''
+                    description: '',
+                    customFields: [],
+                    items: []
                 },
                 
                 get filteredProducts() {
@@ -384,7 +577,16 @@
                 
                 openAddProductModal() {
                     this.editingProduct = null;
-                    this.productForm = { name: '', sku: '', category: '', size: '', stock: 0, price: 0, description: '' };
+                    this.activeModalTab = 'general';
+                    this.productForm = { 
+                        name: '', sku: '', category: '', description: '', 
+                        customFields: [
+                            { id: Date.now(), label: 'Brand', type: 'text' }
+                        ], 
+                        items: [
+                            { serialNumber: '', size: '', price: 0, priceType: 'daily', fieldValues: {} }
+                        ] 
+                    };
                     this.showProductModal = true;
                 },
                 
@@ -395,15 +597,56 @@
                 
                 editProduct(product) {
                     this.editingProduct = product;
-                    this.productForm = { ...product };
+                    this.activeModalTab = 'general';
+                    this.productForm = { 
+                        ...product,
+                        customFields: product.customFields ? product.customFields.map(f => ({ ...f, options: f.options || [] })) : [],
+                        items: product.items || []
+                    };
                     this.showProductModal = true;
+                },
+
+                addCustomField() {
+                    this.productForm.customFields.push({
+                        id: Date.now(),
+                        label: '',
+                        type: 'text',
+                        options: []
+                    });
+                },
+
+                removeCustomField(index) {
+                    this.productForm.customFields.splice(index, 1);
+                },
+
+                addFieldOption(field) {
+                    if (!field.options) field.options = [];
+                    field.options.push('');
+                },
+
+                removeFieldOption(field, index) {
+                    field.options.splice(index, 1);
+                },
+
+                addItem() {
+                    this.productForm.items.push({
+                        serialNumber: '',
+                        size: '',
+                        price: this.productForm.price || 0,
+                        priceType: 'daily',
+                        fieldValues: {}
+                    });
+                },
+
+                removeItem(index) {
+                    this.productForm.items.splice(index, 1);
                 },
                 
                 saveProduct() {
                     if (this.editingProduct) {
-                        alert('Produk berhasil diupdate!');
+                        alert('Produk berhasil diupdate dengan ' + this.productForm.items.length + ' item!');
                     } else {
-                        alert('Produk baru berhasil ditambahkan!');
+                        alert('Produk baru berhasil ditambahkan dengan ' + this.productForm.items.length + ' item!');
                     }
                     this.showProductModal = false;
                 }
